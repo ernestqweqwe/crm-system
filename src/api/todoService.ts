@@ -18,7 +18,7 @@ export const getAllTodos = async (token: string) => {
         headers: { Authorization: `Bearer ${token}` },
         method: 'GET',
     })
-    if (!response.ok) throw new Error('Ошибка загрузки задач')
+    if (!response.ok) throw new Error('Ошибка загрузки постов')
 
     const data = await response.json()
     return data.data
@@ -30,4 +30,16 @@ export const deleteTodo = async (token: string, taskId: number) => {
         headers: { Authorization: `Bearer ${token}` },
     })
     if (!response.ok) throw new Error('Ошибка при удалении')
+}
+
+export const creteTodo = async (token: string, title: string) => {
+    const response = await fetch(`${api}/todos`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: JSON.stringify({
+            isDone: false,
+            title,
+        }),
+    })
+    if (!response.ok) throw new Error('Ошибка при создании todo ')
 }

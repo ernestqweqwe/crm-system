@@ -12,10 +12,12 @@ body {
 }
 
 .app {
+    padding-top: 10px;
     border: 1px solid red;
     width: 800px;
     height: 800px;
-    display: flex;
+    display: flex; flex-direction: column;
     justify-content: center;
     align-items: center;
+    overflow: scroll;
 }

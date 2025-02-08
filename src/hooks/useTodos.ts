@@ -1,5 +1,10 @@
 import { useEffect, useState } from 'react'
-import { getAllTodos, getToken, deleteTodo } from '../api/todoService'
+import {
+    getAllTodos,
+    getToken,
+    deleteTodo,
+    creteTodo,
+} from '../api/todoService'
 
 interface Todo {
     id: number
@@ -41,5 +46,18 @@ export const useTodos = () => {
         }
     }
 
-    return { todos, loading, error, handleDelete }
+    const handleCreate = async (title: string) => {
+        try {
+            if (!token) return
+            await creteTodo(token, title)
+            const updatedTodos = await getAllTodos(token)
+            setTodos(updatedTodos)
+        } catch (err) {
+            if (err instanceof Error) {
+                setError(err.message)
+            }
+        }
+    }
+
+    return { todos, loading, error, handleDelete, handleCreate }
 }
