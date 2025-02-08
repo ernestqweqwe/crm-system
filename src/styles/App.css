@@ -1,0 +1,21 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.app {
+    border: 1px solid red;
+    width: 800px;
+    height: 800px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
