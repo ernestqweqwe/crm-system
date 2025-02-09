@@ -5,7 +5,16 @@ import TaskForm from './components/TaskForm/TaskForm.tsx'
 import TaskInfo from './components/TaskInfo/TaskInfo.tsx'
 
 function App() {
-    const { todos, loading, error, handleDelete, handleCreate, info, handleUpdate } = useTodos()
+    const {
+        todos,
+        loading,
+        error,
+        handleDelete,
+        handleCreate,
+        info,
+        handleUpdate,
+        setChosenTodos,
+    } = useTodos()
 
     if (loading) return <div>Loading...</div>
     if (error) return <div>Ошибка: {error}</div>
@@ -13,7 +22,7 @@ function App() {
     return (
         <div className="app">
             <TaskForm create={handleCreate} />
-            {info && <TaskInfo info={info} />}
+            {info && <TaskInfo chosenTodos={setChosenTodos} info={info} />}
             {todos ? (
                 <TaskList onUpdate={handleUpdate} taskList={todos} onDelete={handleDelete} />
             ) : (

@@ -13,8 +13,8 @@ export const getToken = async (): Promise<string> => {
     return data.accessToken
 }
 
-export const getAllTodos = async (token: string) => {
-    const response = await fetch(`${api}/todos`, {
+export const getAllTodos = async (token: string, chosenTodos: string) => {
+    const response = await fetch(`${api}/todos?filter=${chosenTodos}`, {
         headers: { Authorization: `Bearer ${token}` },
         method: 'GET',
     })

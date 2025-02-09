@@ -13,12 +13,14 @@ export interface Info {
     completed: number
     inWork: number
 }
+
 export const useTodos = () => {
     const [token, setToken] = useState<string>('')
     const [todos, setTodos] = useState<Todo[]>([])
     const [loading, setLoading] = useState<boolean>(true)
     const [error, setError] = useState<string | null>(null)
     const [info, setInfo] = useState<Info | null>(null)
+    const [chosenTodos, setChosenTodos] = useState<string>('all')
 
     useEffect(() => {
         getToken()
@@ -28,7 +30,7 @@ export const useTodos = () => {
 
     useEffect(() => {
         if (token) {
-            getAllTodos(token)
+            getAllTodos(token, chosenTodos)
                 .then((res) => {
                     setTodos(res.data)
                     setInfo(res.info)
@@ -36,13 +38,13 @@ export const useTodos = () => {
                 .catch((err) => setError(err.message))
                 .finally(() => setLoading(false))
         }
-    }, [token])
+    }, [token, chosenTodos])
 
     const handleDelete = async (taskId: number) => {
         if (!token) return
         try {
             await deleteTodo(token, taskId)
-            const updatedTodos = await getAllTodos(token).then((res) => res)
+            const updatedTodos = await getAllTodos(token, chosenTodos).then((res) => res)
             setTodos(updatedTodos.data)
             setInfo(updatedTodos.info)
         } catch (err) {
@@ -56,8 +58,9 @@ export const useTodos = () => {
         try {
             if (!token) return
             await creteTodo(token, title)
-            const updatedTodos = await getAllTodos(token).then((res) => res.data)
+            const updatedTodos = await getAllTodos(token, chosenTodos).then((res) => res.data)
             setTodos(updatedTodos)
+            setInfo(updatedTodos.info)
         } catch (err) {
             if (err instanceof Error) {
                 setError(err.message)
@@ -68,8 +71,11 @@ export const useTodos = () => {
     const handleUpdate = async (taskId: number, title: string, isDone: boolean) => {
         try {
             await updateTodo(token, taskId, title, isDone)
-            const updatedTodos = await getAllTodos(token).then((res) => res.data)
-            setTodos(updatedTodos)
+            const updatedTodos = await getAllTodos(token, chosenTodos).then((res) => res)
+            setTodos(updatedTodos.data)
+            console.log(updatedTodos.info)
+
+            setInfo(updatedTodos.info)
         } catch (err) {
             if (err instanceof Error) {
                 setError(err.message)
@@ -77,5 +83,5 @@ export const useTodos = () => {
         }
     }
 
-    return { todos, loading, error, handleDelete, handleCreate, info, handleUpdate }
+    return { todos, loading, error, handleDelete, handleCreate, info, handleUpdate, setChosenTodos }
 }
