@@ -1,11 +1,11 @@
 import * as React from 'react'
-import { useState } from 'react'
+import { FC, useState } from 'react'
 
 interface TaskFormProps {
     create: (title: string) => Promise<void>
 }
 
-function TaskForm({ create }: TaskFormProps) {
+const TaskForm: FC<TaskFormProps> = ({ create }) => {
     const [title, setTitle] = useState<string>('')
 
     const handleClick = async (
@@ -13,6 +13,10 @@ function TaskForm({ create }: TaskFormProps) {
         title: string
     ) => {
         e.preventDefault()
+        if (title.length < 4) {
+            console.log('неверная длина')
+            return
+        }
         await create(title)
         setTitle('')
     }

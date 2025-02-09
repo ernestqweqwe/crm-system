@@ -21,7 +21,7 @@ export const getAllTodos = async (token: string) => {
     if (!response.ok) throw new Error('Ошибка загрузки постов')
 
     const data = await response.json()
-    return data.data
+    return data
 }
 
 export const deleteTodo = async (token: string, taskId: number) => {

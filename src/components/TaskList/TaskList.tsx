@@ -1,13 +1,15 @@
 import TaskItem from '../TaskItem/TaskItem.tsx'
 import { Todo } from '../../types/Itodo.ts'
 import './TaskList.scss'
+import { FC } from 'react'
 
-interface ItaskListProps {
+interface ITaskListProps {
     taskList: Todo[]
     onDelete: (taskId: number) => Promise<void>
 }
-function TaskList({ taskList, onDelete }: ItaskListProps) {
+const TaskList: FC<ITaskListProps> = ({ taskList, onDelete }) => {
     console.log(taskList)
+
     return (
         <div className="task-list">
             {taskList.map((task) => {

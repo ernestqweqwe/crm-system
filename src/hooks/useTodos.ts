@@ -1,10 +1,5 @@
 import { useEffect, useState } from 'react'
-import {
-    getAllTodos,
-    getToken,
-    deleteTodo,
-    creteTodo,
-} from '../api/todoService'
+import { getAllTodos, getToken, deleteTodo, creteTodo } from '../api/todoService'
 
 interface Todo {
     id: number
@@ -17,6 +12,7 @@ export const useTodos = () => {
     const [todos, setTodos] = useState<Todo[] | null>(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
+    const [info, setInfo] = useState<string | null>(null)
 
     useEffect(() => {
         getToken()
@@ -27,7 +23,10 @@ export const useTodos = () => {
     useEffect(() => {
         if (token) {
             getAllTodos(token)
-                .then(setTodos)
+                .then((res) => {
+                    setTodos(res.data)
+                    setInfo(res.info)
+                })
                 .catch((err) => setError(err.message))
                 .finally(() => setLoading(false))
         }
@@ -37,8 +36,9 @@ export const useTodos = () => {
         if (!token) return
         try {
             await deleteTodo(token, taskId)
-            const updatedTodos = await getAllTodos(token)
-            setTodos(updatedTodos)
+            const updatedTodos = await getAllTodos(token).then((res) => res)
+            setTodos(updatedTodos.data)
+            setInfo(updatedTodos.info)
         } catch (err) {
             if (err instanceof Error) {
                 setError(err.message)
@@ -50,7 +50,7 @@ export const useTodos = () => {
         try {
             if (!token) return
             await creteTodo(token, title)
-            const updatedTodos = await getAllTodos(token)
+            const updatedTodos = await getAllTodos(token).then((res) => res.data)
             setTodos(updatedTodos)
         } catch (err) {
             if (err instanceof Error) {
@@ -59,5 +59,5 @@ export const useTodos = () => {
         }
     }
 
-    return { todos, loading, error, handleDelete, handleCreate }
+    return { todos, loading, error, handleDelete, handleCreate, info }
 }
