@@ -5,7 +5,7 @@ import './MyButton.scss'
 interface IButtonProps {
     children?: React.ReactNode
     className: string
-    onClick?: () => false | Promise<void>
+    onClick?: () => false | Promise<void> | void
 }
 
 const MyButton: FC<IButtonProps> = ({ children, ...props }) => {

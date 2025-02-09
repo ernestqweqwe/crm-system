@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { getAllTodos, getToken, deleteTodo, creteTodo } from '../api/todoService'
+import { getAllTodos, getToken, deleteTodo, creteTodo, updateTodo } from '../api/todoService'
 
 interface Todo {
     id: number
@@ -7,12 +7,18 @@ interface Todo {
     created: string
     isDone: boolean
 }
+
+interface Info {
+    all: number
+    completed: number
+    inWork: number
+}
 export const useTodos = () => {
-    const [token, setToken] = useState<string | null>(null)
-    const [todos, setTodos] = useState<Todo[] | null>(null)
-    const [loading, setLoading] = useState(true)
+    const [token, setToken] = useState<string>('')
+    const [todos, setTodos] = useState<Todo[]>([])
+    const [loading, setLoading] = useState<boolean>(true)
     const [error, setError] = useState<string | null>(null)
-    const [info, setInfo] = useState<string | null>(null)
+    const [info, setInfo] = useState<Info | null>(null)
 
     useEffect(() => {
         getToken()
@@ -59,5 +65,17 @@ export const useTodos = () => {
         }
     }
 
-    return { todos, loading, error, handleDelete, handleCreate, info }
+    const handleUpdate = async (taskId: number, title: string, isDone: boolean) => {
+        try {
+            await updateTodo(token, taskId, title, isDone)
+            const updatedTodos = await getAllTodos(token).then((res) => res.data)
+            setTodos(updatedTodos)
+        } catch (err) {
+            if (err instanceof Error) {
+                setError(err.message)
+            }
+        }
+    }
+
+    return { todos, loading, error, handleDelete, handleCreate, info, handleUpdate }
 }

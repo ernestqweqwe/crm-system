@@ -43,3 +43,20 @@ export const creteTodo = async (token: string, title: string) => {
     })
     if (!response.ok) throw new Error('Ошибка при создании todo ')
 }
+
+export const updateTodo = async (
+    token: string,
+    taskId: number,
+    title: string,
+    isDone: boolean
+): Promise<void> => {
+    const response = await fetch(`${api}/todos/${taskId}`, {
+        method: 'PUT',
+        headers: { Authorization: `Bearer ${token}` },
+        body: JSON.stringify({
+            isDone,
+            title,
+        }),
+    })
+    if (!response.ok) throw new Error('Ошибка при создании todo ')
+}
