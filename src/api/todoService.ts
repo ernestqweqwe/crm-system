@@ -21,6 +21,7 @@ export const getAllTodos = async (token: string) => {
     if (!response.ok) throw new Error('Ошибка загрузки постов')
 
     const data = await response.json()
+    console.log(data)
     return data
 }
 

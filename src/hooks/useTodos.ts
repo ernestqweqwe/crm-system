@@ -8,7 +8,7 @@ interface Todo {
     isDone: boolean
 }
 
-interface Info {
+export interface Info {
     all: number
     completed: number
     inWork: number

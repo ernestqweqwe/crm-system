@@ -9,12 +9,17 @@ interface ITaskListProps {
     onUpdate: (taskId: number, title: string, isDone: boolean) => Promise<void>
 }
 const TaskList: FC<ITaskListProps> = ({ taskList, onDelete, onUpdate }) => {
-    console.log(taskList)
-
     return (
         <div className="task-list">
             {taskList.map((task) => {
-                return <TaskItem onUpdate={onUpdate} taskObject={task} onDelete={onDelete} />
+                return (
+                    <TaskItem
+                        onUpdate={onUpdate}
+                        taskObject={task}
+                        onDelete={onDelete}
+                        key={task.id}
+                    />
+                )
             })}
         </div>
     )

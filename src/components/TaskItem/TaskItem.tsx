@@ -38,7 +38,7 @@ const TaskItem = ({ taskObject, onDelete, onUpdate }: ITaskItemProps) => {
                         setInputValue(e.target.value)
                     }}
                     onBlur={(e) => {
-                        if (e.target.className === 'btn') return
+                        if (e.target.className === 'btn__change') return
 
                         if (id !== undefined) {
                             onUpdate(id, inputValue, isDone)
