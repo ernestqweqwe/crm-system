@@ -1,0 +1,24 @@
+.btn {
+  width: 40px;
+  height: 40px;
+  background-color: #fff;
+  border: none;
+  border-radius: 10px;
+  margin: 5px;
+  cursor: pointer;
+  
+  &__red {
+    background: inherit;
+    background-image: url("../../../assets/delete-icon.svg");
+    background-size:cover ;
+
+  }
+  &__green {
+    background: inherit;
+
+    background-image: url("../../../assets/writing-item.svg");
+    background-size:cover ;
+
+
+  }
+}
