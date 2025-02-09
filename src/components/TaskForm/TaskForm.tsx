@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { FC, useState } from 'react'
+import './TaskForm.scss'
 
 interface TaskFormProps {
     create: (title: string) => Promise<void>
@@ -8,23 +9,26 @@ interface TaskFormProps {
 const TaskForm: FC<TaskFormProps> = ({ create }) => {
     const [title, setTitle] = useState<string>('')
 
-    const handleClick = async (
-        e: React.MouseEvent<HTMLButtonElement>,
-        title: string
-    ) => {
+    const handleClick = async (e: React.MouseEvent<HTMLButtonElement>, title: string) => {
         e.preventDefault()
-        if (title.length < 4) {
-            console.log('неверная длина')
-            return
-        }
         await create(title)
         setTitle('')
     }
 
     return (
-        <form>
-            <input value={title} onChange={(e) => setTitle(e.target.value)} />
-            <button onClick={(e) => handleClick(e, title)}>Добавить</button>
+        <form className="tasks-form">
+            <input
+                placeholder="Введите вашу задачу..."
+                minLength={2}
+                maxLength={64}
+                required={true}
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+            />
+            <button className="tasks-form__btn" onClick={(e) => handleClick(e, title)}>
+                ADD
+            </button>
         </form>
     )
 }

@@ -49,6 +49,24 @@
     .btn {
         margin: 0 7px;
 
+    } }
+}
+
+.task-item__btns--aditional{
+    .btn__save{
+            background: inherit;
+            background-image: url("../../assets/save.svg");
+            background-size:cover ;
+            width: 40px;
+            height: 40px;
+
     }
+
+    .btn__cancel{
+        background: inherit;
+        background-image: url("../../assets/cancel.svg");
+        background-size:cover ;
+        width: 40px;
+        height: 40px;
     }
 }

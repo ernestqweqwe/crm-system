@@ -5,7 +5,7 @@ import { useRef, useState } from 'react'
 
 interface ITaskItemProps {
     taskObject: Todo
-    onDelete: (taskId: number) => Promise<void>
+    onDelete: (taskId: number) => void
     onUpdate: (taskId: number, title: string, isDone: boolean) => void
 }
 
@@ -13,6 +13,7 @@ const TaskItem = ({ taskObject, onDelete, onUpdate }: ITaskItemProps) => {
     const { isDone, title, id } = taskObject
 
     const [inputValue, setInputValue] = useState(title)
+    const [inputValueBefore, setInputValueBefore] = useState(title)
     const [readOnly, setReadOnly] = useState(true)
     const inputRef = useRef<null | HTMLInputElement>(null)
 
@@ -26,24 +27,47 @@ const TaskItem = ({ taskObject, onDelete, onUpdate }: ITaskItemProps) => {
             />
             <label className={`label ${isDone ? 'label-throw' : ''}`} htmlFor="task-item__check">
                 <input
-                    ref={inputRef}
-                    onChange={(e) => {
-                        setInputValue(e.target.value)
-                    }}
-                    type="text"
                     value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    ref={inputRef}
+                    type="text"
                     readOnly={readOnly}
                 />
             </label>
             <div className="task-item__btns">
-                <MyButton
-                    onClick={() => {
-                        if (!readOnly) return
-                        setReadOnly(false)
-                        if (inputRef.current !== null) inputRef.current.focus()
-                    }}
-                    className="btn btn__change"
-                />
+                {readOnly ? (
+                    <MyButton
+                        onClick={() => {
+                            if (!readOnly) return
+                            setReadOnly(false)
+                            if (inputRef.current !== null) inputRef.current.focus()
+                        }}
+                        className="btn btn__change"
+                    />
+                ) : (
+                    <div className="task-item__btns--aditional">
+                        <button
+                            onClick={() => {
+                                if (inputRef.current?.value && id) {
+                                    setInputValue(inputRef.current?.value)
+                                    setInputValueBefore(inputRef.current?.value)
+                                    onUpdate(id, inputValue, isDone)
+                                    setReadOnly(true)
+                                }
+
+                                if (inputValue.length === 0 && id) onDelete(id)
+                            }}
+                            className="btn btn__save"
+                        ></button>
+                        <button
+                            className="btn btn__cancel"
+                            onClick={() => {
+                                setInputValue(inputValueBefore)
+                                setReadOnly(true)
+                            }}
+                        ></button>
+                    </div>
+                )}
                 <MyButton
                     className="btn btn__delete"
                     onClick={() => id !== undefined && onDelete(id)}

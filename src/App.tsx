@@ -26,10 +26,10 @@ function App() {
             {info && (
                 <TaskInfo activeFilter={chosenTodos} chosenTodos={setChosenTodos} info={info} />
             )}
-            {todos ? (
+            {todos.length !== 0 ? (
                 <TaskList onUpdate={handleUpdate} taskList={todos} onDelete={handleDelete} />
             ) : (
-                <div>Нет задач</div>
+                <div style={{ marginTop: '30px', fontSize: '22px' }}>Нет задач</div>
             )}
         </div>
     )
