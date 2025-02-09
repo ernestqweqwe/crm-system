@@ -1,6 +1,11 @@
 .tasks-info {
   display: flex;
 
+  &__item.active {
+    background-color: #6e828c;
+  }
+
+
   &__item {
     display: flex;
     align-items: center;

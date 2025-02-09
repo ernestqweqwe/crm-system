@@ -58,8 +58,8 @@ export const useTodos = () => {
         try {
             if (!token) return
             await creteTodo(token, title)
-            const updatedTodos = await getAllTodos(token, chosenTodos).then((res) => res.data)
-            setTodos(updatedTodos)
+            const updatedTodos = await getAllTodos(token, chosenTodos).then((res) => res)
+            setTodos(updatedTodos.data)
             setInfo(updatedTodos.info)
         } catch (err) {
             if (err instanceof Error) {
@@ -83,5 +83,15 @@ export const useTodos = () => {
         }
     }
 
-    return { todos, loading, error, handleDelete, handleCreate, info, handleUpdate, setChosenTodos }
+    return {
+        todos,
+        loading,
+        error,
+        handleDelete,
+        handleCreate,
+        info,
+        handleUpdate,
+        setChosenTodos,
+        chosenTodos,
+    }
 }

@@ -4,21 +4,31 @@ import './TaskInfo.scss'
 
 interface TaskInfoProps {
     info: Info
-    chosenTodos: (choosenTemplate: string) => void
+    chosenTodos: (chosenTemplate: string) => void
+    activeFilter: string
 }
 
-const TaskInfo: FC<TaskInfoProps> = ({ info, chosenTodos }) => {
+const TaskInfo: FC<TaskInfoProps> = ({ info, chosenTodos, activeFilter }) => {
     const { all, completed, inWork } = info
     return (
         <div className="tasks-info">
-            <div onClick={() => chosenTodos('all')} className="tasks-info__item">
-                All:({all})
+            <div
+                onClick={() => chosenTodos('all')}
+                className={`tasks-info__item ${activeFilter === 'all' ? 'active' : ''}`}
+            >
+                All ({all})
             </div>
-            <div onClick={() => chosenTodos('completed')} className="tasks-info__item">
-                Completed:({completed})
+            <div
+                onClick={() => chosenTodos('completed')}
+                className={`tasks-info__item ${activeFilter === 'completed' ? 'active' : ''}`}
+            >
+                Completed ({completed})
             </div>
-            <div onClick={() => chosenTodos('inWork')} className="tasks-info__item">
-                In work:({inWork})
+            <div
+                onClick={() => chosenTodos('inWork')}
+                className={`tasks-info__item ${activeFilter === 'inWork' ? 'active' : ''}`}
+            >
+                In work ({inWork})
             </div>
         </div>
     )

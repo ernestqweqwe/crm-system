@@ -24,26 +24,11 @@ const TaskItem = ({ taskObject, onDelete, onUpdate }: ITaskItemProps) => {
                 id="task-check"
                 checked={isDone}
             />
-            <label
-                onClick={() => {
-                    if (readOnly) setReadOnly(false)
-                    if (inputRef.current !== null) inputRef.current.focus()
-                }}
-                className={`label ${isDone ? 'label-throw' : ''}`}
-                htmlFor="task-item__check"
-            >
+            <label className={`label ${isDone ? 'label-throw' : ''}`} htmlFor="task-item__check">
                 <input
                     ref={inputRef}
                     onChange={(e) => {
                         setInputValue(e.target.value)
-                    }}
-                    onBlur={(e) => {
-                        if (e.target.className === 'btn__change') return
-
-                        if (id !== undefined) {
-                            onUpdate(id, inputValue, isDone)
-                            setReadOnly(!readOnly)
-                        }
                     }}
                     type="text"
                     value={inputValue}

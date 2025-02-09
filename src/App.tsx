@@ -14,6 +14,7 @@ function App() {
         info,
         handleUpdate,
         setChosenTodos,
+        chosenTodos,
     } = useTodos()
 
     if (loading) return <div>Loading...</div>
@@ -22,7 +23,9 @@ function App() {
     return (
         <div className="app">
             <TaskForm create={handleCreate} />
-            {info && <TaskInfo chosenTodos={setChosenTodos} info={info} />}
+            {info && (
+                <TaskInfo activeFilter={chosenTodos} chosenTodos={setChosenTodos} info={info} />
+            )}
             {todos ? (
                 <TaskList onUpdate={handleUpdate} taskList={todos} onDelete={handleDelete} />
             ) : (
