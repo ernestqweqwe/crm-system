@@ -1,5 +1,5 @@
+import { Todo } from '../../types/ResponseTypes.ts'
 import TaskItem from '../TaskItem/TaskItem.tsx'
-import { Todo } from '../../types/Itodo.ts'
 import './TaskList.scss'
 import { FC } from 'react'
 

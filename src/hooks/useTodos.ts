@@ -24,7 +24,7 @@ export const useTodos = () => {
 
     useEffect(() => {
         getToken()
-            .then(setToken)
+            .then((res) => setToken(res.accessToken))
             .catch((err) => setError(err.message))
     }, [])
 
@@ -41,57 +41,47 @@ export const useTodos = () => {
     }, [token, chosenTodos])
 
     const handleDelete = async (taskId: number) => {
-        if (!token) return
-        try {
-            await deleteTodo(token, taskId)
-            const updatedTodos = await getAllTodos(token, chosenTodos).then((res) => res)
-            setTodos(updatedTodos.data)
-            setInfo(updatedTodos.info)
-        } catch (err) {
-            if (err instanceof Error) {
-                setError(err.message)
-            }
-        }
+        await deleteTodo(token, taskId).catch((err) => setError(err.message))
+        const updatedTodos = await getAllTodos(token, chosenTodos)
+        setTodos(updatedTodos.data)
+        setInfo(updatedTodos.info)
     }
 
     const handleCreate = async (title: string) => {
-        try {
-            if (!token) return
-            await creteTodo(token, title)
-            const updatedTodos = await getAllTodos(token, chosenTodos).then((res) => res)
-            setTodos(updatedTodos.data)
-            setInfo(updatedTodos.info)
-        } catch (err) {
-            if (err instanceof Error) {
-                setError(err.message)
-            }
-        }
+        await creteTodo(token, title).catch((err) => {
+            setError(err.message)
+        })
+        const updatedTodos = await getAllTodos(token, chosenTodos)
+        setTodos(updatedTodos.data)
+        setInfo(updatedTodos.info)
     }
 
     const handleUpdate = async (taskId: number, title: string, isDone: boolean) => {
-        try {
-            await updateTodo(token, taskId, title, isDone)
-            const updatedTodos = await getAllTodos(token, chosenTodos).then((res) => res)
-            setTodos(updatedTodos.data)
-            console.log(updatedTodos.info)
+        await updateTodo(token, taskId, title, isDone).catch((err) => setError(err.message))
+        const updatedTodos = await getAllTodos(token, chosenTodos)
+        setTodos(updatedTodos.data)
+        setInfo(updatedTodos.info)
+    }
 
-            setInfo(updatedTodos.info)
-        } catch (err) {
-            if (err instanceof Error) {
-                setError(err.message)
-            }
-        }
+    const handleReload = () => {
+        getAllTodos(token, chosenTodos).then((res) => {
+            setTodos(res.data)
+            setInfo(res.info)
+            setError('')
+        })
     }
 
     return {
         todos,
+        token,
         loading,
         error,
+        info,
+        chosenTodos,
+        handleReload,
         handleDelete,
         handleCreate,
-        info,
         handleUpdate,
         setChosenTodos,
-        chosenTodos,
     }
 }

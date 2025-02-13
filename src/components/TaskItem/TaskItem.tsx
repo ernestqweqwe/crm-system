@@ -1,7 +1,7 @@
-import { Todo } from '../../types/Itodo'
-import './TaskItem.scss'
 import MyButton from '../UI/MyButton/MyButton.tsx'
 import { useRef, useState } from 'react'
+import { Todo } from '../../types/ResponseTypes.ts'
+import './TaskItem.scss'
 
 interface ITaskItemProps {
     taskObject: Todo
