@@ -10,17 +10,3 @@ body {
     align-items: center;
     justify-content: center;
 }
-
-.app {
-    width: 100vh;
-    height: 800px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    overflow: scroll;
-    overflow-x:hidden;
-    background-color: #efefef;
-    border-radius: 15px;
-
-}
-

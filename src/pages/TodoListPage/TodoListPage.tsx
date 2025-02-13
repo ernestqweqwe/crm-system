@@ -1,27 +1,34 @@
-import TaskList from './components/TaskList/TaskList'
-import { useTodos } from './hooks/useTodos'
-import './styles/App.css'
-import TaskForm from './components/TaskForm/TaskForm.tsx'
-import TaskInfo from './components/TaskInfo/TaskInfo.tsx'
+import TaskForm from '../../components/TaskForm/TaskForm'
+import TaskInfo from '../../components/TaskInfo/TaskInfo'
+import TaskList from '../../components/TaskList/TaskList'
+import { useTodos } from '../../hooks/useTodos'
+import './TodoListPage.scss'
 
-function App() {
+export const TodoListPage = () => {
     const {
         todos,
         loading,
         error,
+        info,
+        chosenTodos,
+        handleReload,
         handleDelete,
         handleCreate,
-        info,
         handleUpdate,
         setChosenTodos,
-        chosenTodos,
     } = useTodos()
 
+    if (error)
+        return (
+            <>
+                <div>{error}</div>
+                <button onClick={handleReload}>Reload</button>
+            </>
+        )
     if (loading) return <div>Loading...</div>
-    if (error) return <div>Ошибка: {error}</div>
 
     return (
-        <div className="app">
+        <div className="todo-page">
             <TaskForm create={handleCreate} />
             {info && (
                 <TaskInfo activeFilter={chosenTodos} chosenTodos={setChosenTodos} info={info} />
@@ -34,5 +41,3 @@ function App() {
         </div>
     )
 }
-
-export default App
