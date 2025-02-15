@@ -66,11 +66,11 @@ export const creteTodoItem = async (title: string, description: string, executor
     }
 }
 
-export const updateTodo = async (token: string, taskId: number, title: string, isDone: boolean) => {
+export const updateTodo = async (taskId: number, title: string, isDone: boolean) => {
     try {
         const response = await fetch(`${api}/todos/${taskId}`, {
             method: 'PUT',
-            headers: { Authorization: `Bearer ${token}` },
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
             body: JSON.stringify({
                 isDone,
                 title,

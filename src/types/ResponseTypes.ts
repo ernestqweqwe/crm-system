@@ -4,12 +4,14 @@ export type TokenResponse = {
 
 export type Todo = {
     created: string
+    description: string
+    executor: string
     id: number
     isDone: boolean
     title: string
 }
 
-export type Info = {
+export type TodoInfo = {
     all: number
     completed: number
     inWork: number
@@ -19,8 +21,8 @@ export type Meta = {
     totalAmount: number
 }
 
-export type AllTodosResponce = {
-    data: Todo[]
-    info: Info
+export type MetaResponce<T, N> = {
+    data: T[]
+    info: N
     meta: Meta
 }

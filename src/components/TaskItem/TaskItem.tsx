@@ -1,77 +1,80 @@
-import MyButton from '../UI/MyButton/MyButton.tsx'
 import { useRef, useState } from 'react'
 import { Todo } from '../../types/ResponseTypes.ts'
+import { deleteTodo, updateTodo } from '../../api/todoService.ts'
 import './TaskItem.scss'
 
 interface ITaskItemProps {
     taskObject: Todo
-    onDelete: (taskId: number) => void
-    onUpdate: (taskId: number, title: string, isDone: boolean) => void
+    updateTodoList: () => void
 }
 
-const TaskItem = ({ taskObject, onDelete, onUpdate }: ITaskItemProps) => {
+const TaskItem = ({ taskObject, updateTodoList }: ITaskItemProps) => {
     const { isDone, title, id } = taskObject
 
+    const inputValueBefore = title
     const [inputValue, setInputValue] = useState(title)
-    const [inputValueBefore, setInputValueBefore] = useState(title)
-    const [readOnly, setReadOnly] = useState(true)
-    const inputRef = useRef<null | HTMLInputElement>(null)
+    const [isEditMode, setIsEdetMode] = useState<boolean>(false)
+    const inputRef = useRef<HTMLInputElement>(null)
+
+    const handleDelete = async () => {
+        await deleteTodo(id)
+        updateTodoList()
+    }
+
+    const handleToggle = async () => {
+        await updateTodo(id, title, !isDone)
+        updateTodoList()
+    }
+
+    const handleSave = async () => {
+        if (!inputRef.current?.value) return
+        await updateTodo(id, inputRef.current?.value, isDone)
+        updateTodoList()
+        setIsEdetMode(false)
+    }
+
+    const handleCancel = async () => {
+        setIsEdetMode(false)
+        setInputValue(inputValueBefore)
+    }
 
     return (
         <div className="task-item">
+            <input onChange={handleToggle} type="checkbox" id="task-check" checked={isDone} />
             <input
-                onChange={() => id !== undefined && onUpdate(id, inputValue, !isDone)}
-                type="checkbox"
-                id="task-check"
-                checked={isDone}
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                ref={inputRef}
+                type="text"
+                readOnly={!isEditMode}
             />
-            <label className={`label ${isDone ? 'label-throw' : ''}`} htmlFor="task-item__check">
-                <input
-                    value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
-                    ref={inputRef}
-                    type="text"
-                    readOnly={readOnly}
-                />
-            </label>
             <div className="task-item__btns">
-                {readOnly ? (
-                    <MyButton
-                        onClick={() => {
-                            if (!readOnly) return
-                            setReadOnly(false)
-                            if (inputRef.current !== null) inputRef.current.focus()
-                        }}
-                        className="btn btn__change"
-                    />
+                {!isEditMode ? (
+                    <>
+                        <button
+                            className="btn btn__change"
+                            onClick={() => {
+                                setIsEdetMode(!isEditMode)
+                                inputRef.current?.focus()
+                            }}
+                        >
+                            Change
+                        </button>
+                    </>
                 ) : (
                     <div className="task-item__btns--aditional">
-                        <button
-                            onClick={() => {
-                                if (inputRef.current?.value && id) {
-                                    setInputValue(inputRef.current?.value)
-                                    setInputValueBefore(inputRef.current?.value)
-                                    onUpdate(id, inputValue, isDone)
-                                    setReadOnly(true)
-                                }
-
-                                if (inputValue.length === 0 && id) onDelete(id)
-                            }}
-                            className="btn btn__save"
-                        ></button>
-                        <button
-                            className="btn btn__cancel"
-                            onClick={() => {
-                                setInputValue(inputValueBefore)
-                                setReadOnly(true)
-                            }}
-                        ></button>
+                        <button className="btn btn__save" onClick={handleSave}>
+                            Save
+                        </button>
+                        <button className="btn btn__cancel" onClick={handleCancel}>
+                            Cancel
+                        </button>
                     </div>
                 )}
-                <MyButton
-                    className="btn btn__delete"
-                    onClick={() => id !== undefined && onDelete(id)}
-                />
+
+                <button className="btn btn__delete" onClick={handleDelete}>
+                    Delete
+                </button>
             </div>
         </div>
     )

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import TaskForm from '../../components/TaskForm/TaskForm'
 import TaskInfo from '../../components/TaskInfo/TaskInfo'
 import './TodoListPage.scss'
-import { getAllTodos, getToken, updateTodo } from '../../api/todoService'
+import { getAllTodos, getToken } from '../../api/todoService'
 import { MetaResponce, Todo, TodoInfo } from '../../types/ResponseTypes'
 import TaskList from '../../components/TaskList/TaskList'
 
@@ -42,15 +42,15 @@ export const TodoListPage = () => {
 
     return (
         <div className="todo-page">
+            <TaskForm updateTodoList={updateTodoList} />
             {responseData && (
                 <>
-                    <TaskForm updateTodoList={updateTodoList} />
                     <TaskInfo
                         activeFilter={activeTodosFilter}
                         setFilter={setActiveTodosFilter}
-                        info={responseData?.info}
+                        info={responseData.info}
                     />
-                    <TaskList taskList={responseData?.data} />
+                    <TaskList updateTodoList={updateTodoList} taskList={responseData.data} />
                 </>
             )}
         </div>

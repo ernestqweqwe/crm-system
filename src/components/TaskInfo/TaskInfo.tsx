@@ -1,34 +1,33 @@
 import { FC } from 'react'
-import { Info } from '../../hooks/useTodos.ts'
 import './TaskInfo.scss'
+import { TodoInfo } from '../../types/ResponseTypes'
 
 interface TaskInfoProps {
-    info: Info
-    chosenTodos: (chosenTemplate: string) => void
     activeFilter: string
+    setFilter: (filter: string) => void
+    info: TodoInfo
 }
 
-const TaskInfo: FC<TaskInfoProps> = ({ info, chosenTodos, activeFilter }) => {
-    const { all, completed, inWork } = info
+const TaskInfo: FC<TaskInfoProps> = ({ activeFilter, setFilter, info }) => {
     return (
         <div className="tasks-info">
             <div
-                onClick={() => chosenTodos('all')}
+                onClick={() => setFilter('all')}
                 className={`tasks-info__item ${activeFilter === 'all' ? 'active' : ''}`}
             >
-                All ({all})
+                All ({info.all})
             </div>
             <div
-                onClick={() => chosenTodos('completed')}
+                onClick={() => setFilter('completed')}
                 className={`tasks-info__item ${activeFilter === 'completed' ? 'active' : ''}`}
             >
-                Completed ({completed})
+                Completed ({info.completed})
             </div>
             <div
-                onClick={() => chosenTodos('inWork')}
+                onClick={() => setFilter('inWork')}
                 className={`tasks-info__item ${activeFilter === 'inWork' ? 'active' : ''}`}
             >
-                In work ({inWork})
+                In work ({info.inWork})
             </div>
         </div>
     )
