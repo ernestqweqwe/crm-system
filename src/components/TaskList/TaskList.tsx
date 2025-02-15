@@ -10,9 +10,13 @@ interface ITaskListProps {
 const TaskList: FC<ITaskListProps> = ({ taskList, updateTodoList }) => {
     return (
         <div className="task-list">
-            {taskList.map((task) => {
-                return <TaskItem updateTodoList={updateTodoList} taskObject={task} key={task.id} />
-            })}
+            <div className="task-list__container">
+                {taskList.map((task) => {
+                    return (
+                        <TaskItem updateTodoList={updateTodoList} taskObject={task} key={task.id} />
+                    )
+                })}
+            </div>
         </div>
     )
 }

@@ -41,18 +41,20 @@ export const TodoListPage = () => {
         )
 
     return (
-        <div className="todo-page">
-            <TaskForm updateTodoList={updateTodoList} />
-            {responseData && (
-                <>
-                    <TaskInfo
-                        activeFilter={activeTodosFilter}
-                        setFilter={setActiveTodosFilter}
-                        info={responseData.info}
-                    />
-                    <TaskList updateTodoList={updateTodoList} taskList={responseData.data} />
-                </>
-            )}
+        <div className="todolist-page">
+            <div className="todolist-page__container">
+                <TaskForm updateTodoList={updateTodoList} />
+                {responseData && (
+                    <>
+                        <TaskInfo
+                            activeFilter={activeTodosFilter}
+                            setFilter={setActiveTodosFilter}
+                            info={responseData.info}
+                        />
+                        <TaskList updateTodoList={updateTodoList} taskList={responseData.data} />
+                    </>
+                )}
+            </div>
         </div>
     )
 }

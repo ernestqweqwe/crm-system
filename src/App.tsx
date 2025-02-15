@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router'
-import '../styles/App.css'
-import { TodoListPage } from '../pages/TodoListPage/TodoListPage'
+import { TodoListPage } from './pages/TodoListPage/TodoListPage'
+import './App.css'
 
 function App() {
     return (

@@ -38,7 +38,7 @@ const TaskForm: FC<ITaskFormProps> = ({ updateTodoList }) => {
         <form className="tasks-form" onSubmit={(e) => handleCreateTodoItem(e, taskData)}>
             <div className="inputs-container">
                 <input
-                    className="main-input"
+                    className="input"
                     placeholder="Enter your task... *"
                     minLength={2}
                     maxLength={64}
@@ -51,14 +51,14 @@ const TaskForm: FC<ITaskFormProps> = ({ updateTodoList }) => {
                 <input
                     value={taskData.executor}
                     onChange={(e) => setTaskData({ ...taskData, executor: e.target.value })}
-                    className="additional-input"
+                    className="input"
                     type="text"
                     placeholder="Executor"
                 />
                 <input
                     value={taskData.description}
                     onChange={(e) => setTaskData({ ...taskData, description: e.target.value })}
-                    className="additional-input"
+                    className="input"
                     type="text"
                     placeholder="Description"
                 />

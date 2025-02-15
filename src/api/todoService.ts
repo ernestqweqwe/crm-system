@@ -66,7 +66,13 @@ export const creteTodoItem = async (title: string, description: string, executor
     }
 }
 
-export const updateTodo = async (taskId: number, title: string, isDone: boolean) => {
+export const updateTodo = async (
+    isDone: boolean,
+    taskId: number,
+    title: string,
+    description: string,
+    executor: string
+) => {
     try {
         const response = await fetch(`${api}/todos/${taskId}`, {
             method: 'PUT',
@@ -74,6 +80,8 @@ export const updateTodo = async (taskId: number, title: string, isDone: boolean)
             body: JSON.stringify({
                 isDone,
                 title,
+                description,
+                executor,
             }),
         })
 

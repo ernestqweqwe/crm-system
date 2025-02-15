@@ -9,12 +9,15 @@ interface ITaskItemProps {
 }
 
 const TaskItem = ({ taskObject, updateTodoList }: ITaskItemProps) => {
-    const { isDone, title, id } = taskObject
+    console.log(taskObject)
+    const { id, isDone, title, description, executor } = taskObject
 
-    const inputValueBefore = title
-    const [inputValue, setInputValue] = useState(title)
-    const [isEditMode, setIsEdetMode] = useState<boolean>(false)
-    const inputRef = useRef<HTMLInputElement>(null)
+    const inputValueBefore = { title, description, executor }
+    const [inputValue, setInputValue] = useState({ title, description, executor })
+    const [isEdetMode, setIsEdetMode] = useState<boolean>(false)
+    const inputRefTitle = useRef<HTMLInputElement>(null)
+    const inputRefDescription = useRef<HTMLInputElement>(null)
+    const inputReExecutor = useRef<HTMLInputElement>(null)
 
     const handleDelete = async () => {
         await deleteTodo(id)
@@ -22,13 +25,12 @@ const TaskItem = ({ taskObject, updateTodoList }: ITaskItemProps) => {
     }
 
     const handleToggle = async () => {
-        await updateTodo(id, title, !isDone)
+        await updateTodo(!isDone, id, inputValue.title, inputValue.description, inputValue.executor)
         updateTodoList()
     }
 
     const handleSave = async () => {
-        if (!inputRef.current?.value) return
-        await updateTodo(id, inputRef.current?.value, isDone)
+        await updateTodo(isDone, id, inputValue.title, inputValue.description, inputValue.executor)
         updateTodoList()
         setIsEdetMode(false)
     }
@@ -38,27 +40,54 @@ const TaskItem = ({ taskObject, updateTodoList }: ITaskItemProps) => {
         setInputValue(inputValueBefore)
     }
 
+    const handelEdit = () => {
+        setIsEdetMode(!isEdetMode)
+        inputRefTitle.current?.focus()
+    }
+
     return (
         <div className="task-item">
             <input onChange={handleToggle} type="checkbox" id="task-check" checked={isDone} />
-            <input
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                ref={inputRef}
-                type="text"
-                readOnly={!isEditMode}
-            />
-            <div className="task-item__btns">
-                {!isEditMode ? (
+            <div className="task-item__inputs-container">
+                <input
+                    value={inputValue.title}
+                    onChange={(e) => setInputValue({ ...inputValue, title: e.target.value })}
+                    ref={inputRefTitle}
+                    type="text"
+                    readOnly={!isEdetMode}
+                    className={isDone ? 'throw' : ''}
+                />
+
+                {isEdetMode && (
                     <>
-                        <button
-                            className="btn btn__change"
-                            onClick={() => {
-                                setIsEdetMode(!isEditMode)
-                                inputRef.current?.focus()
-                            }}
-                        >
-                            Change
+                        <input
+                            value={inputValue.description}
+                            onChange={(e) =>
+                                setInputValue({ ...inputValue, description: e.target.value })
+                            }
+                            ref={inputRefDescription}
+                            type="text"
+                            readOnly={!isEdetMode}
+                            className={isDone ? 'throw' : ''}
+                        />
+                        <input
+                            value={inputValue.executor}
+                            onChange={(e) =>
+                                setInputValue({ ...inputValue, executor: e.target.value })
+                            }
+                            ref={inputReExecutor}
+                            type="text"
+                            readOnly={!isEdetMode}
+                            className={isDone ? 'throw' : ''}
+                        />
+                    </>
+                )}
+            </div>
+            <div className="task-item__btns">
+                {!isEdetMode ? (
+                    <>
+                        <button className="btn btn__change" onClick={handelEdit}>
+                            Edit
                         </button>
                     </>
                 ) : (

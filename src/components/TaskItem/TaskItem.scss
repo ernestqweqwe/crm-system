@@ -1,11 +1,23 @@
 .task-item {
     position: relative;
-    height: 60px;
-    width: 80%;
+    min-height: 50px;
     border-radius: 10px;
     display: flex;
     align-items: center;
+    background-color: #abbbe7;
     margin-block: 10px;
+
+    .task-item__inputs-container {
+        input {
+            margin: 5px 0;
+            height: 20px;
+
+        }
+
+        input.throw {
+            text-decoration: line-through;
+        }
+    }
 
     input {
         width: 20px;
@@ -15,16 +27,19 @@
     }
 
     input[type="text"] {
-        width: 100%;
+        padding: 5px 0;
+        width: 60%;
         height: 50%;
         font-size: 17px;
     }
 
     input[readonly] {
         background-color: #abbbe7;
+
         border: none;
         pointer-events: none;
     }
+
 
     &__btns {
         position: absolute;
@@ -35,7 +50,16 @@
             margin: 0 7px;
             width: 70px;
             padding: 5px;
+            background-color: #5c9fc5;
+            color: white;
             cursor: pointer;
+            border: none;
+            border-radius: 5px;
+
+        }
+
+        .btn__delete {
+            background-color: red;
         }
     }
 }
