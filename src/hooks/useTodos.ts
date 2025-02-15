@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { getAllTodos, getToken, deleteTodo, creteTodo, updateTodo } from '../api/todoService'
+import { getAllTodos, getToken, deleteTodo, updateTodo } from '../api/todoService'
 
 interface Todo {
     id: number
@@ -24,7 +24,7 @@ export const useTodos = () => {
 
     useEffect(() => {
         getToken()
-            .then((res) => setToken(res.accessToken))
+            .then((res) => setToken(res))
             .catch((err) => setError(err.message))
     }, [])
 
@@ -47,15 +47,6 @@ export const useTodos = () => {
         setInfo(updatedTodos.info)
     }
 
-    const handleCreate = async (title: string) => {
-        await creteTodo(token, title).catch((err) => {
-            setError(err.message)
-        })
-        const updatedTodos = await getAllTodos(token, chosenTodos)
-        setTodos(updatedTodos.data)
-        setInfo(updatedTodos.info)
-    }
-
     const handleUpdate = async (taskId: number, title: string, isDone: boolean) => {
         await updateTodo(token, taskId, title, isDone).catch((err) => setError(err.message))
         const updatedTodos = await getAllTodos(token, chosenTodos)
@@ -69,6 +60,7 @@ export const useTodos = () => {
             setInfo(res.info)
             setError('')
         })
+        console.log('reload')
     }
 
     return {
@@ -80,7 +72,7 @@ export const useTodos = () => {
         chosenTodos,
         handleReload,
         handleDelete,
-        handleCreate,
+
         handleUpdate,
         setChosenTodos,
     }

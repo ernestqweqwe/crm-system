@@ -1,8 +1,8 @@
-import { AllTodosResponce, TokenResponse } from '../types/ResponseTypes'
+import { MetaResponce, Todo, TodoInfo } from '../types/ResponseTypes'
 
-const api = 'https://easydev.club/api/v1'
+const api = 'https://easydev.club/api/v2'
 
-export const getToken = async (): Promise<TokenResponse> => {
+export const getToken = async (): Promise<string> => {
     try {
         const response = await fetch(`${api}/auth/signin`, {
             method: 'Post',
@@ -13,37 +13,33 @@ export const getToken = async (): Promise<TokenResponse> => {
         })
 
         if (!response.ok) throw new Error()
-
-        const data = await response.json()
-        return data
+        const token = await response.json().then((res) => res.accessToken)
+        return token
     } catch {
         throw new Error('Ошибка получения токена')
     }
 }
 
-export const getAllTodos = async (
-    token: string,
-    chosenTodos: string
-): Promise<AllTodosResponce> => {
+export const getAllTodos = async (chosenTodos: string): Promise<MetaResponce<Todo, TodoInfo>> => {
     try {
         const response = await fetch(`${api}/todos?filter=${chosenTodos}`, {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
             method: 'GET',
         })
         if (!response.ok) throw new Error()
 
-        const data = await response.json()
+        const data: Promise<MetaResponce<Todo, TodoInfo>> = await response.json()
         return data
     } catch {
         throw new Error('Ошибка загрузки постов')
     }
 }
 
-export const deleteTodo = async (token: string, taskId: number) => {
+export const deleteTodo = async (taskId: number) => {
     try {
         const response = await fetch(`${api}/todos/${taskId}`, {
             method: 'DELETE',
-            headers: { Authorization: `Bearer ${token}` },
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         })
         if (!response.ok) throw new Error()
     } catch {
@@ -51,14 +47,16 @@ export const deleteTodo = async (token: string, taskId: number) => {
     }
 }
 
-export const creteTodo = async (token: string, title: string) => {
+export const creteTodoItem = async (title: string, description: string, executor: string) => {
     try {
         const response = await fetch(`${api}/todos`, {
             method: 'POST',
-            headers: { Authorization: `Bearer ${token}` },
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
             body: JSON.stringify({
                 isDone: false,
                 title,
+                description,
+                executor,
             }),
         })
 

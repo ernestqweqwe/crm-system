@@ -1,42 +1,57 @@
+import { useEffect, useState } from 'react'
 import TaskForm from '../../components/TaskForm/TaskForm'
 import TaskInfo from '../../components/TaskInfo/TaskInfo'
-import TaskList from '../../components/TaskList/TaskList'
-import { useTodos } from '../../hooks/useTodos'
 import './TodoListPage.scss'
+import { getAllTodos, getToken, updateTodo } from '../../api/todoService'
+import { MetaResponce, Todo, TodoInfo } from '../../types/ResponseTypes'
+import TaskList from '../../components/TaskList/TaskList'
 
 export const TodoListPage = () => {
-    const {
-        todos,
-        loading,
-        error,
-        info,
-        chosenTodos,
-        handleReload,
-        handleDelete,
-        handleCreate,
-        handleUpdate,
-        setChosenTodos,
-    } = useTodos()
+    const [error, setError] = useState(null)
+    const [activeTodosFilter, setActiveTodosFilter] = useState('all')
+    const [responseData, setResponseData] = useState<MetaResponce<Todo, TodoInfo> | null>()
+
+    function updateTodoList() {
+        const token = localStorage.getItem('token')
+        if (!token) return
+
+        getAllTodos(activeTodosFilter).then((res) => {
+            setResponseData(res)
+        })
+    }
+
+    useEffect(() => {
+        if (!localStorage.getItem('token')) {
+            getToken()
+                .then((res) => localStorage.setItem('token', res))
+                .catch((err) => setError(err.message))
+        }
+    }, [])
+
+    useEffect(() => {
+        updateTodoList()
+    }, [activeTodosFilter])
 
     if (error)
         return (
             <>
                 <div>{error}</div>
-                <button onClick={handleReload}>Reload</button>
+                {/* <button onClick={handleReload}>Reload</button> */}
             </>
         )
-    if (loading) return <div>Loading...</div>
 
     return (
         <div className="todo-page">
-            <TaskForm create={handleCreate} />
-            {info && (
-                <TaskInfo activeFilter={chosenTodos} chosenTodos={setChosenTodos} info={info} />
-            )}
-            {todos.length !== 0 ? (
-                <TaskList onUpdate={handleUpdate} taskList={todos} onDelete={handleDelete} />
-            ) : (
-                <div style={{ marginTop: '30px', fontSize: '22px' }}>Нет задач</div>
+            {responseData && (
+                <>
+                    <TaskForm updateTodoList={updateTodoList} />
+                    <TaskInfo
+                        activeFilter={activeTodosFilter}
+                        setFilter={setActiveTodosFilter}
+                        info={responseData?.info}
+                    />
+                    <TaskList taskList={responseData?.data} />
+                </>
             )}
         </div>
     )

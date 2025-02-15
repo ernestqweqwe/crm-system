@@ -1,41 +1,41 @@
 import * as React from 'react'
 import { FC, useRef, useState } from 'react'
+import { creteTodoItem } from '../../api/todoService'
 import './TaskForm.scss'
 
-interface TaskFormProps {
-    create: (title: string) => Promise<void>
-}
-
-interface TitleProps {
+interface ITaskData {
     task: string
     executor: string
     description: string
 }
 
-const TaskForm: FC<TaskFormProps> = ({ create }) => {
-    const [title, setTitle] = useState<TitleProps>({
-        task: '',
-        executor: '',
-        description: '',
-    })
+interface ITaskFormProps {
+    updateTodoList: () => void
+}
+
+const TaskForm: FC<ITaskFormProps> = ({ updateTodoList }) => {
+    const [taskData, setTaskData] = useState<ITaskData>({ task: '', executor: '', description: '' })
     const inputRef = useRef<HTMLInputElement>(null)
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleCreateTodoItem = async (
+        e: React.FormEvent<HTMLFormElement>,
+        taskData: ITaskData
+    ) => {
         e.preventDefault()
-        if (!title.task.trim()) {
+
+        if (!taskData.task.trim()) {
             inputRef.current?.reportValidity()
             return
         }
-        await create(title.task)
-        setTitle({
-            task: '',
-            executor: '',
-            description: '',
-        })
+
+        await creteTodoItem(taskData.task, taskData.description, taskData.executor)
+
+        setTaskData({ task: '', executor: '', description: '' })
+        updateTodoList()
     }
 
     return (
-        <form className="tasks-form" onSubmit={handleSubmit}>
+        <form className="tasks-form" onSubmit={(e) => handleCreateTodoItem(e, taskData)}>
             <div className="inputs-container">
                 <input
                     className="main-input"
@@ -45,19 +45,19 @@ const TaskForm: FC<TaskFormProps> = ({ create }) => {
                     required={true}
                     type="text"
                     ref={inputRef}
-                    value={title.task}
-                    onChange={(e) => setTitle({ ...title, task: e.target.value })}
+                    value={taskData.task}
+                    onChange={(e) => setTaskData({ ...taskData, task: e.target.value })}
                 />
                 <input
-                    value={title.executor}
-                    onChange={(e) => setTitle({ ...title, executor: e.target.value })}
+                    value={taskData.executor}
+                    onChange={(e) => setTaskData({ ...taskData, executor: e.target.value })}
                     className="additional-input"
                     type="text"
                     placeholder="Executor"
                 />
                 <input
-                    value={title.description}
-                    onChange={(e) => setTitle({ ...title, description: e.target.value })}
+                    value={taskData.description}
+                    onChange={(e) => setTaskData({ ...taskData, description: e.target.value })}
                     className="additional-input"
                     type="text"
                     placeholder="Description"
