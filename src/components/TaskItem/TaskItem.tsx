@@ -9,7 +9,6 @@ interface ITaskItemProps {
 }
 
 const TaskItem = ({ taskObject, updateTodoList }: ITaskItemProps) => {
-    console.log(taskObject)
     const { id, isDone, title, description, executor } = taskObject
 
     const inputValueBefore = { title, description, executor }
@@ -17,7 +16,7 @@ const TaskItem = ({ taskObject, updateTodoList }: ITaskItemProps) => {
     const [isEdetMode, setIsEdetMode] = useState<boolean>(false)
     const inputRefTitle = useRef<HTMLInputElement>(null)
     const inputRefDescription = useRef<HTMLInputElement>(null)
-    const inputReExecutor = useRef<HTMLInputElement>(null)
+    const inputRefExecutor = useRef<HTMLInputElement>(null)
 
     const handleDelete = async () => {
         await deleteTodo(id)
@@ -30,6 +29,10 @@ const TaskItem = ({ taskObject, updateTodoList }: ITaskItemProps) => {
     }
 
     const handleSave = async () => {
+        if (inputValue.title.trim().length < 2) {
+            inputRefTitle.current?.reportValidity()
+            return
+        }
         await updateTodo(isDone, id, inputValue.title, inputValue.description, inputValue.executor)
         updateTodoList()
         setIsEdetMode(false)
@@ -54,10 +57,12 @@ const TaskItem = ({ taskObject, updateTodoList }: ITaskItemProps) => {
                     onChange={(e) => setInputValue({ ...inputValue, title: e.target.value })}
                     ref={inputRefTitle}
                     type="text"
+                    minLength={2}
+                    maxLength={64}
+                    required
                     readOnly={!isEdetMode}
                     className={isDone ? 'throw' : ''}
                 />
-
                 {isEdetMode && (
                     <>
                         <input
@@ -75,7 +80,7 @@ const TaskItem = ({ taskObject, updateTodoList }: ITaskItemProps) => {
                             onChange={(e) =>
                                 setInputValue({ ...inputValue, executor: e.target.value })
                             }
-                            ref={inputReExecutor}
+                            ref={inputRefExecutor}
                             type="text"
                             readOnly={!isEdetMode}
                             className={isDone ? 'throw' : ''}

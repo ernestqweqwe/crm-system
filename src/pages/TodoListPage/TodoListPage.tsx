@@ -7,44 +7,43 @@ import { MetaResponce, Todo, TodoInfo } from '../../types/ResponseTypes'
 import TaskList from '../../components/TaskList/TaskList'
 
 export const TodoListPage = () => {
-    const [error, setError] = useState(null)
+    const [loading, setLoading] = useState<boolean>(false)
+    const [token, setToken] = useState<null | string>(localStorage.getItem('token'))
     const [activeTodosFilter, setActiveTodosFilter] = useState('all')
     const [responseData, setResponseData] = useState<MetaResponce<Todo, TodoInfo> | null>()
 
     function updateTodoList() {
-        const token = localStorage.getItem('token')
-        if (!token) return
-
-        getAllTodos(activeTodosFilter).then((res) => {
-            setResponseData(res)
-        })
+        setLoading(true)
+        getAllTodos(activeTodosFilter)
+            .then((res) => {
+                setResponseData(res)
+            })
+            .finally(() => setLoading(false))
     }
 
     useEffect(() => {
-        if (!localStorage.getItem('token')) {
+        if (!token) {
+            setLoading(true)
+
             getToken()
-                .then((res) => localStorage.setItem('token', res))
-                .catch((err) => setError(err.message))
+                .then((res) => {
+                    localStorage.setItem('token', res)
+                    setToken(res)
+                })
+                .finally(() => setLoading(false))
         }
     }, [])
 
     useEffect(() => {
-        updateTodoList()
-    }, [activeTodosFilter])
-
-    if (error)
-        return (
-            <>
-                <div>{error}</div>
-                {/* <button onClick={handleReload}>Reload</button> */}
-            </>
-        )
+        if (token) updateTodoList()
+    }, [activeTodosFilter, token])
 
     return (
         <div className="todolist-page">
             <div className="todolist-page__container">
                 <TaskForm updateTodoList={updateTodoList} />
-                {responseData && (
+                {loading && <div style={{ marginTop: '60px', fontSize: '30px' }}>Loading...</div>}
+                {responseData && !loading && (
                     <>
                         <TaskInfo
                             activeFilter={activeTodosFilter}
