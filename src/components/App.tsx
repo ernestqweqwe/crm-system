@@ -7,7 +7,7 @@ function App() {
     return (
         <>
             <Suspense fallback="">
-                <div className="content-page">
+                <div className="content">
                     <SideBar />
                     <AppRouter />
                 </div>
