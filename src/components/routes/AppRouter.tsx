@@ -4,7 +4,7 @@ import { ProfilePage } from '../../pages/ProfilePage/ProfilePage'
 
 export const AppRouter = () => {
     return (
-        <div className="app-router">
+        <div className="page-content">
             <Routes>
                 <Route path="/" element={<TodoListPage />} />
                 <Route path="/profile" element={<ProfilePage />} />

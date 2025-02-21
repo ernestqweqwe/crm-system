@@ -12,7 +12,14 @@ const TaskList: FC<ITaskListProps> = ({ taskList, onDelete, onUpdate }) => {
     return (
         <div className="task-list">
             {taskList.map((task) => {
-                return <TaskItem onUpdate={onUpdate} taskObject={task} onDelete={onDelete} key={task.id} />
+                return (
+                    <TaskItem
+                        onUpdate={onUpdate}
+                        taskObject={task}
+                        onDelete={onDelete}
+                        key={task.id}
+                    />
+                )
             })}
         </div>
     )

@@ -8,7 +8,7 @@ const TaskForm: FC = memo(() => {
     const { handleCreate } = useTodos()
 
     const handleSubmit = async (values: { task: string }) => {
-        handleCreate(values.task)
+        await handleCreate(values.task)
         form.resetFields()
     }
 
