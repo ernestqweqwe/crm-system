@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import TaskForm from '../../components/TaskForm/TaskForm'
 import TaskInfo from '../../components/TaskInfo/TaskInfo'
 import TaskList from '../../components/TaskList/TaskList'
@@ -15,7 +14,6 @@ export const TodoListPage = () => {
         handleUpdate,
         setChosenTodos,
         chosenTodos,
-        handleReload,
     } = useTodos()
 
     // useEffect(() => {
