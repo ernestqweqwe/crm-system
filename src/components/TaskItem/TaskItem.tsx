@@ -1,116 +1,95 @@
-import { useRef, useState } from 'react'
-import { Todo } from '../../types/ResponseTypes.ts'
-import { deleteTodo, updateTodo } from '../../api/todoService.ts'
+import { Todo } from '../../types/Itodo'
+import { useState } from 'react'
+import { Button, Checkbox, Form, Input } from 'antd'
 import './TaskItem.scss'
+import { useForm } from 'antd/es/form/Form'
 
 interface ITaskItemProps {
     taskObject: Todo
-    updateTodoList: () => void
+    onDelete: (taskId: number) => void
+    onUpdate: (taskId: number, title: string, isDone: boolean) => void
 }
 
-const TaskItem = ({ taskObject, updateTodoList }: ITaskItemProps) => {
-    const { id, isDone, title, description, executor } = taskObject
+interface values {
+    title: string
+    isDone: boolean
+}
 
-    const inputValueBefore = { title, description, executor }
-    const [inputValue, setInputValue] = useState({ title, description, executor })
-    const [isEdetMode, setIsEdetMode] = useState<boolean>(false)
-    const inputRefTitle = useRef<HTMLInputElement>(null)
-    const inputRefDescription = useRef<HTMLInputElement>(null)
-    const inputRefExecutor = useRef<HTMLInputElement>(null)
-
-    const handleDelete = async () => {
-        await deleteTodo(id)
-        updateTodoList()
-    }
-
-    const handleToggle = async () => {
-        await updateTodo(!isDone, id, inputValue.title, inputValue.description, inputValue.executor)
-        updateTodoList()
-    }
-
-    const handleSave = async () => {
-        if (inputValue.title.trim().length < 2) {
-            inputRefTitle.current?.reportValidity()
-            return
-        }
-        await updateTodo(isDone, id, inputValue.title, inputValue.description, inputValue.executor)
-        updateTodoList()
-        setIsEdetMode(false)
-    }
-
-    const handleCancel = async () => {
-        setIsEdetMode(false)
-        setInputValue(inputValueBefore)
-    }
-
-    const handelEdit = () => {
-        setIsEdetMode(!isEdetMode)
-        inputRefTitle.current?.focus()
-    }
+const TaskItem = ({ taskObject, onDelete, onUpdate }: ITaskItemProps) => {
+    const { isDone, title, id } = taskObject
+    const [changeButtonPressed, setChangeButtonPressed] = useState(false)
+    const [checkBoxPressed, setcheckBoxPressedPressed] = useState(isDone)
+    const [form] = useForm()
 
     return (
-        <div className="task-item">
-            <input onChange={handleToggle} type="checkbox" id="task-check" checked={isDone} />
-            <div className="task-item__inputs-container">
-                <input
-                    value={inputValue.title}
-                    onChange={(e) => setInputValue({ ...inputValue, title: e.target.value })}
-                    ref={inputRefTitle}
-                    type="text"
-                    minLength={2}
-                    maxLength={64}
-                    required
-                    readOnly={!isEdetMode}
-                    className={isDone ? 'throw' : ''}
+        <Form layout="inline" className="task-item" form={form} initialValues={{ title, isDone }}>
+            <Form.Item name="isDone" valuePropName="checked">
+                <Checkbox
+                    onClick={() => {
+                        setcheckBoxPressedPressed(!checkBoxPressed)
+                        onUpdate(id, title, !checkBoxPressed)
+                    }}
                 />
-                {isEdetMode && (
+            </Form.Item>
+            <Form.Item
+                style={{ width: 500 }}
+                name="title"
+                rules={[{ min: 2 }, { max: 64 }, { required: true }]}
+            >
+                <Input
+                    disabled={!changeButtonPressed}
+                    className={checkBoxPressed ? 'through' : ''}
+                />
+            </Form.Item>
+            <Form.Item style={{ width: 230 }}>
+                {changeButtonPressed ? (
                     <>
-                        <input
-                            value={inputValue.description}
-                            onChange={(e) =>
-                                setInputValue({ ...inputValue, description: e.target.value })
-                            }
-                            ref={inputRefDescription}
-                            type="text"
-                            readOnly={!isEdetMode}
-                            className={isDone ? 'throw' : ''}
-                        />
-                        <input
-                            value={inputValue.executor}
-                            onChange={(e) =>
-                                setInputValue({ ...inputValue, executor: e.target.value })
-                            }
-                            ref={inputRefExecutor}
-                            type="text"
-                            readOnly={!isEdetMode}
-                            className={isDone ? 'throw' : ''}
-                        />
-                    </>
-                )}
-            </div>
-            <div className="task-item__btns">
-                {!isEdetMode ? (
-                    <>
-                        <button className="btn btn__change" onClick={handelEdit}>
-                            Edit
-                        </button>
+                        <Button
+                            size="middle"
+                            type="primary"
+                            onClick={() => {
+                                setChangeButtonPressed(false)
+                                const values: values = form.getFieldsValue()
+                                if (values.title !== title) {
+                                    onUpdate(id, values.title, values.isDone)
+                                }
+                            }}
+                        >
+                            Save
+                        </Button>
+
+                        <Button
+                            size="middle"
+                            type="primary"
+                            style={{ marginLeft: 10 }}
+                            onClick={() => {
+                                setChangeButtonPressed(false)
+                                form.setFieldValue('title', title)
+                            }}
+                        >
+                            Cancel
+                        </Button>
                     </>
                 ) : (
-                    <div className="task-item__btns--aditional">
-                        <button className="btn btn__save" onClick={handleSave}>
-                            Save
-                        </button>
-                        <button className="btn btn__cancel" onClick={handleCancel}>
-                            Cancel
-                        </button>
-                    </div>
+                    <Button
+                        size="middle"
+                        type="primary"
+                        onClick={() => setChangeButtonPressed(true)}
+                    >
+                        Change
+                    </Button>
                 )}
-
-                <button className="btn btn__delete" onClick={handleDelete}>
+                <Button
+                    size="middle"
+                    type="primary"
+                    danger
+                    onClick={() => onDelete(id)}
+                    style={{ marginLeft: 10 }}
+                >
                     Delete
-                </button>
-            </div>
-        </div>
+                </Button>
+            </Form.Item>
+        </Form>
     )
 }
 

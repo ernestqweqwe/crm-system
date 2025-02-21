@@ -1,92 +1,73 @@
-import { MetaResponce, Todo, TodoInfo } from '../types/ResponseTypes'
+import axios from 'axios'
+import { AllTodosResponse, TokenResponse } from './responseTypes'
 
-const api = 'https://easydev.club/api/v2'
+const BASE_URL = 'https://easydev.club/api/v1'
 
-export const getToken = async (): Promise<string> => {
+const httpClient = axios.create({
+    baseURL: BASE_URL,
+    headers: { 'Content-Type': 'application/json' },
+})
+
+httpClient.interceptors.request.use((config) => {
+    const token = localStorage.getItem('token')
+
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`
+    }
+
+    return config
+})
+
+export const getToken = async (): Promise<TokenResponse> => {
     try {
-        const response = await fetch(`${api}/auth/signin`, {
-            method: 'Post',
-            body: JSON.stringify({
-                login: 'ernest',
-                password: '123652',
-            }),
+        const response = await axios.post<TokenResponse>(`${BASE_URL}/auth/signin`, {
+            login: 'aaaassss',
+            password: '1236521',
         })
 
-        if (!response.ok) throw new Error()
-        const token = await response.json().then((res) => res.accessToken)
-        return token
+        return response.data
     } catch {
         throw new Error('Ошибка получения токена')
     }
 }
 
-export const getAllTodos = async (chosenTodos: string): Promise<MetaResponce<Todo, TodoInfo>> => {
+export const getAllTodos = async (chosenTodos: string): Promise<AllTodosResponse> => {
     try {
-        const response = await fetch(`${api}/todos?filter=${chosenTodos}`, {
-            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-            method: 'GET',
+        const response = await httpClient.get<AllTodosResponse>(`/todos`, {
+            params: { filter: chosenTodos },
         })
-        if (!response.ok) throw new Error()
-
-        const data: Promise<MetaResponce<Todo, TodoInfo>> = await response.json()
-        return data
+        return response.data
     } catch {
-        throw new Error('Ошибка загрузки постов')
+        throw new Error('Ошибка получения списка задач')
     }
 }
 
-export const deleteTodo = async (taskId: number) => {
+export const deleteTodo = async (taskId: number): Promise<void> => {
     try {
-        const response = await fetch(`${api}/todos/${taskId}`, {
-            method: 'DELETE',
-            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-        })
-        if (!response.ok) throw new Error()
+        await httpClient.delete(`/todos/${taskId}`)
     } catch {
-        throw new Error('Ошибка при удалении')
+        throw new Error('Ошибка при удалении задачи')
     }
 }
 
-export const creteTodoItem = async (title: string, description: string, executor: string) => {
+export const createTodo = async (title: string): Promise<void> => {
     try {
-        const response = await fetch(`${api}/todos`, {
-            method: 'POST',
-            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-            body: JSON.stringify({
-                isDone: false,
-                title,
-                description,
-                executor,
-            }),
+        await httpClient.post(`/todos`, {
+            isDone: false,
+            title,
         })
-
-        if (!response.ok) throw new Error()
     } catch {
-        throw new Error('Ошибка при создании todo ')
+        throw new Error('Ошибка создания  задачи')
     }
 }
 
-export const updateTodo = async (
-    isDone: boolean,
-    taskId: number,
-    title: string,
-    description: string,
-    executor: string
-) => {
+export const updateTodo = async (taskId: number, title: string, isDone: boolean): Promise<void> => {
     try {
-        const response = await fetch(`${api}/todos/${taskId}`, {
-            method: 'PUT',
-            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-            body: JSON.stringify({
-                isDone,
-                title,
-                description,
-                executor,
-            }),
+        await httpClient.put(`/todos/${taskId}`, {
+            isDone,
+            title,
         })
-
-        if (!response.ok) throw new Error()
     } catch {
-        throw new Error('Ошибка при создании todo ')
+        throw new Error('Ошибка обнавления задачи')
     }
 }

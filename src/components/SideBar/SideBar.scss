@@ -1,0 +1,14 @@
+.side-bar {
+    height: 100vh;
+    width: 300px;
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding-top: 20px;
+
+    font-size: 25px;
+    background-color: #ddd8d8;
+
+}
