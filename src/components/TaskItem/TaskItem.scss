@@ -1,13 +1,24 @@
+.ant-form {
+    flex-wrap: nowrap;
+    width: 100%;
+}
+
 .task-item {
     margin-bottom: 30px;
 }
 
+.task-input {
+    width: min(500px, 55vh);
+}
+
 #title {
-    background-color: #abbbe7;
+    background-color: white;
 }
 
 #title:disabled {
     color: black;
+    background-color: #abbbe7;
+
 }
 
 .task-item {

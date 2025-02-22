@@ -1,18 +1,20 @@
-import { FC, memo } from 'react'
-import './TaskForm.scss'
+import { FC } from 'react'
 import { Button, Form, Input } from 'antd'
 import '@ant-design/v5-patch-for-react-19'
-import { api } from '../../api/authService.ts'
+import { createTask } from '../../api/todoService.ts'
+import './TaskForm.scss'
 
 interface TaskFormProps {
-    setError:(message:string)=>void
+    updateData: () => void
 }
 
-const TaskForm: FC<TaskFormProps> = memo(({setError}) => {
-    // const handleSubmit = async (values: { task: string }) => {
-    //     await handleCreate(values.task)
-    //     form.resetFields()
-    // }
+const TaskForm: FC<TaskFormProps> = ({ updateData }) => {
+    const handleSubmit = async (task: string) => {
+        await createTask(task).then(() => {
+            updateData()
+            form.resetFields()
+        })
+    }
 
     const [form] = Form.useForm()
 
@@ -23,11 +25,13 @@ const TaskForm: FC<TaskFormProps> = memo(({setError}) => {
             labelCol={{ span: 4 }}
             style={{ width: 600 }}
             initialValues={{ remember: true }}
-            autoComplete="off"
-            // onFinish={(values) => handleSubmit(values)}
-            onFinish={()=> {
-                    api('todosj').catch(err=>setError(err.message))
-
+            onFinish={(values) => handleSubmit(values.task)}
+            validateMessages={{
+                required: 'Task field is required',
+                string: {
+                    min: 'The field must contain at least 2 characters',
+                    max: 'Maximum length 64 characters',
+                },
             }}
         >
             <Form.Item
@@ -37,13 +41,6 @@ const TaskForm: FC<TaskFormProps> = memo(({setError}) => {
             >
                 <Input autoFocus />
             </Form.Item>
-            <Form.Item name="creator" label="Creator">
-                <Input />
-            </Form.Item>
-            <Form.Item name={'descritption'} label="Description    ">
-                <Input />
-            </Form.Item>
-
             <Form.Item>
                 <Button size="large" type="primary" htmlType="submit">
                     ADD TASK
@@ -51,6 +48,6 @@ const TaskForm: FC<TaskFormProps> = memo(({setError}) => {
             </Form.Item>
         </Form>
     )
-})
+}
 
 export default TaskForm
