@@ -5,18 +5,21 @@ import './TaskList.scss'
 
 interface ITaskListProps {
     taskList: Todo[]
-    onDelete: (taskId: number) => Promise<void>
-    onUpdate: (taskId: number, title: string, isDone: boolean) => Promise<void>
+    updateData:()=>void
+    setError:(error:Error)=>void
 }
-const TaskList: FC<ITaskListProps> = ({ taskList, onDelete, onUpdate }) => {
+const TaskList: FC<ITaskListProps> = ({ taskList, updateData,setError}) => {
+
+
+
     return (
         <div className="task-list">
             {taskList.map((task) => {
                 return (
                     <TaskItem
-                        onUpdate={onUpdate}
+                        setError={setError}
+                        updateData={updateData}
                         taskObject={task}
-                        onDelete={onDelete}
                         key={task.id}
                     />
                 )

@@ -1,7 +1,7 @@
-import { SideBar } from './SideBar/SideBar'
-import { AppRouter } from './routes/AppRouter'
-import '../styles/App.css'
 import { Suspense } from 'react'
+import { SideBar } from './components/SideBar/SideBar.tsx'
+import { AppRouter } from './components/routes/AppRouter.tsx'
+import './App.scss'
 
 function App() {
     return (

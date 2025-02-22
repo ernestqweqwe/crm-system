@@ -1,52 +1,80 @@
+import { useCallback, useEffect, useState } from 'react'
 import TaskForm from '../../components/TaskForm/TaskForm'
-import './index.scss'
-import { useEffect, useState } from 'react'
-import { AllTodosResponse } from '../../api/responseTypes.ts'
 import { getTodosData } from '../../api/todoService.ts'
 import TaskInfo from '../../components/TaskInfo/TaskInfo.tsx'
+import { Empty, notification, Spin } from 'antd'
+import TaskList from '../../components/TaskList/TaskList.tsx'
+import './TodoListPage.scss'
+import { LoadingOutlined } from '@ant-design/icons'
+import { AllTodosResponse } from '../../types/responseTypes.ts'
 
 export const TodoListPage = () => {
-
-    const [data, setData] = useState<AllTodosResponse | null>(null);
+    const [data, setData] = useState<AllTodosResponse | null>(null)
     const [activeFilter, setActiveFilter] = useState<string>('all')
-    const [error, setError] = useState('')
+    const [error, setError] = useState<Error | null>(null)
+    const [loading, setLoading] = useState(false)
+    const [api, contextHolder] = notification.useNotification()
 
-    async function fetchData () {
-        const response = await getTodosData(activeFilter)
-            setData(response);
-    };
+    const fetchData = useCallback(async () => {
+        try {
+            const todos = await getTodosData(activeFilter)
+            setData(todos)
+            setError(null)
+        } catch (err) {
+            setError(err as Error)
+        }
+    }, [activeFilter])
+
+    const openNotification = () => {
+        api.error({
+            message: 'Something went wrong',
+            description: error?.message,
+            duration: 7,
+            onClose: () => setError(null),
+        })
+    }
 
     useEffect(() => {
-        fetchData().then()
-        console.log('Ошиька', error)
-    }, [activeFilter, error]);
+        if (error) {
+            openNotification()
+        }
+    }, [error])
 
+    useEffect(() => {
+        setLoading(true)
+        fetchData().finally(() => setLoading(false))
+    }, [activeFilter])
 
-    // TODO модалка для ошибок всплывающая на пару сек использовать готовые компоненты alert или message
+    useEffect(() => {
+        const intervalId = setInterval(fetchData, 5000)
+        return () => clearInterval(intervalId)
+    }, [fetchData])
 
-    // TODO skeleton and spinner
-    // TODO collapse использовать для выподающих 2х инпутов
-    // TODO empty когда нет списков задач
-    // TODO Typography для текста
     return (
-        <>
-                <div className="todo-list__page">
-                    {data && <>
-                        <TaskForm setError={setError} />
-                        <TaskInfo activeFilter={activeFilter} setActiveFilter={setActiveFilter}  info={data.info} />
-                        {/*<button onClick={()=>console.log(data)}>button</button>*/}
-                    </>}
-                    {/*{todos.length !== 0 ? (*/}
-                    {/*    <TaskList*/}
-                    {/*        onUpdate={handleUpdate}*/}
-                    {/*        taskList={todos}*/}
-                    {/*        onDelete={handleDelete}*/}
-                    {/*    />*/}
-                    {/*) : (*/}
-                    {/*    <div style={{ marginTop: '30px', fontSize: '22px' }}>Нет задач</div>*/}
-                    {/*)}*/}
-                </div>
+        <div className="todo-list__page">
+            <TaskForm setError={setError} updateData={fetchData} />
+            {!loading && data ? (
+                <>
+                    <TaskInfo
+                        activeFilter={activeFilter}
+                        setActiveFilter={setActiveFilter}
+                        info={data.info}
+                    />
 
-        </>
+                    {data.data.length !== 0 ? (
+                        <TaskList updateData={fetchData} taskList={data.data} setError={setError} />
+                    ) : (
+                        <Empty description={'You dont have tasks'} />
+                    )}
+                </>
+            ) : (
+                <Spin
+                    style={{ marginTop: 100 }}
+                    indicator={<LoadingOutlined spin />}
+                    size={'large'}
+                />
+            )}
+            {contextHolder}
+        </div>
     )
 }

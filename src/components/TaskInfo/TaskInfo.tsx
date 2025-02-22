@@ -1,12 +1,12 @@
 import { FC } from 'react'
 import './TaskInfo.scss'
 import { Button } from 'antd'
-import { Info } from '../../api/responseTypes'
+import { Info } from '../../types/responseTypes.ts'
 
 interface TaskInfoProps {
     info: Info
     activeFilter: string
-    setActiveFilter: (filter:string) => void
+    setActiveFilter: (filter: string) => void
 }
 
 const TaskInfo: FC<TaskInfoProps> = ({ info, activeFilter, setActiveFilter }) => {
