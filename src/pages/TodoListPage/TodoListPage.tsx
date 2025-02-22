@@ -1,47 +1,52 @@
 import TaskForm from '../../components/TaskForm/TaskForm'
-import TaskInfo from '../../components/TaskInfo/TaskInfo'
-import TaskList from '../../components/TaskList/TaskList'
-import { useTodos } from '../../hooks/useTodos'
 import './index.scss'
+import { useEffect, useState } from 'react'
+import { AllTodosResponse } from '../../api/responseTypes.ts'
+import { getTodosData } from '../../api/todoService.ts'
+import TaskInfo from '../../components/TaskInfo/TaskInfo.tsx'
 
 export const TodoListPage = () => {
-    const {
-        todos,
-        loading,
-        error,
-        handleDelete,
-        info,
-        handleUpdate,
-        setChosenTodos,
-        chosenTodos,
-    } = useTodos()
 
-    // useEffect(() => {
-    //     const interval = setInterval(handleReload, 5000)
-    //     return () => clearInterval(interval)
-    // }, [handleReload])
+    const [data, setData] = useState<AllTodosResponse | null>(null);
+    const [activeFilter, setActiveFilter] = useState<string>('all')
+    const [error, setError] = useState('')
 
-    if (error) return <div>Ошибка: {error}</div>
+    async function fetchData () {
+        const response = await getTodosData(activeFilter)
+            setData(response);
+    };
 
+    useEffect(() => {
+        fetchData().then()
+        console.log('Ошиька', error)
+    }, [activeFilter, error]);
+
+
+    // TODO модалка для ошибок всплывающая на пару сек использовать готовые компоненты alert или message
+
+    // TODO skeleton and spinner
+    // TODO collapse использовать для выподающих 2х инпутов
+    // TODO empty когда нет списков задач
+    // TODO Typography для текста
     return (
         <>
-            {loading ? (
-                <div>Loading</div>
-            ) : (
                 <div className="todo-list__page">
-                    <TaskForm />
-                    <TaskInfo activeFilter={chosenTodos} chosenTodos={setChosenTodos} info={info} />
-                    {todos.length !== 0 ? (
-                        <TaskList
-                            onUpdate={handleUpdate}
-                            taskList={todos}
-                            onDelete={handleDelete}
-                        />
-                    ) : (
-                        <div style={{ marginTop: '30px', fontSize: '22px' }}>Нет задач</div>
-                    )}
+                    {data && <>
+                        <TaskForm setError={setError} />
+                        <TaskInfo activeFilter={activeFilter} setActiveFilter={setActiveFilter}  info={data.info} />
+                        {/*<button onClick={()=>console.log(data)}>button</button>*/}
+                    </>}
+                    {/*{todos.length !== 0 ? (*/}
+                    {/*    <TaskList*/}
+                    {/*        onUpdate={handleUpdate}*/}
+                    {/*        taskList={todos}*/}
+                    {/*        onDelete={handleDelete}*/}
+                    {/*    />*/}
+                    {/*) : (*/}
+                    {/*    <div style={{ marginTop: '30px', fontSize: '22px' }}>Нет задач</div>*/}
+                    {/*)}*/}
                 </div>
-            )}
+
         </>
     )
 }

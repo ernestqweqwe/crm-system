@@ -1,31 +1,37 @@
 import axios from 'axios'
 
-const BASE_URL = 'https://easydev.club/api/v1'
-// let accessToken = null;
+const BASE_URL = 'https://easydev.club/api/v2'
+let accessToken = '';
 // let isRefreshing = false;
 
-const api = axios.create({
+export const api = axios.create({
     baseURL: BASE_URL,
-    withCredentials:true
 })
 
-export async function getAccessToken() {
-    const response = await axios.get(`${BASE_URL}/auth/signin`,{
-        method:'POST',
-        data:{
-            login: 'aaaassss',
-            password: '1236521',
-        }
-    })
+api.interceptors.request.use(async (config) => {
 
-    return response.data
+    if (!accessToken) {
+      accessToken =  await getAccessToken()
+    }
+    config.headers.Authorization = `Bearer ${accessToken}`
+
+    return config
+})
+
+
+async function getAccessToken() {
+    try {
+        const response = await axios({
+            method:'post',
+            url:`${BASE_URL}/auth/signin`,
+            data:{
+                login: 'aaaassss',
+                password: '1236521',
+            }
+        })
+        return response.data.accessToken
+    } catch  {
+        throw Error
+    }
 }
 
-// api.interceptors.request.use((config) => {
-//
-//     if (token) {
-//         config.headers.Authorization = `Bearer ${token}`
-//     }
-//
-//     return config
-// })

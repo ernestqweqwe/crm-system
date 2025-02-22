@@ -1,15 +1,16 @@
-// import { AllTodosResponse } from './responseTypes'
-//
-// export const getAllTodos = async (chosenTodos: string): Promise<AllTodosResponse> => {
-//     try {
-//         const response = await httpClient.get<AllTodosResponse>(`/todos`, {
-//             params: { filter: chosenTodos },
-//         })
-//         return response.data
-//     } catch {
-//         throw new Error('Ошибка получения списка задач')
-//     }
-// }
+import { api } from './authService.ts'
+import { AxiosResponse } from 'axios'
+import { AllTodosResponse} from './responseTypes.ts'
+
+export async function getTodosData(filter:string){
+        const response:AxiosResponse<AllTodosResponse> = await api.get('todos',{
+            params:{
+                filter
+            }
+        })
+        return response.data
+
+}
 //
 // export const deleteTodo = async (taskId: number): Promise<void> => {
 //     try {

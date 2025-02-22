@@ -1,8 +1,9 @@
 import { Todo } from '../../types/Itodo'
 import { useState } from 'react'
 import { Button, Checkbox, Form, Input } from 'antd'
-import './TaskItem.scss'
 import { useForm } from 'antd/es/form/Form'
+import './TaskItem.scss'
+
 
 interface ITaskItemProps {
     taskObject: Todo
@@ -18,7 +19,7 @@ interface values {
 const TaskItem = ({ taskObject, onDelete, onUpdate }: ITaskItemProps) => {
     const { isDone, title, id } = taskObject
     const [changeButtonPressed, setChangeButtonPressed] = useState(false)
-    const [checkBoxPressed, setcheckBoxPressedPressed] = useState(isDone)
+    const [checkBoxPressed, setCheckboxPressed] = useState(isDone)
     const [form] = useForm()
 
     return (
@@ -26,7 +27,7 @@ const TaskItem = ({ taskObject, onDelete, onUpdate }: ITaskItemProps) => {
             <Form.Item name="isDone" valuePropName="checked">
                 <Checkbox
                     onClick={() => {
-                        setcheckBoxPressedPressed(!checkBoxPressed)
+                        setCheckboxPressed(!checkBoxPressed)
                         onUpdate(id, title, !checkBoxPressed)
                     }}
                 />

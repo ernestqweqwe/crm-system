@@ -4,8 +4,8 @@ export type TokenResponse = {
 }
 
 export type Data = {
-    created: string
     id: number
+    created: string
     isDone: boolean
     title: string
 }

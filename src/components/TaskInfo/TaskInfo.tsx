@@ -5,11 +5,11 @@ import { Info } from '../../api/responseTypes'
 
 interface TaskInfoProps {
     info: Info
-    chosenTodos: (chosenTemplate: string) => void
     activeFilter: string
+    setActiveFilter: (filter:string) => void
 }
 
-const TaskInfo: FC<TaskInfoProps> = ({ info, chosenTodos, activeFilter }) => {
+const TaskInfo: FC<TaskInfoProps> = ({ info, activeFilter, setActiveFilter }) => {
     const { all, completed, inWork } = info
     return (
         <div className="tasks-info">
@@ -17,7 +17,7 @@ const TaskInfo: FC<TaskInfoProps> = ({ info, chosenTodos, activeFilter }) => {
                 disabled={activeFilter === 'all'}
                 type="primary"
                 size="large"
-                onClick={() => chosenTodos('all')}
+                onClick={() => setActiveFilter('all')}
             >
                 All ({all})
             </Button>
@@ -25,7 +25,7 @@ const TaskInfo: FC<TaskInfoProps> = ({ info, chosenTodos, activeFilter }) => {
                 disabled={activeFilter === 'completed'}
                 type="primary"
                 size="large"
-                onClick={() => chosenTodos('completed')}
+                onClick={() => setActiveFilter('completed')}
             >
                 Completed ({completed})
             </Button>
@@ -33,7 +33,7 @@ const TaskInfo: FC<TaskInfoProps> = ({ info, chosenTodos, activeFilter }) => {
                 disabled={activeFilter === 'inWork'}
                 type="primary"
                 size="large"
-                onClick={() => chosenTodos('inWork')}
+                onClick={() => setActiveFilter('inWork')}
             >
                 In work ({inWork})
             </Button>

@@ -2,15 +2,17 @@ import { FC, memo } from 'react'
 import './TaskForm.scss'
 import { Button, Form, Input } from 'antd'
 import '@ant-design/v5-patch-for-react-19'
-import { useTodos } from '../../hooks/useTodos'
+import { api } from '../../api/authService.ts'
 
-const TaskForm: FC = memo(() => {
-    const { handleCreate } = useTodos()
+interface TaskFormProps {
+    setError:(message:string)=>void
+}
 
-    const handleSubmit = async (values: { task: string }) => {
-        await handleCreate(values.task)
-        form.resetFields()
-    }
+const TaskForm: FC<TaskFormProps> = memo(({setError}) => {
+    // const handleSubmit = async (values: { task: string }) => {
+    //     await handleCreate(values.task)
+    //     form.resetFields()
+    // }
 
     const [form] = Form.useForm()
 
@@ -22,7 +24,11 @@ const TaskForm: FC = memo(() => {
             style={{ width: 600 }}
             initialValues={{ remember: true }}
             autoComplete="off"
-            onFinish={(values) => handleSubmit(values)}
+            // onFinish={(values) => handleSubmit(values)}
+            onFinish={()=> {
+                    api('todosj').catch(err=>setError(err.message))
+
+            }}
         >
             <Form.Item
                 rules={[{ min: 2 }, { max: 64 }, { required: true }]}
