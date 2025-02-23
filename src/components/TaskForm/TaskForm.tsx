@@ -28,10 +28,10 @@ const TaskForm: FC<ITaskFormProps> = ({ updateTodoList }) => {
             return
         }
 
-        await creteTodoItem(taskData.task, taskData.description, taskData.executor)
-
-        setTaskData({ task: '', executor: '', description: '' })
-        updateTodoList()
+        await creteTodoItem(taskData.task, taskData.description, taskData.executor).then(() => {
+            setTaskData({ task: '', executor: '', description: '' })
+            updateTodoList()
+        })
     }
 
     return (
