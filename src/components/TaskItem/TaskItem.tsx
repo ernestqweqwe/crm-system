@@ -15,8 +15,6 @@ const TaskItem = ({ taskObject, updateTodoList }: ITaskItemProps) => {
     const [inputValue, setInputValue] = useState({ title, description, executor })
     const [isEdetMode, setIsEdetMode] = useState<boolean>(false)
     const inputRefTitle = useRef<HTMLInputElement>(null)
-    const inputRefDescription = useRef<HTMLInputElement>(null)
-    const inputRefExecutor = useRef<HTMLInputElement>(null)
 
     const handleDelete = async () => {
         await deleteTodo(id)
@@ -63,30 +61,6 @@ const TaskItem = ({ taskObject, updateTodoList }: ITaskItemProps) => {
                     readOnly={!isEdetMode}
                     className={isDone ? 'throw' : ''}
                 />
-                {isEdetMode && (
-                    <>
-                        <input
-                            value={inputValue.description}
-                            onChange={(e) =>
-                                setInputValue({ ...inputValue, description: e.target.value })
-                            }
-                            ref={inputRefDescription}
-                            type="text"
-                            readOnly={!isEdetMode}
-                            className={isDone ? 'throw' : ''}
-                        />
-                        <input
-                            value={inputValue.executor}
-                            onChange={(e) =>
-                                setInputValue({ ...inputValue, executor: e.target.value })
-                            }
-                            ref={inputRefExecutor}
-                            type="text"
-                            readOnly={!isEdetMode}
-                            className={isDone ? 'throw' : ''}
-                        />
-                    </>
-                )}
             </div>
             <div className="task-item__btns">
                 {!isEdetMode ? (
