@@ -23,19 +23,17 @@ export const deleteTodo = async (taskId: number) => {
         })
         if (!response.ok) throw new Error()
     } catch {
-        throw new Error('Ошибка при удалении')
+        throw new Error('Ошибка при удалении ')
     }
 }
 
-export const creteTodoItem = async (title: string, description: string, executor: string) => {
+export const creteTodoItem = async (title: string) => {
     try {
         const response = await fetch(`${api}/todos`, {
             method: 'POST',
             body: JSON.stringify({
                 isDone: false,
                 title,
-                description,
-                executor,
             }),
         })
 
@@ -45,21 +43,13 @@ export const creteTodoItem = async (title: string, description: string, executor
     }
 }
 
-export const updateTodo = async (
-    isDone: boolean,
-    taskId: number,
-    title: string,
-    description: string,
-    executor: string
-) => {
+export const updateTodo = async (isDone: boolean, taskId: number, title: string) => {
     try {
         const response = await fetch(`${api}/todos/${taskId}`, {
             method: 'PUT',
             body: JSON.stringify({
                 isDone,
                 title,
-                description,
-                executor,
             }),
         })
 

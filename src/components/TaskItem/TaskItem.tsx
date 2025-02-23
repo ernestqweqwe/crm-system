@@ -13,7 +13,7 @@ const TaskItem = ({ taskObject, updateTodoList }: ITaskItemProps) => {
 
     const inputValueBefore = { title, description, executor }
     const [inputValue, setInputValue] = useState({ title, description, executor })
-    const [isEdetMode, setIsEdetMode] = useState<boolean>(false)
+    const [isEditMode, setIsEditMode] = useState<boolean>(false)
     const inputRefTitle = useRef<HTMLInputElement>(null)
 
     const handleDelete = async () => {
@@ -22,7 +22,7 @@ const TaskItem = ({ taskObject, updateTodoList }: ITaskItemProps) => {
     }
 
     const handleToggle = async () => {
-        await updateTodo(!isDone, id, inputValue.title, inputValue.description, inputValue.executor)
+        await updateTodo(!isDone, id, inputValue.title)
         updateTodoList()
     }
 
@@ -31,18 +31,18 @@ const TaskItem = ({ taskObject, updateTodoList }: ITaskItemProps) => {
             inputRefTitle.current?.reportValidity()
             return
         }
-        await updateTodo(isDone, id, inputValue.title, inputValue.description, inputValue.executor)
+        await updateTodo(isDone, id, inputValue.title)
         updateTodoList()
-        setIsEdetMode(false)
+        setIsEditMode(false)
     }
 
     const handleCancel = async () => {
-        setIsEdetMode(false)
+        setIsEditMode(false)
         setInputValue(inputValueBefore)
     }
 
     const handelEdit = () => {
-        setIsEdetMode(!isEdetMode)
+        setIsEditMode(!isEditMode)
         inputRefTitle.current?.focus()
     }
 
@@ -58,12 +58,12 @@ const TaskItem = ({ taskObject, updateTodoList }: ITaskItemProps) => {
                     minLength={2}
                     maxLength={64}
                     required
-                    readOnly={!isEdetMode}
+                    readOnly={!isEditMode}
                     className={isDone ? 'throw' : ''}
                 />
             </div>
             <div className="task-item__btns">
-                {!isEdetMode ? (
+                {!isEditMode ? (
                     <>
                         <button className="btn btn__change" onClick={handelEdit}>
                             Edit
