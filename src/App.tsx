@@ -1,18 +1,26 @@
 import { Suspense } from 'react'
 import { SideBar } from './components/SideBar/SideBar.tsx'
 import { AppRouter } from './components/routes/AppRouter.tsx'
+import { RegistrationPage } from './pages/RegistrationPage/RegistrationPage.tsx'
+import { Route, Routes } from 'react-router'
 import './App.scss'
 
 function App() {
     return (
-        <>
-            <Suspense fallback="">
-                <div className="content">
-                    <SideBar />
-                    <AppRouter />
-                </div>
-            </Suspense>
-        </>
+        <Suspense fallback="">
+            <Routes>
+                <Route path="/registration" element={<RegistrationPage />} />
+                <Route
+                    path="/*"
+                    element={
+                        <div className="content">
+                            <SideBar />
+                            <AppRouter />
+                        </div>
+                    }
+                />
+            </Routes>
+        </Suspense>
     )
 }
 
