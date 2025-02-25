@@ -2,7 +2,7 @@ import axios, { AxiosResponse } from 'axios'
 import { AllTodosResponse } from '../types/responseTypes.ts'
 
 const http = axios.create({
-    baseURL: 'https://easydev.club/api/v1/',
+    baseURL: import.meta.env.VITE_BASE_URL,
 })
 
 export async function getTodosData(filter: string) {

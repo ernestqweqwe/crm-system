@@ -7,5 +7,6 @@ export const SideBar = () => {
             <Link to="/">Task List</Link>
             <Link to="/profile">Profile</Link>
         </div>
+        // Todo использывать компонент Layout.Slider
     )
 }
