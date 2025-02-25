@@ -20,6 +20,7 @@ export const TodoListPage = () => {
 
     useEffect(() => {
         getAllTodos(activeTodosFilter)
+        console.log('')
     }, [])
 
     useEffect(() => {
