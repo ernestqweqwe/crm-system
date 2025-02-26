@@ -1,90 +1,98 @@
-import { useRef, useState } from 'react'
-import { Todo } from '../../types/ResponseTypes.ts'
-import { deleteTodo, updateTodo } from '../../api/todoService.ts'
+import { Todo } from '../../types/Itodo'
+import { useState } from 'react'
+import { Button, Checkbox, Form, Input } from 'antd'
+import { useForm } from 'antd/es/form/Form'
 import './TaskItem.scss'
+import { deleteTask, updateTask } from '../../api/todoService.ts'
 
 interface ITaskItemProps {
     taskObject: Todo
-    updateTodoList: () => void
+    updateData: () => void
 }
 
-const TaskItem = ({ taskObject, updateTodoList }: ITaskItemProps) => {
-    const { id, isDone, title, description, executor } = taskObject
+interface values {
+    title: string
+    isDone: boolean
+}
 
-    const inputValueBefore = { title, description, executor }
-    const [inputValue, setInputValue] = useState({ title, description, executor })
-    const [isEditMode, setIsEditMode] = useState<boolean>(false)
-    const inputRefTitle = useRef<HTMLInputElement>(null)
+const TaskItem = ({ taskObject, updateData }: ITaskItemProps) => {
+    const { isDone, title, id } = taskObject
+    const [changeButtonPressed, setChangeButtonPressed] = useState(false)
+    const [checkBoxPressed, setCheckboxPressed] = useState(isDone)
+    const [form] = useForm()
 
-    const handleDelete = async () => {
-        await deleteTodo(id)
-        updateTodoList()
+    const onToggle = async () => {
+        setCheckboxPressed(!checkBoxPressed)
+        await updateTask(id, title, !checkBoxPressed).then(() => updateData())
     }
 
-    const handleToggle = async () => {
-        await updateTodo(!isDone, id, inputValue.title)
-        updateTodoList()
-    }
-
-    const handleSave = async () => {
-        if (inputValue.title.trim().length < 2) {
-            inputRefTitle.current?.reportValidity()
-            return
+    const onSave = async () => {
+        setChangeButtonPressed(false)
+        const values: values = form.getFieldsValue()
+        if (values.title !== title) {
+            await updateTask(id, values.title, checkBoxPressed).then(() => updateData())
         }
-        await updateTodo(isDone, id, inputValue.title)
-        updateTodoList()
-        setIsEditMode(false)
     }
 
-    const handleCancel = async () => {
-        setIsEditMode(false)
-        setInputValue(inputValueBefore)
+    const onCancel = () => {
+        setChangeButtonPressed(false)
+        form.setFieldValue('title', title)
     }
 
-    const handelEdit = () => {
-        setIsEditMode(!isEditMode)
-        inputRefTitle.current?.focus()
+    const onDelete = async (taskId: number) => {
+        await deleteTask(taskId).then(() => updateData())
+    }
+
+    const onChange = () => {
+        setChangeButtonPressed(true)
     }
 
     return (
-        <div className="task-item">
-            <input onChange={handleToggle} type="checkbox" id="task-check" checked={isDone} />
-            <div className="task-item__inputs-container">
-                <input
-                    value={inputValue.title}
-                    onChange={(e) => setInputValue({ ...inputValue, title: e.target.value })}
-                    ref={inputRefTitle}
-                    type="text"
-                    minLength={2}
-                    maxLength={64}
-                    required
-                    readOnly={!isEditMode}
-                    className={isDone ? 'throw' : ''}
+        <Form layout="inline" className="task-item" form={form} initialValues={{ title, isDone }}>
+            <Form.Item name="isDone" valuePropName="checked">
+                <Checkbox onClick={onToggle} />
+            </Form.Item>
+            <Form.Item name="title" rules={[{ min: 2 }, { max: 64 }, { required: true }]}>
+                <Input
+                    disabled={!changeButtonPressed}
+                    className={checkBoxPressed ? 'task-input through' : 'task-input'}
                 />
-            </div>
-            <div className="task-item__btns">
-                {!isEditMode ? (
+            </Form.Item>
+            <Form.Item>
+                {changeButtonPressed ? (
                     <>
-                        <button className="btn btn__change" onClick={handelEdit}>
-                            Edit
-                        </button>
+                        <Button size="middle" type="primary" onClick={onSave}>
+                            Save
+                        </Button>
+
+                        <Button
+                            size="middle"
+                            type="primary"
+                            style={{ marginLeft: 10 }}
+                            onClick={onCancel}
+                        >
+                            Cancel
+                        </Button>
                     </>
                 ) : (
-                    <div className="task-item__btns--aditional">
-                        <button className="btn btn__save" onClick={handleSave}>
-                            Save
-                        </button>
-                        <button className="btn btn__cancel" onClick={handleCancel}>
-                            Cancel
-                        </button>
-                    </div>
-                )}
+                    <>
+                        <Button size="middle" type="primary" onClick={onChange}>
+                            Change
+                        </Button>
 
-                <button className="btn btn__delete" onClick={handleDelete}>
-                    Delete
-                </button>
-            </div>
-        </div>
+                        <Button
+                            size="middle"
+                            type="primary"
+                            danger
+                            onClick={() => onDelete(id)}
+                            style={{ marginLeft: 10 }}
+                        >
+                            Delete
+                        </Button>
+                    </>
+                )}{' '}
+            </Form.Item>
+        </Form>
     )
 }
 

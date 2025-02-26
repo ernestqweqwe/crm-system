@@ -1,46 +1,52 @@
-import * as React from 'react'
-import { FC, useRef, useState } from 'react'
-import { creteTodoItem } from '../../api/todoService'
+import { FC } from 'react'
+import { Button, Form, Input } from 'antd'
+import '@ant-design/v5-patch-for-react-19'
+import { createTask } from '../../api/todoService.ts'
 import './TaskForm.scss'
 
-interface ITaskFormProps {
-    updateTodoList: () => void
+interface TaskFormProps {
+    updateData: () => void
 }
 
-const TaskForm: FC<ITaskFormProps> = ({ updateTodoList }) => {
-    const [title, setTitle] = useState<string>('')
-    const inputRef = useRef<HTMLInputElement>(null)
-
-    const handleCreateTodoItem = async (e: React.FormEvent<HTMLFormElement>, title: string) => {
-        e.preventDefault()
-        if (!title.trim()) {
-            inputRef.current?.reportValidity()
-            return
-        }
-
-        await creteTodoItem(title).then(() => {
-            setTitle('')
-            updateTodoList()
+const TaskForm: FC<TaskFormProps> = ({ updateData }) => {
+    const handleSubmit = async (task: string) => {
+        await createTask(task).then(() => {
+            updateData()
+            form.resetFields()
         })
     }
 
+    const [form] = Form.useForm()
+
     return (
-        <form className="tasks-form" onSubmit={(e) => handleCreateTodoItem(e, title)}>
-            <input
-                className="input"
-                placeholder="Enter your task... *"
-                minLength={2}
-                maxLength={64}
-                required={true}
-                type="text"
-                ref={inputRef}
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-            />
-            <button type="submit" className="tasks-form__btn">
-                ADD
-            </button>
-        </form>
+        <Form
+            form={form}
+            className="form"
+            labelCol={{ span: 4 }}
+            style={{ width: 600 }}
+            initialValues={{ remember: true }}
+            onFinish={(values) => handleSubmit(values.task)}
+            validateMessages={{
+                required: 'Task field is required',
+                string: {
+                    min: 'The field must contain at least 2 characters',
+                    max: 'Maximum length 64 characters',
+                },
+            }}
+        >
+            <Form.Item
+                rules={[{ min: 2 }, { max: 64 }, { required: true }]}
+                label="Task"
+                name="task"
+            >
+                <Input autoFocus />
+            </Form.Item>
+            <Form.Item>
+                <Button size="large" type="primary" htmlType="submit">
+                    ADD TASK
+                </Button>
+            </Form.Item>
+        </Form>
     )
 }
 

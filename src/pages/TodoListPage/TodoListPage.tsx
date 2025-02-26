@@ -1,55 +1,46 @@
 import { useEffect, useState } from 'react'
 import TaskForm from '../../components/TaskForm/TaskForm'
-import TaskInfo from '../../components/TaskInfo/TaskInfo'
+import { getTodosData } from '../../api/todoService.ts'
+import TaskInfo from '../../components/TaskInfo/TaskInfo.tsx'
+import { Empty } from 'antd'
+import TaskList from '../../components/TaskList/TaskList.tsx'
 import './TodoListPage.scss'
-import { getAllTodos } from '../../api/todoService'
-import { MetaResponce, Todo, TodoInfo } from '../../types/ResponseTypes'
-import TaskList from '../../components/TaskList/TaskList'
+import { AllTodosResponse } from '../../types/responseTypes.ts'
 
 export const TodoListPage = () => {
-    const [loading, setLoading] = useState<boolean>(false)
-    const [activeTodosFilter, setActiveTodosFilter] = useState('all')
-    const [responseData, setResponseData] = useState<MetaResponce<Todo, TodoInfo> | null>()
+    const [data, setData] = useState<AllTodosResponse | null>(null)
+    const [activeFilter, setActiveFilter] = useState<string>('all')
 
-    function updateTodoList() {
-        setLoading(true)
-        getAllTodos(activeTodosFilter)
-            .then(setResponseData)
-            .finally(() => setLoading(false))
+    const fetchData = async () => {
+        await getTodosData(activeFilter).then(setData)
     }
 
     useEffect(() => {
-        getAllTodos(activeTodosFilter)
-        console.log('')
-    }, [])
+        fetchData()
+    }, [activeFilter])
 
     useEffect(() => {
-        updateTodoList()
-    }, [activeTodosFilter])
-
+        const intervalId = setInterval(fetchData, 5000)
+        return () => clearInterval(intervalId)
+    }, [activeFilter])
     return (
-        <div className="todolist-page">
-            <div className="todolist-page__container">
-                <TaskForm updateTodoList={updateTodoList} />
-                {loading && <div style={{ marginTop: '60px', fontSize: '30px' }}>Loading...</div>}
-                {responseData && !loading && (
-                    <>
-                        <TaskInfo
-                            activeFilter={activeTodosFilter}
-                            setFilter={setActiveTodosFilter}
-                            info={responseData.info}
-                        />
-                        {responseData.data.length !== 0 ? (
-                            <TaskList
-                                updateTodoList={updateTodoList}
-                                taskList={responseData.data}
-                            />
-                        ) : (
-                            <h1 style={{ marginTop: 30 }}>No tasks</h1>
-                        )}
-                    </>
-                )}
-            </div>
+        <div className="todo-list__page">
+            <TaskForm updateData={fetchData} />
+            {data && (
+                <>
+                    <TaskInfo
+                        activeFilter={activeFilter}
+                        setActiveFilter={setActiveFilter}
+                        info={data.info}
+                    />
+
+                    {data.data.length !== 0 ? (
+                        <TaskList updateData={fetchData} taskList={data.data} />
+                    ) : (
+                        <Empty description={'You dont have tasks'} />
+                    )}
+                </>
+            )}
         </div>
     )
 }

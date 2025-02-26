@@ -1,14 +1,18 @@
-import { BrowserRouter, Route, Routes } from 'react-router'
-import { TodoListPage } from './pages/TodoListPage/TodoListPage'
-import './App.css'
+import { Suspense } from 'react'
+import { SideBar } from './components/SideBar/SideBar.tsx'
+import { AppRouter } from './components/routes/AppRouter.tsx'
+import './App.scss'
 
 function App() {
     return (
-        <BrowserRouter>
-            <Routes>
-                <Route element={<TodoListPage />} path="/" />
-            </Routes>
-        </BrowserRouter>
+        <>
+            <Suspense fallback="">
+                <div className="content">
+                    <SideBar />
+                    <AppRouter />
+                </div>
+            </Suspense>
+        </>
     )
 }
 

@@ -1,34 +1,42 @@
 import { FC } from 'react'
 import './TaskInfo.scss'
-import { TodoInfo } from '../../types/ResponseTypes'
+import { Button } from 'antd'
+import { Info } from '../../types/responseTypes.ts'
 
 interface TaskInfoProps {
+    info: Info
     activeFilter: string
-    setFilter: (filter: string) => void
-    info: TodoInfo
+    setActiveFilter: (filter: string) => void
 }
 
-const TaskInfo: FC<TaskInfoProps> = ({ activeFilter, setFilter, info }) => {
+const TaskInfo: FC<TaskInfoProps> = ({ info, activeFilter, setActiveFilter }) => {
+    const { all, completed, inWork } = info
     return (
         <div className="tasks-info">
-            <div
-                onClick={() => setFilter('all')}
-                className={`tasks-info__item ${activeFilter === 'all' ? 'active' : ''}`}
+            <Button
+                disabled={activeFilter === 'all'}
+                type="primary"
+                size="large"
+                onClick={() => setActiveFilter('all')}
             >
-                All ({info.all})
-            </div>
-            <div
-                onClick={() => setFilter('completed')}
-                className={`tasks-info__item ${activeFilter === 'completed' ? 'active' : ''}`}
+                All ({all})
+            </Button>
+            <Button
+                disabled={activeFilter === 'completed'}
+                type="primary"
+                size="large"
+                onClick={() => setActiveFilter('completed')}
             >
-                Completed ({info.completed})
-            </div>
-            <div
-                onClick={() => setFilter('inWork')}
-                className={`tasks-info__item ${activeFilter === 'inWork' ? 'active' : ''}`}
+                Completed ({completed})
+            </Button>
+            <Button
+                disabled={activeFilter === 'inWork'}
+                type="primary"
+                size="large"
+                onClick={() => setActiveFilter('inWork')}
             >
-                In work ({info.inWork})
-            </div>
+                In work ({inWork})
+            </Button>
         </div>
     )
 }
