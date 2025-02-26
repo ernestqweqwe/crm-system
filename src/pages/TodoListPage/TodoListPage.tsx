@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import TaskForm from '../../components/TaskForm/TaskForm'
 import { getTodosData } from '../../api/todoService.ts'
 import TaskInfo from '../../components/TaskInfo/TaskInfo.tsx'
@@ -11,18 +11,22 @@ export const TodoListPage = () => {
     const [data, setData] = useState<AllTodosResponse | null>(null)
     const [activeFilter, setActiveFilter] = useState<string>('all')
 
-    const fetchData = async () => {
-        await getTodosData(activeFilter).then(setData)
-    }
+    const fetchData = useCallback(async () => {
+        const newData = await getTodosData(activeFilter)
+        setData((prevData) => {
+            return JSON.stringify(prevData) === JSON.stringify(newData) ? prevData : newData
+        })
+    }, [activeFilter])
 
     useEffect(() => {
         fetchData()
-    }, [activeFilter])
+    }, [fetchData])
 
     useEffect(() => {
         const intervalId = setInterval(fetchData, 5000)
         return () => clearInterval(intervalId)
-    }, [activeFilter])
+    }, [fetchData])
+
     return (
         <div className="todo-list__page">
             <TaskForm updateData={fetchData} />
