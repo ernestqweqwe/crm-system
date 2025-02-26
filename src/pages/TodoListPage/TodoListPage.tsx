@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import TaskForm from '../../components/TaskForm/TaskForm'
-import { getTodosData } from '../../api/todoService.ts'
+import { getTodosData } from '../../api/services/TodoService.ts'
 import TaskInfo from '../../components/TaskInfo/TaskInfo.tsx'
 import { Empty } from 'antd'
 import TaskList from '../../components/TaskList/TaskList.tsx'
@@ -12,7 +12,7 @@ export const TodoListPage = () => {
     const [activeFilter, setActiveFilter] = useState<string>('all')
 
     const fetchData = async () => {
-        await getTodosData(activeFilter).then(setData)
+        await getTodosData(activeFilter).then((res) => setData(res.data))
     }
 
     useEffect(() => {

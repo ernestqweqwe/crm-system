@@ -1,7 +1,7 @@
 import { Button, Form, Input, message } from 'antd'
 import './LoginPage.scss'
 import { useForm } from 'antd/es/form/Form'
-import { userLogin } from '../../api/AuthService.ts'
+import { userLogin } from '../../api/services/AuthService.ts'
 import { AxiosError } from 'axios'
 import { NoticeType } from 'antd/es/message/interface'
 import { useNavigate } from 'react-router'
@@ -21,12 +21,10 @@ export const LoginPage = () => {
     const handleSubmit = async () => {
         try {
             notification('loading', 'Loading')
+
             const value = form.getFieldsValue()
             await userLogin(value)
-                .then((res) => {
-                    localStorage.setItem('token', JSON.stringify(res))
-                    navigate('/')
-                })
+                .then(() => navigate('/'))
                 .finally(() => messageApi.destroy())
         } catch (err) {
             console.log(err)

@@ -1,7 +1,8 @@
 import './index.scss'
 import { useEffect, useState } from 'react'
-import { getNewToken, getUserProfile } from '../../api/AuthService.ts'
+import { refreshToken } from '../../api/services/AuthService.ts'
 import { ProfileRequest } from '../../types/AuthTypes.ts'
+import { getUserProfile } from '../../api/services/UserService.ts'
 
 export const ProfilePage = () => {
     const [data, setData] = useState<ProfileRequest | null>(null)
@@ -10,7 +11,7 @@ export const ProfilePage = () => {
         try {
             getUserProfile()
                 .then((res) => setData(res.data))
-                .catch(() => getNewToken())
+                .catch(() => refreshToken())
         } catch {
             console.log('ошибка на самой странице')
         }

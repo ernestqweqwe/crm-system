@@ -1,6 +1,6 @@
 import { Button, Form, Input, message, Space } from 'antd'
 import './RegistrationPage.scss'
-import { userRegistration } from '../../api/AuthService.ts'
+import { userRegistration } from '../../api/services/AuthService.ts'
 import { AxiosError } from 'axios'
 import { NoticeType } from 'antd/es/message/interface'
 import { Link } from 'react-router'
@@ -137,6 +137,7 @@ export const RegistrationPage = () => {
                 <Form.Item
                     name="phoneNumber"
                     label="Phone"
+                    required={false}
                     rules={[
                         {
                             whitespace: true,
@@ -178,3 +179,5 @@ export const RegistrationPage = () => {
 //Todo submit активен только когда все поля заполнены
 
 // todo общие стили для формы регистрации и авторизации через роутер
+
+// TODO поля ввода телефона должны быть не обязательным

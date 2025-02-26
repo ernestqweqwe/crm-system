@@ -1,25 +1,21 @@
-import axios, { AxiosResponse } from 'axios'
-import { AllTodosResponse } from '../types/responseTypes.ts'
+import { AxiosResponse } from 'axios'
+import { AllTodosResponse } from '../../types/responseTypes.ts'
+import { $todoApi } from '../http'
 
-const http = axios.create({
-    baseURL: import.meta.env.VITE_BASE_URL,
-})
-
-export async function getTodosData(filter: string) {
-    const response: AxiosResponse<AllTodosResponse> = await http.get('todos', {
+export async function getTodosData(filter: string): Promise<AxiosResponse<AllTodosResponse>> {
+    return await $todoApi.get('todos', {
         params: {
             filter,
         },
     })
-    return response.data
 }
 
 export async function deleteTask(taskId: number) {
-    await http.delete(`todos/${taskId}`)
+    await $todoApi.delete(`todos/${taskId}`)
 }
 
 export async function createTask(title: string) {
-    await http('todos', {
+    await $todoApi('todos', {
         method: 'post',
         data: {
             title,
@@ -29,7 +25,7 @@ export async function createTask(title: string) {
 }
 
 export async function updateTask(taskId: number, title: string, isDone: boolean) {
-    return http(`todos/${taskId}`, {
+    return $todoApi(`todos/${taskId}`, {
         method: 'put',
         data: {
             title,

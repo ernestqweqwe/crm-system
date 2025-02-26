@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { Button, Checkbox, Form, Input } from 'antd'
 import { useForm } from 'antd/es/form/Form'
 import './TaskItem.scss'
-import { deleteTask, updateTask } from '../../api/todoService.ts'
+import { deleteTask, updateTask } from '../../api/services/TodoService.ts'
 
 interface ITaskItemProps {
     taskObject: Todo
