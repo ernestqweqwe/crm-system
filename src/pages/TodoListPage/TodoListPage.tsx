@@ -23,6 +23,7 @@ export const TodoListPage = () => {
         const intervalId = setInterval(fetchData, 5000)
         return () => clearInterval(intervalId)
     }, [activeFilter])
+
     return (
         <div className="todo-list__page">
             <TaskForm updateData={fetchData} />
