@@ -1,10 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit'
-import { dataSlice } from './reducers/slices/DataSlice/DataSlice.ts'
 import { setupListeners } from '@reduxjs/toolkit/query'
+import { authSlice } from 'store/reducers/slices/authSlice/authSlice'
+import { taskSlice } from 'store/reducers/slices/taskSlice/taskSlice.ts'
 
 export const store = configureStore({
     reducer: {
-        data: dataSlice.reducer,
+        task: taskSlice.reducer,
+        auth: authSlice.reducer,
     },
 })
 
