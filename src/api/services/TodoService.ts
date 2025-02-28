@@ -1,35 +1,33 @@
+import { $todoApi } from 'api/http/index'
 import { AxiosResponse } from 'axios'
-import { AllTodosResponse } from '../../types/responseTypes.ts'
-import { $todoApi } from '../http'
+import { AllTodosResponse } from 'types/responseTypes'
 
-export async function getTodosData(filter: string): Promise<AxiosResponse<AllTodosResponse>> {
-    return await $todoApi.get('todos', {
-        params: {
-            filter,
-        },
-    })
+export interface UpdateTaskProps {
+    taskId: number
+    title: string
+    isDone: boolean
 }
 
-export async function deleteTask(taskId: number) {
-    await $todoApi.delete(`todos/${taskId}`)
+class TodoService {
+    static async getTodos(filter: string): Promise<AxiosResponse<AllTodosResponse>> {
+        return await $todoApi.get('todos', { params: { filter } })
+    }
+
+    static async deleteTask(taskId: number): Promise<void> {
+        await $todoApi.delete(`todos/${taskId}`)
+    }
+
+    static async createTask(title: string): Promise<void> {
+        await $todoApi.post('todos', { title, isDone: false })
+    }
+
+    static async updateTask(
+        taskId: number,
+        title: string,
+        isDone: boolean
+    ): Promise<AxiosResponse> {
+        return await $todoApi.put(`todos/${taskId}`, { title, isDone })
+    }
 }
 
-export async function createTask(title: string) {
-    await $todoApi('todos', {
-        method: 'post',
-        data: {
-            title,
-            isDone: false,
-        },
-    })
-}
-
-export async function updateTask(taskId: number, title: string, isDone: boolean) {
-    return $todoApi(`todos/${taskId}`, {
-        method: 'put',
-        data: {
-            title,
-            isDone,
-        },
-    })
-}
+export default TodoService
