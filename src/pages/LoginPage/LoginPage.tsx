@@ -1,15 +1,17 @@
 import { Button, Form, Input, message } from 'antd'
 import './LoginPage.scss'
 import { useForm } from 'antd/es/form/Form'
-import { userLogin } from '../../api/services/AuthService.ts'
-import { AxiosError } from 'axios'
 import { NoticeType } from 'antd/es/message/interface'
 import { useNavigate } from 'react-router'
+import { useAppDispatch } from 'store/hooks/redux'
+import { fetchLogin } from 'store/reducers/slices/authSlice/asyncThunks'
 
 export const LoginPage = () => {
     const [form] = useForm()
     const [messageApi, contextHolder] = message.useMessage()
     const navigate = useNavigate()
+
+    const dispatch = useAppDispatch()
 
     const notification = (type: NoticeType, content: string) => {
         messageApi.open({
@@ -21,18 +23,14 @@ export const LoginPage = () => {
     const handleSubmit = async () => {
         try {
             notification('loading', 'Loading')
-
             const value = form.getFieldsValue()
-            await userLogin(value)
-                .then(() => navigate('/'))
-                .finally(() => messageApi.destroy())
+            await dispatch(fetchLogin(value)).unwrap()
+            navigate('/')
         } catch (err) {
-            console.log(err)
-            if (err instanceof AxiosError && err) {
-                if (err.status === 400) notification('error', 'Invalid input')
-                if (err.status === 401) notification('error', 'Invalid login or password')
-                if (err.status === 500) notification('error', 'Server error')
-            }
+            messageApi.destroy()
+            if (err === 400) notification('error', 'Invalid input')
+            if (err === 401) notification('error', 'Invalid login or password')
+            if (err === 500) notification('error', 'Server error')
         }
     }
 

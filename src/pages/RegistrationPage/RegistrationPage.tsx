@@ -1,6 +1,6 @@
 import { Button, Form, Input, message, Space } from 'antd'
 import './RegistrationPage.scss'
-import { userRegistration } from '../../api/services/AuthService.ts'
+import authService from 'api/services/AuthService'
 import { AxiosError } from 'axios'
 import { NoticeType } from 'antd/es/message/interface'
 import { Link } from 'react-router'
@@ -10,12 +10,8 @@ export const RegistrationPage = () => {
     const [messageApi, contextHolder] = message.useMessage()
 
     // TODO разобраться с валидацией номера телефона
-    //  TODO ссылка на логин
-    // TODO нотифекейшн на все ответы с сервера при регистрации пользователя
     // TODO Когда использовать try catch а когда than
-    // TODO Страница логина
     // TODO Когда указывать content type
-    // TODO охранение токена в local storage
 
     const notification = (type: NoticeType, content: string) => {
         messageApi.open({
@@ -23,15 +19,13 @@ export const RegistrationPage = () => {
             type,
         })
     }
-    // TODO избавиться от then catch использывать try catch
     const handleSubmit = async () => {
         try {
             notification('loading', 'Loading')
             const values = form.getFieldsValue()
-            await userRegistration(values).then(() => {
-                messageApi.destroy()
-                notification('success', 'Registration successful')
-            })
+            await authService.registration(values)
+            messageApi.destroy()
+            notification('success', 'Registration successful')
         } catch (err) {
             if (err instanceof AxiosError && err) {
                 messageApi.destroy()
@@ -44,7 +38,12 @@ export const RegistrationPage = () => {
     return (
         <div className="registration-page">
             <h1 className="title">Registration</h1>
-            <Form layout={'vertical'} form={form} style={{ width: 600 }} onFinish={handleSubmit}>
+            <Form
+                layout={'vertical'}
+                form={form}
+                style={{ width: 600 }}
+                onFinish={() => handleSubmit()}
+            >
                 <Form.Item
                     name={'username'}
                     label={'User name'}
