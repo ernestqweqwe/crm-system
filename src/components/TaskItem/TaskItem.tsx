@@ -1,36 +1,36 @@
-import { Todo } from '../../types/Itodo'
-import { useState } from 'react'
 import { Button, Checkbox, Form, Input } from 'antd'
 import { useForm } from 'antd/es/form/Form'
 import './TaskItem.scss'
-import { deleteTask, updateTask } from '../../api/services/TodoService.ts'
+import { Data } from 'types/responseTypes'
+import { FC, useState } from 'react'
+import { useAppDispatch } from 'store/hooks/redux'
+import { fetchDeleteTask, fetchUpdateTask } from 'store/reducers/slices/taskSlice/asyncThunks'
 
-interface ITaskItemProps {
-    taskObject: Todo
-    updateData: () => void
-}
-
-interface values {
+interface formValues {
     title: string
-    isDone: boolean
+    isChecked: boolean
 }
 
-const TaskItem = ({ taskObject, updateData }: ITaskItemProps) => {
-    const { isDone, title, id } = taskObject
+interface TaskItemProps {
+    task: Data
+}
+
+const TaskItem: FC<TaskItemProps> = ({ task }) => {
+    const { title, id, isDone } = task
+    const dispatch = useAppDispatch()
+
     const [changeButtonPressed, setChangeButtonPressed] = useState(false)
-    const [checkBoxPressed, setCheckboxPressed] = useState(isDone)
     const [form] = useForm()
 
     const onToggle = async () => {
-        setCheckboxPressed(!checkBoxPressed)
-        await updateTask(id, title, !checkBoxPressed).then(() => updateData())
+        dispatch(fetchUpdateTask({ taskId: id, title: title, isDone: !isDone }))
     }
 
     const onSave = async () => {
         setChangeButtonPressed(false)
-        const values: values = form.getFieldsValue()
+        const values: formValues = form.getFieldsValue()
         if (values.title !== title) {
-            await updateTask(id, values.title, checkBoxPressed).then(() => updateData())
+            dispatch(fetchUpdateTask({ taskId: id, title: values.title, isDone: isDone }))
         }
     }
 
@@ -39,8 +39,8 @@ const TaskItem = ({ taskObject, updateData }: ITaskItemProps) => {
         form.setFieldValue('title', title)
     }
 
-    const onDelete = async (taskId: number) => {
-        await deleteTask(taskId).then(() => updateData())
+    const onDelete = async () => {
+        dispatch(fetchDeleteTask(id))
     }
 
     const onChange = () => {
@@ -48,14 +48,19 @@ const TaskItem = ({ taskObject, updateData }: ITaskItemProps) => {
     }
 
     return (
-        <Form layout="inline" className="task-item" form={form} initialValues={{ title, isDone }}>
-            <Form.Item name="isDone" valuePropName="checked">
-                <Checkbox onClick={onToggle} />
+        <Form
+            layout="inline"
+            className="task-item"
+            form={form}
+            initialValues={{ title, isChecked: isDone }}
+        >
+            <Form.Item name="isChecked" valuePropName="checked">
+                <Checkbox onClick={() => onToggle()} />
             </Form.Item>
             <Form.Item name="title" rules={[{ min: 2 }, { max: 64 }, { required: true }]}>
                 <Input
+                    className={isDone ? 'task-input through' : 'task-input'}
                     disabled={!changeButtonPressed}
-                    className={checkBoxPressed ? 'task-input through' : 'task-input'}
                 />
             </Form.Item>
             <Form.Item>
@@ -84,7 +89,7 @@ const TaskItem = ({ taskObject, updateData }: ITaskItemProps) => {
                             size="middle"
                             type="primary"
                             danger
-                            onClick={() => onDelete(id)}
+                            onClick={() => onDelete()}
                             style={{ marginLeft: 10 }}
                         >
                             Delete
@@ -96,4 +101,6 @@ const TaskItem = ({ taskObject, updateData }: ITaskItemProps) => {
     )
 }
 
+//todo фокус при нажатии change
+//todo возможно сохранить item с <2 символов
 export default TaskItem

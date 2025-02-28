@@ -1,19 +1,15 @@
 import { FC } from 'react'
 import { Button, Form, Input } from 'antd'
 import '@ant-design/v5-patch-for-react-19'
-import { createTask } from '../../api/services/TodoService.ts'
 import './TaskForm.scss'
+import { useAppDispatch } from 'store/hooks/redux'
+import { fetchCreateTask } from 'store/reducers/slices/taskSlice/asyncThunks'
 
-interface TaskFormProps {
-    updateData: () => void
-}
-
-const TaskForm: FC<TaskFormProps> = ({ updateData }) => {
-    const handleSubmit = async (task: string) => {
-        await createTask(task).then(() => {
-            updateData()
-            form.resetFields()
-        })
+const TaskForm: FC = () => {
+    const dispatch = useAppDispatch()
+    const handleSubmit = async ({ task }: { task: string }) => {
+        dispatch(fetchCreateTask(task))
+        form.resetFields()
     }
 
     const [form] = Form.useForm()
@@ -25,7 +21,7 @@ const TaskForm: FC<TaskFormProps> = ({ updateData }) => {
             labelCol={{ span: 4 }}
             style={{ width: 600 }}
             initialValues={{ remember: true }}
-            onFinish={(values) => handleSubmit(values.task)}
+            onFinish={(values) => handleSubmit(values)}
             validateMessages={{
                 required: 'Task field is required',
                 string: {

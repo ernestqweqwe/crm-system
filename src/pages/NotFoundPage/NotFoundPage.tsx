@@ -12,5 +12,3 @@ export const NotFoundPage = () => {
         ></Result>
     )
 }
-
-// todo убрать сайдбар поменять в роутах

@@ -1,10 +1,11 @@
+import { NotFoundPage } from 'pages/NotFoundPage/NotFoundPage'
 import { Suspense } from 'react'
-import { SideBar } from './components/SideBar/SideBar.tsx'
-import { AppRouter } from './components/routes/AppRouter.tsx'
-import { RegistrationPage } from './pages/RegistrationPage/RegistrationPage.tsx'
+import { SideBar } from 'components/SideBar/SideBar'
+import { AppRouter } from 'components/routes/AppRouter'
+import { RegistrationPage } from 'pages/RegistrationPage/RegistrationPage'
 import { Route, Routes } from 'react-router'
 import './App.scss'
-import { LoginPage } from './pages/LoginPage/LoginPage.tsx'
+import { LoginPage } from 'pages/LoginPage/LoginPage'
 
 function App() {
     return (
@@ -21,6 +22,7 @@ function App() {
                         </div>
                     }
                 />
+                <Route path="*" element={<NotFoundPage />} />
             </Routes>
         </Suspense>
     )

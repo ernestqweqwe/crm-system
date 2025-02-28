@@ -1,17 +1,13 @@
 import TaskItem from '../TaskItem/TaskItem.tsx'
-import { Todo } from '../../types/Itodo.ts'
-import { FC } from 'react'
 import './TaskList.scss'
+import { useAppSelector } from 'store/hooks/redux'
 
-interface ITaskListProps {
-    taskList: Todo[]
-    updateData: () => void
-}
-const TaskList: FC<ITaskListProps> = ({ taskList, updateData }) => {
+const TaskList = () => {
+    const { data } = useAppSelector((state) => state.task)
     return (
         <div className="task-list">
-            {taskList.map((task) => {
-                return <TaskItem updateData={updateData} taskObject={task} key={task.id} />
+            {data.data.map((task) => {
+                return <TaskItem task={task} key={task.id} />
             })}
         </div>
     )

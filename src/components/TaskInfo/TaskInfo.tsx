@@ -1,41 +1,35 @@
-import { FC } from 'react'
 import './TaskInfo.scss'
 import { Button } from 'antd'
-import { Info } from '../../types/responseTypes.ts'
+import { useAppDispatch, useAppSelector } from 'store/hooks/redux'
+import { fetchAllTaskData } from 'store/reducers/slices/taskSlice/asyncThunks'
+import { setFilter, TabFilters } from 'store/reducers/slices/taskSlice/taskSlice'
 
-interface TaskInfoProps {
-    info: Info
-    activeFilter: string
-    setActiveFilter: (filter: string) => void
-}
+const TaskInfo = () => {
+    const { data } = useAppSelector((state) => state.task)
+    const dispatch = useAppDispatch()
+    const handleFilterChange = (filter: TabFilters) => {
+        dispatch(setFilter(filter))
+        dispatch(fetchAllTaskData(filter))
+    }
 
-const TaskInfo: FC<TaskInfoProps> = ({ info, activeFilter, setActiveFilter }) => {
-    const { all, completed, inWork } = info
     return (
         <div className="tasks-info">
-            <Button
-                disabled={activeFilter === 'all'}
-                type="primary"
-                size="large"
-                onClick={() => setActiveFilter('all')}
-            >
-                All ({all})
+            <Button type="primary" size="large" onClick={() => handleFilterChange(TabFilters.ALL)}>
+                All ({data.info.all})
             </Button>
             <Button
-                disabled={activeFilter === 'completed'}
                 type="primary"
                 size="large"
-                onClick={() => setActiveFilter('completed')}
+                onClick={() => handleFilterChange(TabFilters.COMPLETED)}
             >
-                Completed ({completed})
+                Completed ({data.info.completed})
             </Button>
             <Button
-                disabled={activeFilter === 'inWork'}
                 type="primary"
                 size="large"
-                onClick={() => setActiveFilter('inWork')}
+                onClick={() => handleFilterChange(TabFilters.INWORK)}
             >
-                In work ({inWork})
+                In work ({data.info.inWork})
             </Button>
         </div>
     )
