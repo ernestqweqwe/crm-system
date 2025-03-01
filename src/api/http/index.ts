@@ -1,24 +1,44 @@
 import axios, { InternalAxiosRequestConfig } from 'axios'
-
+import { setAuth } from 'store/reducers/slices/authSlice/authSlice'
+import { store } from 'store/store'
+import { Token } from 'types/authTypes'
 const BASE_URL = import.meta.env.VITE_BASE_URL
 
-export const $userApi = axios.create({
+export const $api = axios.create({
     baseURL: BASE_URL,
 })
 
-$userApi.interceptors.request.use((config): InternalAxiosRequestConfig => {
+$api.interceptors.request.use((config): InternalAxiosRequestConfig => {
     config.headers.Authorization = `Bearer ${localStorage.getItem('accessToken')}`
     return config
 })
 
-export const $authApi = axios.create({
-    baseURL: `${BASE_URL}/auth`,
-    headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
+$api.interceptors.response.use(
+    (config) => {
+        return config
     },
-})
+    async (error) => {
+        const originalRequest = error.config
+        if (error.response.status === 401 && !error.config._isRetry) {
+            originalRequest._isRetry = true
+            try {
+                const response = await axios.post<Token>(`${BASE_URL}auth/refresh`, {
+                    refreshToken: localStorage.getItem('refreshToken'),
+                })
+                localStorage.setItem('accessToken', response.data.accessToken)
+                localStorage.setItem('refreshToken', response.data.refreshToken)
+                return $api.request(originalRequest)
+            } catch {
+                console.log('Не авторизован')
+                logout()
+            }
+        }
+        throw error
+    }
+)
 
-export const $todoApi = axios.create({
-    baseURL: BASE_URL,
-})
+// Функция выхода из системы
+const logout = () => {
+    localStorage.clear()
+    store.dispatch(setAuth(false))
+}

@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { fetchLogin } from 'store/reducers/slices/authSlice/asyncThunks'
+import { checkIsAuth, fetchLogin } from 'store/reducers/slices/authSlice/asyncThunks'
 
 interface userInitialState {
     isAuth: boolean
@@ -18,9 +18,16 @@ export const authSlice = createSlice({
         },
     },
     extraReducers: (builder) => {
-        builder.addCase(fetchLogin.fulfilled, (state) => {
-            state.isAuth = true
-        })
+        builder
+            .addCase(fetchLogin.fulfilled, (state) => {
+                state.isAuth = true
+            })
+            .addCase(checkIsAuth.fulfilled, (state) => {
+                state.isAuth = true
+            })
+            .addCase(checkIsAuth.rejected, (state) => {
+                state.isAuth = false
+            })
     },
 })
 

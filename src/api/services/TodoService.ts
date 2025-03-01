@@ -1,4 +1,4 @@
-import { $todoApi } from 'api/http/index'
+import { $api } from 'api/http/index'
 import { AxiosResponse } from 'axios'
 import { AllTodosResponse } from 'types/responseTypes'
 
@@ -10,15 +10,15 @@ export interface UpdateTaskProps {
 
 class TodoService {
     static async getTodos(filter: string): Promise<AxiosResponse<AllTodosResponse>> {
-        return await $todoApi.get('todos', { params: { filter } })
+        return await $api.get('todos', { params: { filter } })
     }
 
     static async deleteTask(taskId: number): Promise<void> {
-        await $todoApi.delete(`todos/${taskId}`)
+        await $api.delete(`todos/${taskId}`)
     }
 
     static async createTask(title: string): Promise<void> {
-        await $todoApi.post('todos', { title, isDone: false })
+        await $api.post('todos', { title, isDone: false })
     }
 
     static async updateTask(
@@ -26,7 +26,7 @@ class TodoService {
         title: string,
         isDone: boolean
     ): Promise<AxiosResponse> {
-        return await $todoApi.put(`todos/${taskId}`, { title, isDone })
+        return await $api.put(`todos/${taskId}`, { title, isDone })
     }
 }
 
