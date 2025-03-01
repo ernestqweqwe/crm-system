@@ -2,14 +2,12 @@ import { FC } from 'react'
 import { Button, Form, Input } from 'antd'
 import '@ant-design/v5-patch-for-react-19'
 import './TaskForm.scss'
-import { useAppDispatch } from 'store/hooks/redux'
-import { fetchCreateTask } from 'store/reducers/slices/taskSlice/asyncThunks'
+import { todoApi } from 'services/todosService'
 
 const TaskForm: FC = () => {
-    const dispatch = useAppDispatch()
+    const [createTodo] = todoApi.useCreateTodoMutation()
     const handleSubmit = async ({ task }: { task: string }) => {
-        dispatch(fetchCreateTask(task))
-        form.resetFields()
+        await createTodo(task)
     }
 
     const [form] = Form.useForm()

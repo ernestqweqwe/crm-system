@@ -1,6 +1,4 @@
 import axios, { InternalAxiosRequestConfig } from 'axios'
-import { setAuth } from 'store/reducers/slices/authSlice/authSlice'
-import { store } from 'store/store'
 import { Token } from 'types/authTypes'
 const BASE_URL = import.meta.env.VITE_BASE_URL
 
@@ -37,8 +35,8 @@ $api.interceptors.response.use(
     }
 )
 
-// Функция выхода из системы
-const logout = () => {
-    localStorage.clear()
-    store.dispatch(setAuth(false))
-}
+// // Функция выхода из системы
+// const logout = () => {
+//     localStorage.clear()
+//     store.dispatch(setAuth(false))
+// }

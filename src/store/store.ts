@@ -1,13 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { setupListeners } from '@reduxjs/toolkit/query'
-import { authSlice } from 'store/reducers/slices/authSlice/authSlice'
+import { todoApi } from 'services/todosService'
 import { taskSlice } from 'store/reducers/slices/taskSlice/taskSlice.ts'
 
 export const store = configureStore({
     reducer: {
         task: taskSlice.reducer,
-        auth: authSlice.reducer,
+        [todoApi.reducerPath]: todoApi.reducer,
     },
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(todoApi.middleware),
 })
 
 setupListeners(store.dispatch)

@@ -1,10 +1,9 @@
 import { Button, Checkbox, Form, Input } from 'antd'
 import { useForm } from 'antd/es/form/Form'
 import './TaskItem.scss'
+import { todoApi } from 'services/todosService'
 import { Data } from 'types/responseTypes'
 import { FC, useState } from 'react'
-import { useAppDispatch } from 'store/hooks/redux'
-import { fetchDeleteTask, fetchUpdateTask } from 'store/reducers/slices/taskSlice/asyncThunks'
 
 interface formValues {
     title: string
@@ -16,21 +15,25 @@ interface TaskItemProps {
 }
 
 const TaskItem: FC<TaskItemProps> = ({ task }) => {
+    console.log('render item')
+
     const { title, id, isDone } = task
-    const dispatch = useAppDispatch()
+
+    const [deleteTodo] = todoApi.useDeleteTodoMutation()
+    const [updateTodo] = todoApi.useUpdateTodoMutation()
 
     const [changeButtonPressed, setChangeButtonPressed] = useState(false)
     const [form] = useForm()
 
     const onToggle = async () => {
-        dispatch(fetchUpdateTask({ taskId: id, title: title, isDone: !isDone }))
+        await updateTodo({ id: id, title: title, isDone: !isDone })
     }
 
     const onSave = async () => {
         setChangeButtonPressed(false)
         const values: formValues = form.getFieldsValue()
         if (values.title !== title) {
-            dispatch(fetchUpdateTask({ taskId: id, title: values.title, isDone: isDone }))
+            updateTodo({ id: id, title: values.title, isDone: isDone })
         }
     }
 
@@ -40,7 +43,7 @@ const TaskItem: FC<TaskItemProps> = ({ task }) => {
     }
 
     const onDelete = async () => {
-        dispatch(fetchDeleteTask(id))
+        await deleteTodo(id)
     }
 
     const onChange = () => {

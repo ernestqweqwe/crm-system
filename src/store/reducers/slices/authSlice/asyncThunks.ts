@@ -17,18 +17,3 @@ export const fetchLogin = createAsyncThunk(
         }
     }
 )
-
-export const checkIsAuth = createAsyncThunk('auth/isAuth', async (_, { rejectWithValue }) => {
-    const refreshToken = localStorage.getItem('refreshToken')
-    if (!refreshToken) {
-        return rejectWithValue('Нет токена')
-    }
-
-    try {
-        const response = await authService.refreshToken(refreshToken)
-        localStorage.setItem('accessToken', response.accessToken)
-        localStorage.setItem('refreshToken', response.refreshToken)
-    } catch {
-        return rejectWithValue('Токен не валидный')
-    }
-})
