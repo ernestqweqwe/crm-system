@@ -4,15 +4,11 @@ import './TodoListPage.scss'
 import TaskList from '../../components/TaskList/TaskList.tsx'
 
 export const TodoListPage = () => {
-    console.log('render todolist page')
-
     return (
         <div className="todo-list__page">
             <TaskForm />
-            <>
-                <TaskInfo />
-                <TaskList />
-            </>
+            <TaskInfo />
+            <TaskList />
         </div>
     )
 }

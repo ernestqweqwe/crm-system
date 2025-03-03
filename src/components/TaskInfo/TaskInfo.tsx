@@ -1,6 +1,6 @@
 import './TaskInfo.scss'
 import { Button } from 'antd'
-import { todoApi } from 'services/todosService'
+import { todoApi } from 'store/services/todosService'
 import { useAppDispatch, useAppSelector } from 'store/hooks/redux'
 import { setFilter, TabFilters } from 'store/reducers/slices/taskSlice/taskSlice'
 

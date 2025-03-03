@@ -2,7 +2,7 @@ import { FC } from 'react'
 import { Button, Form, Input } from 'antd'
 import '@ant-design/v5-patch-for-react-19'
 import './TaskForm.scss'
-import { todoApi } from 'services/todosService'
+import { todoApi } from 'store/services/todosService'
 
 const TaskForm: FC = () => {
     const [createTodo] = todoApi.useCreateTodoMutation()
@@ -11,6 +11,7 @@ const TaskForm: FC = () => {
     }
 
     const [form] = Form.useForm()
+    const { Item } = Form
 
     return (
         <Form
@@ -28,18 +29,14 @@ const TaskForm: FC = () => {
                 },
             }}
         >
-            <Form.Item
-                rules={[{ min: 2 }, { max: 64 }, { required: true }]}
-                label="Task"
-                name="task"
-            >
+            <Item rules={[{ min: 2 }, { max: 64 }, { required: true }]} label="Task" name="task">
                 <Input autoFocus />
-            </Form.Item>
-            <Form.Item>
+            </Item>
+            <Form>
                 <Button size="large" type="primary" htmlType="submit">
                     ADD TASK
                 </Button>
-            </Form.Item>
+            </Form>
         </Form>
     )
 }

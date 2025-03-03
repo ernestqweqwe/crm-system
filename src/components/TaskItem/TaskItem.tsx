@@ -1,7 +1,7 @@
 import { Button, Checkbox, Form, Input } from 'antd'
 import { useForm } from 'antd/es/form/Form'
 import './TaskItem.scss'
-import { todoApi } from 'services/todosService'
+import { todoApi } from 'store/services/todosService'
 import { Data } from 'types/responseTypes'
 import { FC, useState } from 'react'
 

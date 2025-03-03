@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { setupListeners } from '@reduxjs/toolkit/query'
-import { todoApi } from 'services/todosService'
+import { todoApi } from 'store/services/todosService'
 import { taskSlice } from 'store/reducers/slices/taskSlice/taskSlice.ts'
 
 export const store = configureStore({
