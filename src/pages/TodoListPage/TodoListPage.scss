@@ -1,6 +1,9 @@
 .todo-list__page {
-    margin-top: 100px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+
+
+    &--content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
 }

@@ -28,7 +28,7 @@ $api.interceptors.response.use(
                 return $api.request(originalRequest)
             } catch {
                 console.log('Не авторизован')
-                logout()
+                // logout()
             }
         }
         throw error

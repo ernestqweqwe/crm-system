@@ -2,6 +2,7 @@ import './index.scss'
 import { useEffect, useState } from 'react'
 import { ProfileRequest } from 'types/authTypes'
 import { getUserProfile } from 'api/services/UserService'
+import { Descriptions, Layout } from 'antd'
 
 export const ProfilePage = () => {
     const [data, setData] = useState<ProfileRequest | null>(null)
@@ -14,17 +15,12 @@ export const ProfilePage = () => {
         }
     }, [])
     return (
-        <div className="profile-page">
-            <h1>Привет пользователь</h1>
-            <div>
-                {data && (
-                    <>
-                        <div>Email: {data.email}</div>
-                        <div>User name: {data.username}</div>
-                        <div>Phone: {data.phoneNumber}</div>
-                    </>
-                )}
-            </div>
-        </div>
+        <Layout className="profile-page">
+            <Descriptions style={{ width: 300 }} title="User Info" column={1}>
+                <Descriptions.Item label="UserName">{data?.username}</Descriptions.Item>
+                <Descriptions.Item label="Email">{data?.email}</Descriptions.Item>
+                <Descriptions.Item label="Phone number">{data?.phoneNumber}</Descriptions.Item>
+            </Descriptions>
+        </Layout>
     )
 }

@@ -1,28 +1,39 @@
-import { FC } from 'react'
-import { Button, Form, Input } from 'antd'
+import { FC, useEffect, useRef } from 'react'
+import { Form, FormInstance, Input, InputRef } from 'antd'
 import '@ant-design/v5-patch-for-react-19'
-import './TaskForm.scss'
 import { todoApi } from 'store/services/todosService'
+import './TaskForm.scss'
 
-const TaskForm: FC = () => {
+interface TaskFormProps {
+    formRef: React.RefObject<FormInstance | null>
+    onClose: () => void
+}
+
+const TaskForm: FC<TaskFormProps> = ({ onClose, formRef }) => {
     const [createTodo] = todoApi.useCreateTodoMutation()
-    const handleSubmit = async ({ task }: { task: string }) => {
-        await createTodo(task)
-    }
-
     const [form] = Form.useForm()
     const { Item } = Form
+    const inputRef = useRef<InputRef | null>(null)
+
+    if (formRef) formRef.current = form
+
+    const handleSubmit = async ({ task }: { task: string }) => {
+        await createTodo(task)
+        form.resetFields()
+        onClose()
+    }
+
+    useEffect(() => {
+        inputRef.current?.focus()
+    }, [formRef])
 
     return (
         <Form
             form={form}
             className="form"
-            labelCol={{ span: 4 }}
-            style={{ width: 600 }}
-            initialValues={{ remember: true }}
             onFinish={(values) => handleSubmit(values)}
             validateMessages={{
-                required: 'Task field is required',
+                required: 'Field is required',
                 string: {
                     min: 'The field must contain at least 2 characters',
                     max: 'Maximum length 64 characters',
@@ -30,13 +41,8 @@ const TaskForm: FC = () => {
             }}
         >
             <Item rules={[{ min: 2 }, { max: 64 }, { required: true }]} label="Task" name="task">
-                <Input autoFocus />
+                <Input ref={inputRef} />
             </Item>
-            <Form>
-                <Button size="large" type="primary" htmlType="submit">
-                    ADD TASK
-                </Button>
-            </Form>
         </Form>
     )
 }

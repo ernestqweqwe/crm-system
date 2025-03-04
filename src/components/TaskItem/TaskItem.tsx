@@ -1,9 +1,10 @@
-import { Button, Checkbox, Form, Input } from 'antd'
+import { Button, Checkbox, Form, Input, Space } from 'antd'
 import { useForm } from 'antd/es/form/Form'
 import './TaskItem.scss'
 import { todoApi } from 'store/services/todosService'
 import { Data } from 'types/responseTypes'
 import { FC, useState } from 'react'
+import { DeleteOutlined, EditOutlined, RollbackOutlined, SaveOutlined } from '@ant-design/icons'
 
 interface formValues {
     title: string
@@ -16,7 +17,6 @@ interface TaskItemProps {
 
 const TaskItem: FC<TaskItemProps> = ({ task }) => {
     console.log('render item')
-
     const { title, id, isDone } = task
 
     const [deleteTodo] = todoApi.useDeleteTodoMutation()
@@ -24,6 +24,7 @@ const TaskItem: FC<TaskItemProps> = ({ task }) => {
 
     const [changeButtonPressed, setChangeButtonPressed] = useState(false)
     const [form] = useForm()
+    const { Item } = Form
 
     const onToggle = async () => {
         await updateTodo({ id: id, title: title, isDone: !isDone })
@@ -52,54 +53,61 @@ const TaskItem: FC<TaskItemProps> = ({ task }) => {
 
     return (
         <Form
-            layout="inline"
+            layout="horizontal"
             className="task-item"
             form={form}
             initialValues={{ title, isChecked: isDone }}
         >
-            <Form.Item name="isChecked" valuePropName="checked">
+            <Item name="isChecked" valuePropName="checked">
                 <Checkbox onClick={() => onToggle()} />
-            </Form.Item>
-            <Form.Item name="title" rules={[{ min: 2 }, { max: 64 }, { required: true }]}>
+            </Item>
+            <Item
+                style={{ flexGrow: 1 }}
+                name="title"
+                rules={[{ min: 2 }, { max: 64 }, { required: true }]}
+            >
                 <Input
+                    style={{ textOverflow: 'ellipsis' }}
                     className={isDone ? 'task-input through' : 'task-input'}
                     disabled={!changeButtonPressed}
                 />
-            </Form.Item>
-            <Form.Item>
-                {changeButtonPressed ? (
-                    <>
-                        <Button size="middle" type="primary" onClick={onSave}>
-                            Save
-                        </Button>
+            </Item>
+            <div className="task-item__btns">
+                <Space>
+                    {changeButtonPressed ? (
+                        <>
+                            <Button size="middle" type="primary" onClick={onSave}>
+                                <SaveOutlined />
+                            </Button>
 
-                        <Button
-                            size="middle"
-                            type="primary"
-                            style={{ marginLeft: 10 }}
-                            onClick={onCancel}
-                        >
-                            Cancel
-                        </Button>
-                    </>
-                ) : (
-                    <>
-                        <Button size="middle" type="primary" onClick={onChange}>
-                            Change
-                        </Button>
+                            <Button
+                                size="middle"
+                                type="primary"
+                                style={{ marginLeft: 10 }}
+                                onClick={onCancel}
+                            >
+                                <RollbackOutlined />
+                            </Button>
+                        </>
+                    ) : (
+                        <>
+                            <Button size="middle" type="primary" onClick={onChange}>
+                                <EditOutlined />
+                            </Button>
 
-                        <Button
-                            size="middle"
-                            type="primary"
-                            danger
-                            onClick={() => onDelete()}
-                            style={{ marginLeft: 10 }}
-                        >
-                            Delete
-                        </Button>
-                    </>
-                )}{' '}
-            </Form.Item>
+                            <Button
+                                size="middle"
+                                type="primary"
+                                danger
+                                onClick={() => onDelete()}
+                                style={{ marginLeft: 10 }}
+                            >
+                                <DeleteOutlined />
+                            </Button>
+                        </>
+                    )}
+                </Space>
+            </div>
         </Form>
     )
 }

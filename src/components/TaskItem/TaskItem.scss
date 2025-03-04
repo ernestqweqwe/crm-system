@@ -1,14 +1,14 @@
-.ant-form {
-    flex-wrap: nowrap;
-    width: 100%;
-}
-
 .task-item {
-    margin-bottom: 30px;
-}
+    border: 1px solid var(--line-color);
+    border-radius: 15px;
+    padding: 20px;
+    display: flex;
+    gap: 10px;
 
-.task-input {
-    width: min(500px, 55vh);
+
+    .ant-form-item {
+        margin: 0;
+    }
 }
 
 #title {
@@ -16,13 +16,20 @@
 }
 
 #title:disabled {
-    color: black;
-    background-color: #abbbe7;
+    border: none;
 
+    color: black;
 }
 
 .task-item {
     .through {
         text-decoration: line-through;
+    }
+}
+
+
+@media(width < 470px) {
+    .task-item {
+        flex-direction: column;
     }
 }

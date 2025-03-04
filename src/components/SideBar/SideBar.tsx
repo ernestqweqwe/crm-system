@@ -13,6 +13,7 @@ export const SideBar = () => {
     const [collapsed, setCollapsed] = useState(false)
     return (
         <Layout.Sider
+            breakpoint="md"
             trigger={null}
             theme="light"
             width={248}
@@ -25,7 +26,7 @@ export const SideBar = () => {
             <Menu
                 theme="light"
                 mode="inline"
-                defaultSelectedKeys={['1']}
+                defaultSelectedKeys={['2']}
                 items={[
                     {
                         key: '1',

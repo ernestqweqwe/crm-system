@@ -2,6 +2,7 @@ import { todoApi } from 'store/services/todosService'
 import { useAppSelector } from 'store/hooks/redux'
 import TaskItem from '../TaskItem/TaskItem.tsx'
 import './TaskList.scss'
+import { Empty } from 'antd'
 
 const TaskList = () => {
     const { tabFilter } = useAppSelector((state) => state.task)
@@ -19,6 +20,8 @@ const TaskList = () => {
                 tasks.map((task) => {
                     return <TaskItem task={task} key={task.id} />
                 })}
+
+            {tasks?.length === 0 && <Empty description="Please add some tasks" />}
         </div>
     )
 }
