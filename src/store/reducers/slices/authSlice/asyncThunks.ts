@@ -33,15 +33,14 @@ export const logout = createAsyncThunk('auth/logout', async (_, { rejectWithValu
 
 export const isAuth = createAsyncThunk('auth/isAuth', async (_, { rejectWithValue }) => {
     try {
-        const response: Token = await axios.post(`${BASE_URL}/auth/refresh`, {
+        const response = await axios.post<Token>(`${BASE_URL}/auth/refresh`, {
             refreshToken: localStorage.getItem('refreshToken'),
         })
-
-        localStorage.setItem('accessToken', response.accessToken)
-        localStorage.setItem('refreshToken', response.refreshToken)
+        localStorage.setItem('accessToken', response.data.accessToken)
+        localStorage.setItem('refreshToken', response.data.refreshToken)
     } catch (err) {
         if (err instanceof AxiosError) return rejectWithValue(err.status)
         console.log(err, 'Неизвестная ошибка')
-        rejectWithValue(500)
+        return rejectWithValue(500)
     }
 })
