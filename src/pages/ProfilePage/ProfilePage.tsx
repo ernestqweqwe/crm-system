@@ -2,10 +2,13 @@ import './index.scss'
 import { useEffect, useState } from 'react'
 import { ProfileRequest } from 'types/authTypes'
 import { getUserProfile } from 'api/services/UserService'
-import { Descriptions, Layout } from 'antd'
+import { Button, Descriptions, Layout } from 'antd'
+import { useAppDispatch } from 'src/store/hooks/redux'
+import { logout } from 'src/store/reducers/slices/authSlice/asyncThunks'
 
 export const ProfilePage = () => {
     const [data, setData] = useState<ProfileRequest | null>(null)
+    const dispatch = useAppDispatch()
 
     useEffect(() => {
         try {
@@ -21,6 +24,8 @@ export const ProfilePage = () => {
                 <Descriptions.Item label="Email">{data?.email}</Descriptions.Item>
                 <Descriptions.Item label="Phone number">{data?.phoneNumber}</Descriptions.Item>
             </Descriptions>
+
+            <Button onClick={() => dispatch(logout())}>logout</Button>
         </Layout>
     )
 }

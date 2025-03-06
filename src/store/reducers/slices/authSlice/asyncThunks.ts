@@ -1,7 +1,9 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import authService from 'api/services/AuthService'
-import { AxiosError } from 'axios'
-import { AuthData } from 'types/authTypes'
+import axios, { AxiosError } from 'axios'
+import { AuthData, Token } from 'types/authTypes'
+
+const BASE_URL = import.meta.env.VITE_BASE_URL
 
 export const fetchLogin = createAsyncThunk(
     'auth/login',
@@ -17,3 +19,29 @@ export const fetchLogin = createAsyncThunk(
         }
     }
 )
+
+export const logout = createAsyncThunk('auth/logout', async (_, { rejectWithValue }) => {
+    try {
+        await authService.logout()
+        localStorage.clear()
+    } catch (err) {
+        if (err instanceof AxiosError) return rejectWithValue(err.status)
+        console.log(err, 'Неизвестная ошибка')
+        rejectWithValue(500)
+    }
+})
+
+export const isAuth = createAsyncThunk('auth/isAuth', async (_, { rejectWithValue }) => {
+    try {
+        const response: Token = await axios.post(`${BASE_URL}/auth/refresh`, {
+            refreshToken: localStorage.getItem('refreshToken'),
+        })
+
+        localStorage.setItem('accessToken', response.accessToken)
+        localStorage.setItem('refreshToken', response.refreshToken)
+    } catch (err) {
+        if (err instanceof AxiosError) return rejectWithValue(err.status)
+        console.log(err, 'Неизвестная ошибка')
+        rejectWithValue(500)
+    }
+})

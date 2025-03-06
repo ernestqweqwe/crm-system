@@ -5,7 +5,7 @@ import { AuthData, Token, UserRegistration } from 'types/authTypes'
 class AuthService {
     static registration = async (props: UserRegistration): Promise<void> => {
         const { email, login, password, phoneNumber, username } = props
-        await $api.post('auth//signup', {
+        await $api.post('auth/signup', {
             email,
             login,
             password,
@@ -22,10 +22,10 @@ class AuthService {
         })
         return response.data
     }
+
+    static logout = async (): Promise<void> => {
+        return await $api.post('user/logout')
+    }
 }
 
 export default AuthService
-
-// TODO подобавлять заголовки, чекнуть в свагере
-
-//TODO интерцепторы на 401

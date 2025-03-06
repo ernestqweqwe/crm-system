@@ -45,7 +45,7 @@ export const RegistrationPage = () => {
                 <div className="form-container__registration">
                     <div className="form-content">
                         <div className="description">
-                            <h1>Кegister a new account</h1>
+                            <h1>Register a new account</h1>
                             <p>See what is going on with your business</p>
                         </div>
 

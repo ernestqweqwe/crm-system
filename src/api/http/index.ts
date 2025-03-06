@@ -1,4 +1,6 @@
 import axios, { InternalAxiosRequestConfig } from 'axios'
+import { setAuth } from 'src/store/reducers/slices/authSlice/authSlice'
+import { store } from 'src/store/store'
 import { Token } from 'types/authTypes'
 const BASE_URL = import.meta.env.VITE_BASE_URL
 
@@ -25,18 +27,14 @@ $api.interceptors.response.use(
                 })
                 localStorage.setItem('accessToken', response.data.accessToken)
                 localStorage.setItem('refreshToken', response.data.refreshToken)
+
                 return $api.request(originalRequest)
             } catch {
                 console.log('Не авторизован')
-                // logout()
+                store.dispatch(setAuth(false))
+                localStorage.clear()
             }
         }
         throw error
     }
 )
-
-// // Функция выхода из системы
-// const logout = () => {
-//     localStorage.clear()
-//     store.dispatch(setAuth(false))
-// }
