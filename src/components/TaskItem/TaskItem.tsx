@@ -1,9 +1,9 @@
-import { Todo } from '../../types/Itodo'
+import { deleteTask, updateTask } from 'api/todoService'
 import { useState } from 'react'
 import { Button, Checkbox, Form, Input } from 'antd'
 import { useForm } from 'antd/es/form/Form'
 import './TaskItem.scss'
-import { deleteTask, updateTask } from '../../api/todoService.ts'
+import { Todo } from 'types/Itodo'
 
 interface ITaskItemProps {
     taskObject: Todo

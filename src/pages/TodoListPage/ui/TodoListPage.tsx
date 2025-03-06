@@ -1,11 +1,11 @@
+import TaskForm from 'components/TaskForm/TaskForm'
+import TaskInfo from 'components/TaskInfo/TaskInfo'
+import TaskList from 'components/TaskList/TaskList'
 import { useEffect, useState, useCallback } from 'react'
-import TaskForm from '../../components/TaskForm/TaskForm'
-import { getTodosData } from '../../api/todoService.ts'
-import TaskInfo from '../../components/TaskInfo/TaskInfo.tsx'
+import { Filter, getTodosData } from 'api/todoService'
 import { Empty } from 'antd'
-import TaskList from '../../components/TaskList/TaskList.tsx'
-import './TodoListPage.scss'
-import { AllTodosResponse } from '../../types/responseTypes.ts'
+import 'pages/TodoListPage/ui/TodoListPage.scss'
+import { AllTodosResponse } from 'types/responseTypes'
 
 export const TodoListPage = () => {
     const [data, setData] = useState<AllTodosResponse | null>(null)

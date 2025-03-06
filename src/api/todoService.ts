@@ -1,5 +1,6 @@
 import axios, { AxiosResponse } from 'axios'
 import { AllTodosResponse } from '../types/responseTypes.ts'
+import { AllTodosResponse } from 'types/responseTypes'
 
 const todosApi = axios.create({
     baseURL: import.meta.env.VITE_APP_BASE_URL,

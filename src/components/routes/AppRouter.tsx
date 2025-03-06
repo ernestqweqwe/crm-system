@@ -1,7 +1,7 @@
 import { Route, Routes } from 'react-router'
-import { TodoListPage } from '../../pages/TodoListPage/TodoListPage'
-import { ProfilePage } from '../../pages/ProfilePage/ProfilePage'
-import { NotFoundPage } from '../../pages/NotFoundPage/NotFoundPage.tsx'
+import { TodoListPage } from 'pages/TodoListPage/ui/TodoListPage'
+import { ProfilePage } from 'pages/ProfilePage/ui/ProfilePage'
+import { NotFoundPage } from 'pages/NotFoundPage/ui/NotFoundPage'
 
 export const AppRouter = () => {
     return (

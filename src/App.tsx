@@ -1,7 +1,8 @@
+import { PageRouter } from 'components/routes/PageRouter'
+import { NotFoundPage } from 'pages/NotFoundPage/index'
 import { Suspense } from 'react'
-import { SideBar } from './components/SideBar/SideBar.tsx'
-import { AppRouter } from './components/routes/AppRouter.tsx'
 import './App.scss'
+import { Route, Routes } from 'react-router'
 
 function App() {
     return (

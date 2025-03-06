@@ -1,4 +1,4 @@
-import './index.scss'
+import 'pages/ProfilePage/ui/index.scss'
 
 export const ProfilePage = () => {
     return (

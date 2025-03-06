@@ -1,7 +1,8 @@
+import { Filter } from 'api/todoService'
 import { FC } from 'react'
 import './TaskInfo.scss'
 import { Button } from 'antd'
-import { Info } from '../../types/responseTypes.ts'
+import { Info } from 'types/responseTypes'
 
 interface TaskInfoProps {
     info: Info
