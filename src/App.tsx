@@ -4,16 +4,19 @@ import { RegistrationPage } from 'pages/RegistrationPage/RegistrationPage'
 import { Route, Routes } from 'react-router'
 import './App.scss'
 import { LoginPage } from 'pages/LoginPage/LoginPage'
-import { PageRouter } from './components/routes/PageRouter'
-import { PrivateRoter } from './components/routes/PrivateRoter'
-import { useAppDispatch } from './store/hooks/redux'
-import { isAuth } from './store/reducers/slices/authSlice/asyncThunks'
+import { PageRouter } from 'components/routes/PageRouter'
+import { PrivateRoter } from 'components/routes/PrivateRoter'
+import { useAppDispatch } from 'store/hooks/redux'
+import { isAuth } from 'store/reducers/slices/authSlice/asyncThunks'
+import { setLoading } from 'store/reducers/slices/authSlice/authSlice'
 
 function App() {
     const dispatch = useAppDispatch()
     useEffect(() => {
         if (localStorage.getItem('accessToken')) {
             dispatch(isAuth())
+        } else {
+            dispatch(setLoading(false))
         }
     }, [dispatch])
     return (

@@ -18,6 +18,9 @@ export const authSlice = createSlice({
         setAuth: (state, action: PayloadAction<boolean>) => {
             state.isAuth = action.payload
         },
+        setLoading: (state, action: PayloadAction<boolean>) => {
+            state.isLoading = action.payload
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -43,4 +46,4 @@ export const authSlice = createSlice({
     },
 })
 
-export const { setAuth } = authSlice.actions
+export const { setAuth, setLoading } = authSlice.actions
