@@ -5,17 +5,30 @@ import { useEffect, useState, useCallback } from 'react'
 import { Filter, getTodosData } from 'api/taskService'
 import { Col, Empty, Layout } from 'antd'
 import 'pages/TodoListPage/ui/TodoListPage.scss'
-import { AllTodosResponse } from 'types/responseTypes'
+import { Data, Info } from 'types/responseTypes'
 
 export const TodoListPage = () => {
-    const [data, setData] = useState<AllTodosResponse | null>(null)
+    const [tasksData, setTasksData] = useState<Data[] | null>(null)
+    const [tasksInfo, setTaskInfo] = useState<Info | null>(null)
     const [activeFilter, setActiveFilter] = useState<Filter>('all')
 
     const fetchData = useCallback(async () => {
         try {
             const newData = await getTodosData(activeFilter)
-            setData((prevData) => {
-                return JSON.stringify(prevData) === JSON.stringify(newData) ? prevData : newData
+            setTasksData((prevData) => {
+                if (JSON.stringify(prevData) === JSON.stringify(newData.data)) {
+                    return prevData
+                }
+
+                return newData.data
+            })
+
+            setTaskInfo((prevData) => {
+                if (JSON.stringify(prevData) === JSON.stringify(newData.info)) {
+                    return prevData
+                }
+
+                return newData.info
             })
         } catch (e) {
             console.log(e)
@@ -32,16 +45,16 @@ export const TodoListPage = () => {
         <Layout className="todo-list__page">
             <Col style={{ padding: 15, width: '70%' }}>
                 <TaskForm updateData={fetchData} />
-                {data && (
+                {tasksData && (
                     <>
                         <TaskInfo
                             activeFilter={activeFilter}
                             setActiveFilter={setActiveFilter}
-                            info={data.info}
+                            info={tasksInfo}
                         />
 
-                        {data.data.length !== 0 ? (
-                            <TaskList updateData={fetchData} taskList={data.data} />
+                        {tasksData.length !== 0 ? (
+                            <TaskList updateData={fetchData} taskList={tasksData} />
                         ) : (
                             <Empty description={'You dont have tasks'} />
                         )}
