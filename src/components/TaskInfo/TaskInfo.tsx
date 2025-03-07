@@ -6,39 +6,40 @@ import { Info } from 'types/responseTypes'
 
 interface TaskInfoProps {
     info: Info
-    activeFilter: string
+    activeFilter: Filter
     setActiveFilter: (filter: Filter) => void
 }
 
+const labelStatuses: Record<Filter, string> = {
+    all: 'Все',
+    inWork: 'В работе',
+    completed: 'Завершенные',
+}
+
+console.log(Object.entries(labelStatuses))
 const TaskInfo: FC<TaskInfoProps> = ({ info, activeFilter, setActiveFilter }) => {
-    const { all, completed, inWork } = info
+    const countOfTasks = {
+        all: info.all ?? 0,
+        inWork: info.inWork ?? 0,
+        completed: info.completed ?? 0,
+    }
 
     return (
         <div className="tasks-info">
-            <Button
-                disabled={activeFilter === 'all'}
-                type="primary"
-                size="middle"
-                onClick={() => setActiveFilter('all')}
-            >
-                All ({all})
-            </Button>
-            <Button
-                disabled={activeFilter === 'completed'}
-                type="primary"
-                size="middle"
-                onClick={() => setActiveFilter('completed')}
-            >
-                Completed ({completed})
-            </Button>
-            <Button
-                disabled={activeFilter === 'inWork'}
-                type="primary"
-                size="middle"
-                onClick={() => setActiveFilter('inWork')}
-            >
-                In work ({inWork})
-            </Button>
+            {Object.entries(labelStatuses).map(([key, label]) => {
+                const filter = key as Filter
+                return (
+                    <Button
+                        disabled={filter === activeFilter}
+                        type="primary"
+                        size="middle"
+                        key={key}
+                        onClick={() => setActiveFilter(filter)}
+                    >
+                        {label} ({countOfTasks[filter]})
+                    </Button>
+                )
+            })}
         </div>
     )
 }
