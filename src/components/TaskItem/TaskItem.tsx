@@ -1,8 +1,10 @@
 import { DeleteOutlined, EditOutlined, RollbackOutlined, SaveOutlined } from '@ant-design/icons'
+import { NoticeType } from 'antd/es/message/interface'
 import { deleteTask, updateTask } from 'api/taskService'
+import * as React from 'react'
 import { MAX_TASK_LENGTH, MIN_TASK_LENGTH } from 'src/constants'
 import { useState } from 'react'
-import { Button, Checkbox, Form, Input, Space } from 'antd'
+import { Button, Checkbox, Form, Input, message as AntMessage, Space } from 'antd'
 import { useForm } from 'antd/es/form/Form'
 import './TaskItem.scss'
 import { Todo } from 'types/Itodo'
@@ -22,19 +24,39 @@ const TaskItem = ({ taskObject, updateData }: ITaskItemProps) => {
     const [isEdit, setIsEdit] = useState(false)
     const [checkBoxPressed, setCheckboxPressed] = useState(isDone)
     const [form] = useForm()
+    const [messageApi, contextHolder] = AntMessage.useMessage()
+
+    const message = (type: NoticeType, content: React.ReactNode) => {
+        messageApi.open({
+            type,
+            content,
+        })
+    }
 
     const onToggle = async () => {
-        setCheckboxPressed(!checkBoxPressed)
-        await updateTask(id, title, !checkBoxPressed)
-        updateData()
+        try {
+            setCheckboxPressed(!checkBoxPressed)
+            await updateTask(id, title, !checkBoxPressed)
+            updateData()
+        } catch {
+            message('error', 'error on checkbox')
+        }
     }
 
     const onSubmit = async () => {
-        setIsEdit(false)
-        const values: values = form.getFieldsValue()
-        if (values.title !== title) {
-            await updateTask(id, values.title, checkBoxPressed)
-            updateData()
+        try {
+            message('loading', 'Loading')
+            setIsEdit(false)
+            const values: values = form.getFieldsValue()
+            if (values.title !== title) {
+                await updateTask(id, values.title, checkBoxPressed)
+                updateData()
+            }
+            messageApi.destroy()
+            message('success', 'task successfully saved ')
+        } catch {
+            messageApi.destroy()
+            message('error', 'task save error')
         }
     }
 
@@ -44,8 +66,16 @@ const TaskItem = ({ taskObject, updateData }: ITaskItemProps) => {
     }
 
     const onDelete = async (taskId: number) => {
-        await deleteTask(taskId)
-        updateData()
+        try {
+            message('loading', 'Loading')
+            await deleteTask(taskId)
+            updateData()
+            messageApi.destroy()
+            message('success', 'task successfully deleted ')
+        } catch {
+            messageApi.destroy()
+            message('error', 'task delete error')
+        }
     }
 
     const onChange = () => {
@@ -96,6 +126,7 @@ const TaskItem = ({ taskObject, updateData }: ITaskItemProps) => {
                     )}{' '}
                 </Space>
             </Form.Item>
+            {contextHolder}
         </Form>
     )
 }

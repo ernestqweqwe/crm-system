@@ -1,8 +1,9 @@
+import { NoticeType } from 'antd/es/message/interface'
 import { createTask } from 'api/taskService'
 import * as React from 'react'
 import { MAX_TASK_LENGTH, MIN_TASK_LENGTH } from 'src/constants'
 import { FC } from 'react'
-import { Button, Form, Input } from 'antd'
+import { Button, Form, Input, message as AntMessage } from 'antd'
 import '@ant-design/v5-patch-for-react-19'
 import './TaskForm.scss'
 
@@ -11,14 +12,30 @@ interface TaskFormProps {
 }
 
 const TaskForm: FC<TaskFormProps> = React.memo(({ updateData }) => {
-    const handleSubmit = async (task: string) => {
-        await createTask(task)
-        updateData()
-        form.resetFields()
-    }
-
     const [form] = Form.useForm()
     const { Item } = Form
+    const [messageApi, contextHolder] = AntMessage.useMessage()
+
+    const message = (type: NoticeType, content: React.ReactNode) => {
+        messageApi.open({
+            type,
+            content,
+        })
+    }
+
+    const handleSubmit = async (task: string) => {
+        try {
+            message('loading', 'Loading')
+            await createTask(task)
+            updateData()
+            form.resetFields()
+            messageApi.destroy()
+            message('success', 'task successfully created ')
+        } catch {
+            messageApi.destroy()
+            message('error', 'task create error')
+        }
+    }
 
     return (
         <Form
@@ -43,10 +60,11 @@ const TaskForm: FC<TaskFormProps> = React.memo(({ updateData }) => {
                 <Input autoFocus />
             </Item>
             <Item>
-                <Button size="middle                " type="primary" htmlType="submit">
+                <Button size="middle" type="primary" htmlType="submit">
                     ADD TASK
                 </Button>
             </Item>
+            {contextHolder}
         </Form>
     )
 })

@@ -28,8 +28,9 @@ export async function getTodosData(filter: Filter): Promise<AllTodosResponse> {
 export async function deleteTask(taskId: number) {
     try {
         await todosApi.delete(`/todos/${taskId}`)
-    } catch (e) {
-        console.log(e, 'Ошибка при удалении таски')
+    } catch (error) {
+        console.log(error, 'Ошибка при удалении таски')
+        throw error
     }
 }
 
@@ -45,8 +46,9 @@ export async function createTask(title: string) {
                 'Content-Type': 'application/json',
             },
         })
-    } catch (e) {
-        console.log(e, 'Ошибка при создания таски')
+    } catch (error) {
+        console.log(error, 'Ошибка при создания таски')
+        throw error
     }
 }
 
@@ -62,7 +64,8 @@ export async function updateTask(taskId: number, title: string, isDone: boolean)
                 'Content-Type': 'application/json',
             },
         })
-    } catch (e) {
-        console.log(e, 'Ошибка обновления таски')
+    } catch (error) {
+        console.log(error, 'Ошибка обновления таски')
+        throw error
     }
 }
