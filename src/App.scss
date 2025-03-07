@@ -6,14 +6,15 @@
 
 :root {
     --sidebar-width: 300px;
+
+    --line-color: #d3cdcd;
 }
 
-.content {
-    height: 100vh;
-    width: 100%;
+.page {
     display: flex;
-}
-.page-content {
     height: 100vh;
+}
+
+.page-wrapper {
     flex: 1;
 }

@@ -6,14 +6,12 @@ import { Route, Routes } from 'react-router'
 
 function App() {
     return (
-        <>
-            <Suspense fallback="">
-                <div className="content">
-                    <SideBar />
-                    <AppRouter />
-                </div>
-            </Suspense>
-        </>
+        <Suspense fallback="">
+            <Routes>
+                <Route path="/*" element={<PageRouter />} />
+                <Route path="*" element={<NotFoundPage />} />
+            </Routes>
+        </Suspense>
     )
 }
 

@@ -1,27 +1,14 @@
-.ant-form {
+.task-item {
     flex-wrap: nowrap;
-    width: 100%;
-}
+    .ant-form-item-control-input-content input {
+        background-color: white;
+    }
 
-.task-item {
-    margin-bottom: 30px;
-}
+    .ant-form-item-control-input-content input:disabled {
+        color: black;
+        background-color: #abbbe7;
+    }
 
-.task-input {
-    width: min(500px, 55vh);
-}
-
-#title {
-    background-color: white;
-}
-
-#title:disabled {
-    color: black;
-    background-color: #abbbe7;
-
-}
-
-.task-item {
     .through {
         text-decoration: line-through;
     }

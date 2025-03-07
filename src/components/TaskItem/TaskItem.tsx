@@ -1,6 +1,8 @@
-import { deleteTask, updateTask } from 'api/todoService'
+import { DeleteOutlined, EditOutlined, RollbackOutlined, SaveOutlined } from '@ant-design/icons'
+import { deleteTask, updateTask } from 'api/taskService'
+import { MAX_TASK_LENGTH, MIN_TASK_LENGTH } from 'src/constants'
 import { useState } from 'react'
-import { Button, Checkbox, Form, Input } from 'antd'
+import { Button, Checkbox, Form, Input, Space } from 'antd'
 import { useForm } from 'antd/es/form/Form'
 import './TaskItem.scss'
 import { Todo } from 'types/Itodo'
@@ -17,34 +19,37 @@ interface values {
 
 const TaskItem = ({ taskObject, updateData }: ITaskItemProps) => {
     const { isDone, title, id } = taskObject
-    const [changeButtonPressed, setChangeButtonPressed] = useState(false)
+    const [isEdit, setIsEdit] = useState(false)
     const [checkBoxPressed, setCheckboxPressed] = useState(isDone)
     const [form] = useForm()
 
     const onToggle = async () => {
         setCheckboxPressed(!checkBoxPressed)
-        await updateTask(id, title, !checkBoxPressed).then(() => updateData())
+        await updateTask(id, title, !checkBoxPressed)
+        updateData()
     }
 
-    const onSave = async () => {
-        setChangeButtonPressed(false)
+    const onSubmit = async () => {
+        setIsEdit(false)
         const values: values = form.getFieldsValue()
         if (values.title !== title) {
-            await updateTask(id, values.title, checkBoxPressed).then(() => updateData())
+            await updateTask(id, values.title, checkBoxPressed)
+            updateData()
         }
     }
 
     const onCancel = () => {
-        setChangeButtonPressed(false)
-        form.setFieldValue('title', title)
+        setIsEdit(false)
+        form.resetFields(['title'])
     }
 
     const onDelete = async (taskId: number) => {
-        await deleteTask(taskId).then(() => updateData())
+        await deleteTask(taskId)
+        updateData()
     }
 
     const onChange = () => {
-        setChangeButtonPressed(true)
+        setIsEdit(true)
     }
 
     return (
@@ -52,45 +57,44 @@ const TaskItem = ({ taskObject, updateData }: ITaskItemProps) => {
             <Form.Item name="isDone" valuePropName="checked">
                 <Checkbox onClick={onToggle} />
             </Form.Item>
-            <Form.Item name="title" rules={[{ min: 2 }, { max: 64 }, { required: true }]}>
+            <Form.Item
+                name="title"
+                rules={[{ min: MIN_TASK_LENGTH }, { max: MAX_TASK_LENGTH }, { required: true }]}
+                style={{ flexGrow: 1 }}
+            >
                 <Input
-                    disabled={!changeButtonPressed}
+                    disabled={!isEdit}
                     className={checkBoxPressed ? 'task-input through' : 'task-input'}
                 />
             </Form.Item>
             <Form.Item>
-                {changeButtonPressed ? (
-                    <>
-                        <Button size="middle" type="primary" onClick={onSave}>
-                            Save
-                        </Button>
+                <Space>
+                    {isEdit ? (
+                        <>
+                            <Button size="middle" type="primary" onClick={onSubmit}>
+                                <SaveOutlined />
+                            </Button>
 
-                        <Button
-                            size="middle"
-                            type="primary"
-                            style={{ marginLeft: 10 }}
-                            onClick={onCancel}
-                        >
-                            Cancel
-                        </Button>
-                    </>
-                ) : (
-                    <>
-                        <Button size="middle" type="primary" onClick={onChange}>
-                            Change
-                        </Button>
-
-                        <Button
-                            size="middle"
-                            type="primary"
-                            danger
-                            onClick={() => onDelete(id)}
-                            style={{ marginLeft: 10 }}
-                        >
-                            Delete
-                        </Button>
-                    </>
-                )}{' '}
+                            <Button size="middle" type="primary" onClick={onCancel}>
+                                <RollbackOutlined />
+                            </Button>
+                        </>
+                    ) : (
+                        <>
+                            <Button size="middle" type="primary" onClick={onChange}>
+                                <EditOutlined />
+                            </Button>
+                            <Button
+                                size="middle"
+                                type="primary"
+                                danger
+                                onClick={() => onDelete(id)}
+                            >
+                                <DeleteOutlined />
+                            </Button>
+                        </>
+                    )}{' '}
+                </Space>
             </Form.Item>
         </Form>
     )

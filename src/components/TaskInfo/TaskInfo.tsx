@@ -1,4 +1,4 @@
-import { Filter } from 'api/todoService'
+import { Filter } from 'api/taskService'
 import { FC } from 'react'
 import './TaskInfo.scss'
 import { Button } from 'antd'
@@ -7,17 +7,18 @@ import { Info } from 'types/responseTypes'
 interface TaskInfoProps {
     info: Info
     activeFilter: string
-    setActiveFilter: (filter: string) => void
+    setActiveFilter: (filter: Filter) => void
 }
 
 const TaskInfo: FC<TaskInfoProps> = ({ info, activeFilter, setActiveFilter }) => {
     const { all, completed, inWork } = info
+
     return (
         <div className="tasks-info">
             <Button
                 disabled={activeFilter === 'all'}
                 type="primary"
-                size="large"
+                size="middle"
                 onClick={() => setActiveFilter('all')}
             >
                 All ({all})
@@ -25,7 +26,7 @@ const TaskInfo: FC<TaskInfoProps> = ({ info, activeFilter, setActiveFilter }) =>
             <Button
                 disabled={activeFilter === 'completed'}
                 type="primary"
-                size="large"
+                size="middle"
                 onClick={() => setActiveFilter('completed')}
             >
                 Completed ({completed})
@@ -33,7 +34,7 @@ const TaskInfo: FC<TaskInfoProps> = ({ info, activeFilter, setActiveFilter }) =>
             <Button
                 disabled={activeFilter === 'inWork'}
                 type="primary"
-                size="large"
+                size="middle"
                 onClick={() => setActiveFilter('inWork')}
             >
                 In work ({inWork})

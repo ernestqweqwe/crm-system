@@ -1,15 +1,17 @@
 import axios, { AxiosResponse } from 'axios'
-import { AllTodosResponse } from '../types/responseTypes.ts'
+import { BASE_URL } from 'src/constants'
 import { AllTodosResponse } from 'types/responseTypes'
 
+export type Filter = 'all' | 'inWork' | 'completed'
+
 const todosApi = axios.create({
-    baseURL: import.meta.env.VITE_APP_BASE_URL,
+    baseURL: BASE_URL,
     headers: {
         accept: 'application/json',
     },
 })
 
-export async function getTodosData(filter: string): Promise<AllTodosResponse | null> {
+export async function getTodosData(filter: Filter): Promise<AllTodosResponse> {
     try {
         const response: AxiosResponse<AllTodosResponse> = await todosApi.get('/todos', {
             params: {
@@ -17,9 +19,9 @@ export async function getTodosData(filter: string): Promise<AllTodosResponse | n
             },
         })
         return response.data
-    } catch (e) {
-        console.log(e, 'Ошибка получения тасок')
-        return null
+    } catch (error) {
+        console.log(error, 'Ошибка получения тасок')
+        throw error
     }
 }
 
@@ -64,5 +66,3 @@ export async function updateTask(taskId: number, title: string, isDone: boolean)
         console.log(e, 'Ошибка обновления таски')
     }
 }
-
-13213

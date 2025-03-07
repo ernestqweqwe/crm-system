@@ -9,6 +9,6 @@ export const NotFoundPage = () => {
             status={'404'}
             subTitle={'Sorry, page doesnt exist'}
             extra={<Link to={'/'}>Back to home page</Link>}
-        ></Result>
+        />
     )
 }

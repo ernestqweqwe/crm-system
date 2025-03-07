@@ -1,4 +1,6 @@
-import { createTask } from 'api/todoService'
+import { createTask } from 'api/taskService'
+import * as React from 'react'
+import { MAX_TASK_LENGTH, MIN_TASK_LENGTH } from 'src/constants'
 import { FC } from 'react'
 import { Button, Form, Input } from 'antd'
 import '@ant-design/v5-patch-for-react-19'
@@ -8,22 +10,20 @@ interface TaskFormProps {
     updateData: () => void
 }
 
-const TaskForm: FC<TaskFormProps> = ({ updateData }) => {
+const TaskForm: FC<TaskFormProps> = React.memo(({ updateData }) => {
     const handleSubmit = async (task: string) => {
-        await createTask(task).then(() => {
-            updateData()
-            form.resetFields()
-        })
+        await createTask(task)
+        updateData()
+        form.resetFields()
     }
 
     const [form] = Form.useForm()
+    const { Item } = Form
 
     return (
         <Form
             form={form}
-            className="form"
-            labelCol={{ span: 4 }}
-            style={{ width: 600 }}
+            className="task-form"
             initialValues={{ remember: true }}
             onFinish={(values) => handleSubmit(values.task)}
             validateMessages={{
@@ -34,20 +34,20 @@ const TaskForm: FC<TaskFormProps> = ({ updateData }) => {
                 },
             }}
         >
-            <Form.Item
-                rules={[{ min: 2 }, { max: 64 }, { required: true }]}
+            <Item
+                rules={[{ min: MIN_TASK_LENGTH }, { max: MAX_TASK_LENGTH }, { required: true }]}
                 label="Task"
                 name="task"
+                style={{ flexGrow: 1 }}
             >
                 <Input autoFocus />
-            </Form.Item>
-            <Form.Item>
-                <Button size="large" type="primary" htmlType="submit">
+            </Item>
+            <Item>
+                <Button size="middle                " type="primary" htmlType="submit">
                     ADD TASK
                 </Button>
-            </Form.Item>
+            </Item>
         </Form>
     )
-}
-
+})
 export default TaskForm
