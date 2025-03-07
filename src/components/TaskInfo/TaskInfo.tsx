@@ -5,7 +5,7 @@ import { Button } from 'antd'
 import { Info } from 'types/responseTypes'
 
 interface TaskInfoProps {
-    info: Info
+    info: Info | null
     activeFilter: Filter
     setActiveFilter: (filter: Filter) => void
 }
@@ -19,9 +19,9 @@ const labelStatuses: Record<Filter, string> = {
 console.log(Object.entries(labelStatuses))
 const TaskInfo: FC<TaskInfoProps> = ({ info, activeFilter, setActiveFilter }) => {
     const countOfTasks = {
-        all: info.all ?? 0,
-        inWork: info.inWork ?? 0,
-        completed: info.completed ?? 0,
+        all: info?.all ?? 0,
+        inWork: info?.inWork ?? 0,
+        completed: info?.completed ?? 0,
     }
 
     return (
