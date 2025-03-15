@@ -1,22 +1,18 @@
-import { Todo } from '../../types/ResponseTypes.ts'
-import TaskItem from '../TaskItem/TaskItem.tsx'
-import './TaskList.scss'
+import TaskItem from 'components/TaskItem/TaskItem'
 import { FC } from 'react'
+import './TaskList.scss'
+import { Todo } from 'types/Itodo'
 
 interface ITaskListProps {
     taskList: Todo[]
-    updateTodoList: () => void
+    updateData: () => void
 }
-const TaskList: FC<ITaskListProps> = ({ taskList, updateTodoList }) => {
+const TaskList: FC<ITaskListProps> = ({ taskList, updateData }) => {
     return (
         <div className="task-list">
-            <div className="task-list__container">
-                {taskList.map((task) => {
-                    return (
-                        <TaskItem updateTodoList={updateTodoList} taskObject={task} key={task.id} />
-                    )
-                })}
-            </div>
+            {taskList.map((task) => {
+                return <TaskItem updateData={updateData} taskObject={task} key={task.id} />
+            })}
         </div>
     )
 }

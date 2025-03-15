@@ -1,0 +1,19 @@
+.ant-layout-sider {
+    border: 1px solid rgb(211, 205, 205);
+
+    .logo {
+        border-bottom: 1px solid var(--line-color);
+        height: 63px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .trigger-btn {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        border: none;
+    }
+}
