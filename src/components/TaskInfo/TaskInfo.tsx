@@ -16,9 +16,8 @@ const labelStatuses: Record<Filter, string> = {
     completed: 'Завершенные',
 }
 
-console.log(Object.entries(labelStatuses))
 const TaskInfo: FC<TaskInfoProps> = ({ info, activeFilter, setActiveFilter }) => {
-    const countOfTasks = {
+    const countOfTasks: Record<Filter, number> = {
         all: info?.all ?? 0,
         inWork: info?.inWork ?? 0,
         completed: info?.completed ?? 0,
@@ -26,7 +25,7 @@ const TaskInfo: FC<TaskInfoProps> = ({ info, activeFilter, setActiveFilter }) =>
 
     return (
         <div className="tasks-info">
-            {Object.entries(labelStatuses).map(([key, label]) => {
+            {Object.entries(countOfTasks).map(([key]) => {
                 const filter = key as Filter
                 return (
                     <Button
@@ -36,7 +35,7 @@ const TaskInfo: FC<TaskInfoProps> = ({ info, activeFilter, setActiveFilter }) =>
                         key={key}
                         onClick={() => setActiveFilter(filter)}
                     >
-                        {label} ({countOfTasks[filter]})
+                        {labelStatuses[filter]} ({countOfTasks[filter]})
                     </Button>
                 )
             })}
