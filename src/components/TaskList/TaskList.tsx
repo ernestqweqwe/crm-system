@@ -1,18 +1,27 @@
-import TaskItem from 'components/TaskItem/TaskItem'
-import { FC } from 'react'
+import { todoApi } from 'store/services/todosService'
+import { useAppSelector } from 'store/hooks/redux'
+import TaskItem from '../TaskItem/TaskItem.tsx'
 import './TaskList.scss'
-import { Todo } from 'types/Itodo'
+import { Empty } from 'antd'
 
-interface ITaskListProps {
-    taskList: Todo[]
-    updateData: () => void
-}
-const TaskList: FC<ITaskListProps> = ({ taskList, updateData }) => {
+const TaskList = () => {
+    const { tabFilter } = useAppSelector((state) => state.task)
+
+    const { tasks } = todoApi.useGetAllTodosQuery(tabFilter, {
+        pollingInterval: 5000,
+        selectFromResult: ({ data }) => ({ tasks: data?.data }),
+    })
+
+    console.log('render taskList')
+
     return (
         <div className="task-list">
-            {taskList.map((task) => {
-                return <TaskItem updateData={updateData} taskObject={task} key={task.id} />
-            })}
+            {tasks &&
+                tasks.map((task) => {
+                    return <TaskItem task={task} key={task.id} />
+                })}
+
+            {tasks?.length === 0 && <Empty description="Please add some tasks" />}
         </div>
     )
 }
