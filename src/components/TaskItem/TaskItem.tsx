@@ -4,7 +4,12 @@ import './TaskItem.scss'
 import { todoApi } from 'store/services/todosService'
 import { Data } from 'types/responseTypes'
 import { FC, useState } from 'react'
-import { DeleteOutlined, EditOutlined, RollbackOutlined, SaveOutlined } from '@ant-design/icons'
+import {
+    DeleteOutlined,
+    EditOutlined,
+    RollbackOutlined,
+    SaveOutlined,
+} from '@ant-design/icons'
 
 interface formValues {
     title: string
@@ -76,7 +81,11 @@ const TaskItem: FC<TaskItemProps> = ({ task }) => {
                 <Space>
                     {changeButtonPressed ? (
                         <>
-                            <Button size="middle" type="primary" onClick={onSave}>
+                            <Button
+                                size="middle"
+                                type="primary"
+                                onClick={onSave}
+                            >
                                 <SaveOutlined />
                             </Button>
 
@@ -91,7 +100,11 @@ const TaskItem: FC<TaskItemProps> = ({ task }) => {
                         </>
                     ) : (
                         <>
-                            <Button size="middle" type="primary" onClick={onChange}>
+                            <Button
+                                size="middle"
+                                type="primary"
+                                onClick={onChange}
+                            >
                                 <EditOutlined />
                             </Button>
 
@@ -112,6 +125,4 @@ const TaskItem: FC<TaskItemProps> = ({ task }) => {
     )
 }
 
-//todo фокус при нажатии change
-//todo возможно сохранить item с <2 символов
 export default TaskItem

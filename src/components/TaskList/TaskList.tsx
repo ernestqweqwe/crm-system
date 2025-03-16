@@ -21,7 +21,9 @@ const TaskList = () => {
                     return <TaskItem task={task} key={task.id} />
                 })}
 
-            {tasks?.length === 0 && <Empty description="Please add some tasks" />}
+            {tasks?.length === 0 && (
+                <Empty description="Please add some tasks" />
+            )}
         </div>
     )
 }

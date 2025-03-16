@@ -41,7 +41,10 @@ export const SideBar = () => {
                 ]}
             />
 
-            <Button className="trigger-btn" onClick={() => setCollapsed((prev) => !prev)}>
+            <Button
+                className="trigger-btn"
+                onClick={() => setCollapsed((prev) => !prev)}
+            >
                 {collapsed ? <ArrowRightOutlined /> : <ArrowLeftOutlined />}
             </Button>
         </Layout.Sider>

@@ -40,7 +40,11 @@ const TaskForm: FC<TaskFormProps> = ({ onClose, formRef }) => {
                 },
             }}
         >
-            <Item rules={[{ min: 2 }, { max: 64 }, { required: true }]} label="Task" name="task">
+            <Item
+                rules={[{ min: 2 }, { max: 64 }, { required: true }]}
+                label="Task"
+                name="task"
+            >
                 <Input ref={inputRef} />
             </Item>
         </Form>

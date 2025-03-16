@@ -13,7 +13,7 @@ import { setLoading } from 'store/reducers/slices/authSlice/authSlice'
 function App() {
     const dispatch = useAppDispatch()
     useEffect(() => {
-        if (localStorage.getItem('accessToken')) {
+        if (localStorage.getItem('refreshToken')) {
             dispatch(isAuth())
         } else {
             dispatch(setLoading(false))

@@ -1,14 +1,20 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { fetchLogin, isAuth, logout } from 'store/reducers/slices/authSlice/asyncThunks'
+import {
+    login,
+    isAuth,
+    logout,
+} from 'store/reducers/slices/authSlice/asyncThunks'
 
 interface userInitialState {
     isAuth: boolean
     isLoading: boolean
+    accessToken: string
 }
 
 const initialState: userInitialState = {
     isAuth: false,
     isLoading: true,
+    accessToken: '',
 }
 
 export const authSlice = createSlice({
@@ -21,16 +27,25 @@ export const authSlice = createSlice({
         setLoading: (state, action: PayloadAction<boolean>) => {
             state.isLoading = action.payload
         },
+        setAccessToken: (state, action: PayloadAction<string>) => {
+            state.accessToken = action.payload
+        },
     },
     extraReducers: (builder) => {
         builder
-            .addCase(fetchLogin.fulfilled, (state) => {
+            .addCase(login.fulfilled, (state) => {
                 state.isAuth = true
                 state.isLoading = false
             })
             .addCase(logout.fulfilled, (state) => {
                 state.isAuth = false
                 state.isLoading = false
+                state.accessToken = ''
+            })
+            .addCase(logout.rejected, (state) => {
+                state.isAuth = false
+                state.isLoading = false
+                state.accessToken = ''
             })
             .addCase(isAuth.pending, (state) => {
                 state.isLoading = true
@@ -46,4 +61,4 @@ export const authSlice = createSlice({
     },
 })
 
-export const { setAuth, setLoading } = authSlice.actions
+export const { setAuth, setLoading, setAccessToken } = authSlice.actions

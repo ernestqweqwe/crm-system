@@ -2,7 +2,10 @@ import './TaskInfo.scss'
 import { Radio, RadioChangeEvent } from 'antd'
 import { useAppDispatch, useAppSelector } from 'src/store/hooks/redux.ts'
 import { todoApi } from 'src/store/services/todosService.ts'
-import { setFilter, TabFilters } from 'src/store/reducers/slices/taskSlice/taskSlice.ts'
+import {
+    setFilter,
+    TabFilters,
+} from 'src/store/reducers/slices/taskSlice/taskSlice.ts'
 
 export type Filter = 'all' | 'inWork' | 'completed'
 

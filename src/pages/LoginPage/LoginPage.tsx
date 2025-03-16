@@ -1,10 +1,20 @@
-import { Button, Checkbox, Form, Input, Layout, message, Row, Space, Typography } from 'antd'
+import {
+    Button,
+    Checkbox,
+    Form,
+    Input,
+    Layout,
+    message,
+    Row,
+    Space,
+    Typography,
+} from 'antd'
 import './LoginPage.scss'
 import { useForm } from 'antd/es/form/Form'
 import { NoticeType } from 'antd/es/message/interface'
 import { useNavigate } from 'react-router'
 import { useAppDispatch } from 'store/hooks/redux'
-import { fetchLogin } from 'store/reducers/slices/authSlice/asyncThunks'
+import { login } from 'store/reducers/slices/authSlice/asyncThunks'
 import { Link as RouterLink } from 'react-router'
 
 export const LoginPage = () => {
@@ -28,7 +38,7 @@ export const LoginPage = () => {
         try {
             notification('loading', 'Loading')
             const value = form.getFieldsValue()
-            await dispatch(fetchLogin(value)).unwrap()
+            await dispatch(login(value)).unwrap()
             navigate('/')
         } catch (err) {
             messageApi.destroy()
@@ -40,7 +50,14 @@ export const LoginPage = () => {
 
     return (
         <Layout style={{ minHeight: '100vh' }}>
-            <Row style={{ height: '100vh', flexWrap: 'nowrap', padding: 10, overflow: 'hidden' }}>
+            <Row
+                style={{
+                    height: '100vh',
+                    flexWrap: 'nowrap',
+                    padding: 10,
+                    overflow: 'hidden',
+                }}
+            >
                 <div className="img-container">
                     <img src="/assets/login_page_img.png" alt="skeleton" />
                 </div>
@@ -52,18 +69,26 @@ export const LoginPage = () => {
                         </div>
 
                         <img src="/assets/login_page_icon.png" alt="icon" />
-                        <Form layout={'vertical'} form={form} onFinish={handleSubmit}>
+                        <Form
+                            layout={'vertical'}
+                            form={form}
+                            onFinish={handleSubmit}
+                        >
                             <Item
                                 name="login"
                                 label="Login"
                                 rules={[
-                                    { required: true, message: 'Login field is required' },
+                                    {
+                                        required: true,
+                                        message: 'Login field is required',
+                                    },
                                     { min: 2, message: 'Min 2 symbols' },
                                     { max: 64, message: 'Max 64 symbols' },
 
                                     {
                                         pattern: /[a-zA-Z]+$/,
-                                        message: 'Symbols must be of the latin alphabet',
+                                        message:
+                                            'Symbols must be of the latin alphabet',
                                     },
                                 ]}
                                 hasFeedback
@@ -75,7 +100,10 @@ export const LoginPage = () => {
                                 label="Password"
                                 style={{ marginBottom: 8 }}
                                 rules={[
-                                    { required: true, message: 'Password field is required' },
+                                    {
+                                        required: true,
+                                        message: 'Password field is required',
+                                    },
                                     {
                                         min: 6,
                                         message: 'Min 6 symbols',
@@ -90,8 +118,15 @@ export const LoginPage = () => {
                                 <Input type="password" />
                             </Item>
 
-                            <Space style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                <Checkbox className="remember-btn">Remember me</Checkbox>
+                            <Space
+                                style={{
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                }}
+                            >
+                                <Checkbox className="remember-btn">
+                                    Remember me
+                                </Checkbox>
                                 <Link className="link">Forgot Password?</Link>
                             </Space>
                             <Button className="login-btn" htmlType="submit">

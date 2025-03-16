@@ -5,7 +5,6 @@
     display: flex;
     gap: 10px;
 
-
     .ant-form-item {
         margin: 0;
     }
@@ -27,8 +26,7 @@
     }
 }
 
-
-@media(width < 470px) {
+@media (width < 470px) {
     .task-item {
         flex-direction: column;
     }
