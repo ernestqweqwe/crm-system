@@ -1,9 +1,11 @@
-import { $api } from 'src/api/http'
 import { AxiosResponse } from 'axios'
 import { ProfileRequest } from 'types/authTypes'
+import { $api } from 'src/api/http'
 
-export const getUserProfile = async (): Promise<
-    AxiosResponse<ProfileRequest>
-> => {
-    return await $api.get<ProfileRequest>('user/profile')
+class UserService {
+    static getProfile = async (): Promise<AxiosResponse<ProfileRequest>> => {
+        return await $api<ProfileRequest>('user/profile')
+    }
 }
+
+export default UserService

@@ -39,7 +39,7 @@ const TaskInfo = () => {
                 {Object.entries(countOfTasks).map(([key]) => {
                     const filter = key as Filter
                     return (
-                        <Radio.Button type="primary" value={key}>
+                        <Radio.Button type="primary" value={key} key={key}>
                             {labelStatuses[filter]} ({countOfTasks[filter]})
                         </Radio.Button>
                     )

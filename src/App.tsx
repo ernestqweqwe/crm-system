@@ -1,43 +1,51 @@
-import { NotFoundPage } from 'pages/NotFoundPage/NotFoundPage'
-import { createBrowserRouter, RouterProvider } from 'react-router'
 import './App.scss'
-import { RootRouter } from 'src/components/routes/RootRouter.tsx'
+import { RouterProvider } from 'react-router-dom'
+import { useAppDispatch } from 'src/store/hooks/redux.ts'
+import { useEffect } from 'react'
+import { checkAuthStatus } from 'src/store/reducers/slices/sessionSlice/sessionAsyncThunks.ts'
+import { createBrowserRouter } from 'react-router'
+import { NotFoundPage } from 'src/pages/NotFoundPage/NotFoundPage.tsx'
 import { TodoListPage } from 'src/pages/TodoListPage/TodoListPage.tsx'
-import {
-    loader as profileLoader,
-    ProfilePage,
-} from 'src/pages/ProfilePage/ProfilePage.tsx'
+import { ProfilePage } from 'src/pages/ProfilePage/ProfilePage.tsx'
 import { RegistrationPage } from 'src/pages/RegistrationPage/RegistrationPage.tsx'
 import { LoginPage } from 'src/pages/LoginPage/LoginPage.tsx'
+import PrivateRouter from 'src/components/routes/PrivateRouter.tsx'
+import { RootRouter } from 'src/components/routes/RootRouter.tsx'
 
-function App() {
-    const router = createBrowserRouter([
-        {
-            path: '/',
-            element: <RootRouter />,
-            errorElement: <NotFoundPage />,
-            children: [
-                {
-                    index: true,
-                    element: <TodoListPage />,
-                },
-                {
-                    path: 'profile',
-                    element: <ProfilePage />,
-                    loader: profileLoader,
-                },
-            ],
-        },
-        {
-            path: '/registration',
-            element: <RegistrationPage />,
-        },
-        {
-            path: '/login',
-            element: <LoginPage />,
-        },
-    ])
-    return <RouterProvider router={router}></RouterProvider>
+const router = createBrowserRouter([
+    {
+        element: <PrivateRouter />,
+        errorElement: <NotFoundPage />,
+        children: [
+            {
+                element: <RootRouter />,
+                children: [
+                    {
+                        path: '/',
+                        element: <TodoListPage />,
+                    },
+                    {
+                        path: 'profile',
+                        element: <ProfilePage />,
+                    },
+                ],
+            },
+        ],
+    },
+    {
+        path: '/registration',
+        element: <RegistrationPage />,
+    },
+    {
+        path: '/login',
+        element: <LoginPage />,
+    },
+])
+
+export const App = () => {
+    const dispatch = useAppDispatch()
+    useEffect(() => {
+        dispatch(checkAuthStatus())
+    }, [])
+    return <RouterProvider router={router} />
 }
-
-export default App
