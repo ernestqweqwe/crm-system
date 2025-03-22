@@ -14,7 +14,7 @@ import { useForm } from 'antd/es/form/Form'
 import { NoticeType } from 'antd/es/message/interface'
 import { useNavigate } from 'react-router'
 import { useAppDispatch } from 'store/hooks/redux'
-import { login } from 'store/reducers/slices/authSlice/asyncThunks'
+import { login } from 'src/store/reducers/slices/sessionSlice/sessionAsyncThunks.ts'
 import { Link as RouterLink } from 'react-router'
 
 export const LoginPage = () => {

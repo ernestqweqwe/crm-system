@@ -1,24 +1,22 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import {
     login,
-    isAuth,
+    checkAuthStatus,
     logout,
-} from 'store/reducers/slices/authSlice/asyncThunks'
+} from 'src/store/reducers/slices/sessionSlice/sessionAsyncThunks.ts'
 
 interface userInitialState {
     isAuth: boolean
     isLoading: boolean
-    accessToken: string
 }
 
 const initialState: userInitialState = {
     isAuth: false,
     isLoading: true,
-    accessToken: '',
 }
 
-export const authSlice = createSlice({
-    name: 'auth',
+export const sessionSlice = createSlice({
+    name: 'session',
     initialState,
     reducers: {
         setAuth: (state, action: PayloadAction<boolean>) => {
@@ -26,9 +24,6 @@ export const authSlice = createSlice({
         },
         setLoading: (state, action: PayloadAction<boolean>) => {
             state.isLoading = action.payload
-        },
-        setAccessToken: (state, action: PayloadAction<string>) => {
-            state.accessToken = action.payload
         },
     },
     extraReducers: (builder) => {
@@ -40,25 +35,25 @@ export const authSlice = createSlice({
             .addCase(logout.fulfilled, (state) => {
                 state.isAuth = false
                 state.isLoading = false
-                state.accessToken = ''
             })
-            .addCase(logout.rejected, (state) => {
-                state.isAuth = false
-                state.isLoading = false
-                state.accessToken = ''
-            })
-            .addCase(isAuth.pending, (state) => {
+            .addCase(logout.pending, (state) => {
                 state.isLoading = true
             })
-            .addCase(isAuth.fulfilled, (state) => {
+            .addCase(logout.rejected, (state) => {
+                state.isLoading = false
+            })
+            .addCase(checkAuthStatus.pending, (state) => {
+                state.isLoading = true
+            })
+            .addCase(checkAuthStatus.fulfilled, (state) => {
                 state.isAuth = true
                 state.isLoading = false
             })
-            .addCase(isAuth.rejected, (state) => {
+            .addCase(checkAuthStatus.rejected, (state) => {
                 state.isAuth = false
                 state.isLoading = false
             })
     },
 })
 
-export const { setAuth, setLoading, setAccessToken } = authSlice.actions
+export const { setAuth, setLoading } = sessionSlice.actions

@@ -1,30 +1,23 @@
-import './index.scss'
-import { useEffect, useState } from 'react'
-import { ProfileRequest } from 'types/authTypes'
 import { getUserProfile } from 'api/services/UserService'
-import { Button, Descriptions, Layout } from 'antd'
-import { useAppDispatch } from 'src/store/hooks/redux'
-import { logout } from 'src/store/reducers/slices/authSlice/asyncThunks'
+import { Avatar, Button, Card, Descriptions } from 'antd'
+import { UserOutlined } from '@ant-design/icons'
+import { useLoaderData } from 'react-router'
+import { logout } from 'src/store/reducers/slices/sessionSlice/sessionAsyncThunks.ts'
+import { useAppDispatch } from 'src/store/hooks/redux.ts'
+
+export async function loader() {
+    const response = await getUserProfile()
+    return response.data
+}
 
 export const ProfilePage = () => {
-    const [data, setData] = useState<ProfileRequest | null>(null)
+    const data = useLoaderData()
     const dispatch = useAppDispatch()
 
-    useEffect(() => {
-        const fetchUserData = async () => {
-            try {
-                const response = await getUserProfile()
-                setData(response.data)
-            } catch {
-                console.log('ошибка на самой странице')
-            }
-        }
-
-        fetchUserData()
-    }, [])
     return (
-        <Layout className="profile-page">
-            <Descriptions style={{ width: 300 }} title="User Info" column={1}>
+        <Card style={{ width: 600, margin: '30px 0' }} className="profile-page">
+            <Avatar icon={<UserOutlined />} size={64} />
+            <Descriptions title="User Information">
                 <Descriptions.Item label="UserName">
                     {data?.username}
                 </Descriptions.Item>
@@ -45,6 +38,6 @@ export const ProfilePage = () => {
             >
                 logout
             </Button>
-        </Layout>
+        </Card>
     )
 }

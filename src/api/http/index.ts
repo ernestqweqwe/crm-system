@@ -1,10 +1,8 @@
 import axios, { InternalAxiosRequestConfig } from 'axios'
-import {
-    setAccessToken,
-    setAuth,
-} from 'src/store/reducers/slices/authSlice/authSlice'
+import { setAuth } from 'src/store/reducers/slices/sessionSlice/sessionSlice.ts'
 import { store } from 'src/store/store'
 import { Token } from 'types/authTypes'
+import { accessToken } from 'src/api/services/TokenServise.ts'
 const BASE_URL = import.meta.env.VITE_BASE_URL
 
 export const $api = axios.create({
@@ -12,7 +10,7 @@ export const $api = axios.create({
 })
 
 $api.interceptors.request.use((config): InternalAxiosRequestConfig => {
-    config.headers.Authorization = `Bearer ${store.getState().auth.accessToken}`
+    config.headers.Authorization = `Bearer ${accessToken.getToken()}`
     return config
 })
 
@@ -31,14 +29,14 @@ $api.interceptors.response.use(
                         refreshToken: localStorage.getItem('refreshToken'),
                     }
                 )
-                store.dispatch(setAccessToken(response.data.accessToken))
+                accessToken.setToken(response.data.accessToken)
                 localStorage.setItem('refreshToken', response.data.refreshToken)
 
                 return $api.request(originalRequest)
             } catch {
                 console.log('Не авторизован')
                 store.dispatch(setAuth(false))
-                store.dispatch(setAccessToken(''))
+                accessToken.resetToken()
                 localStorage.clear()
             }
         }

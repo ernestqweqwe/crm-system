@@ -1,13 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { setupListeners } from '@reduxjs/toolkit/query'
-import { todoApi } from 'store/services/todosService'
-import { taskSlice } from 'store/reducers/slices/taskSlice/taskSlice.ts'
-import { authSlice } from './reducers/slices/authSlice/authSlice'
+import { todoApi } from 'src/store/services/taskListService.ts'
+import { taskListSlice } from 'src/store/reducers/slices/taskListSlice/taskListSlice.ts'
+import { sessionSlice } from 'src/store/reducers/slices/sessionSlice/sessionSlice.ts'
 
 export const store = configureStore({
     reducer: {
-        task: taskSlice.reducer,
-        auth: authSlice.reducer,
+        taskList: taskListSlice.reducer,
+        session: sessionSlice.reducer,
         [todoApi.reducerPath]: todoApi.reducer,
     },
     middleware: (getDefaultMiddleware) =>

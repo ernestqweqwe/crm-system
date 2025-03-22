@@ -1,5 +1,5 @@
 import { $api } from 'src/api/http'
-import axios, { AxiosResponse } from 'axios'
+import { AxiosResponse } from 'axios'
 import { AuthData, Token, UserRegistration } from 'types/authTypes'
 
 class AuthService {
@@ -24,7 +24,7 @@ class AuthService {
     }
 
     static logout = async (): Promise<void> => {
-        return await axios.post('https://easydev.club/api/v1/user/logout')
+        return await $api.post('https://easydev.club/api/v1/user/logout')
     }
 }
 

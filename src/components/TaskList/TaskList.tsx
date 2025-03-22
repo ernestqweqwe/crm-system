@@ -1,18 +1,16 @@
-import { todoApi } from 'store/services/todosService'
+import { todoApi } from 'src/store/services/taskListService.ts'
 import { useAppSelector } from 'store/hooks/redux'
 import TaskItem from '../TaskItem/TaskItem.tsx'
 import './TaskList.scss'
 import { Empty } from 'antd'
 
 const TaskList = () => {
-    const { tabFilter } = useAppSelector((state) => state.task)
+    const { tabFilter } = useAppSelector((state) => state.taskList)
 
     const { tasks } = todoApi.useGetAllTodosQuery(tabFilter, {
         pollingInterval: 5000,
         selectFromResult: ({ data }) => ({ tasks: data?.data }),
     })
-
-    console.log('render taskList')
 
     return (
         <div className="task-list">

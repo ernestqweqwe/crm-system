@@ -1,4 +1,4 @@
-import { Button, Form, Input, Layout, message, Row, Space } from 'antd'
+import { Button, Form, Input, message, Row, Space } from 'antd'
 import './RegistrationPage.scss'
 import authService from 'api/services/AuthService'
 import { AxiosError } from 'axios'
@@ -34,7 +34,7 @@ export const RegistrationPage = () => {
         }
     }
     return (
-        <Layout style={{ minHeight: '100vh' }}>
+        <>
             <Row
                 style={{
                     height: '100vh',
@@ -43,21 +43,22 @@ export const RegistrationPage = () => {
                     overflow: 'hidden',
                 }}
             >
-                <div className="img-container">
+                <div className="img-container" style={{ overflow: 'hidden' }}>
                     <img src="/assets/login_page_img.png" alt="skeleton" />
                 </div>
                 <div className="form-container__registration">
                     <div className="form-content">
+                        <img src="/assets/login_page_icon.png" alt="icon" />
                         <div className="description">
                             <h1>Register a new account</h1>
                             <p>See what is going on with your business</p>
                         </div>
 
-                        <img src="/assets/login_page_icon.png" alt="icon" />
                         <Form
                             layout={'vertical'}
                             form={form}
                             onFinish={() => handleSubmit()}
+                            style={{ marginTop: 20 }}
                         >
                             <Item
                                 name={'username'}
@@ -238,6 +239,6 @@ export const RegistrationPage = () => {
                 </div>
             </Row>
             {contextHolder}
-        </Layout>
+        </>
     )
 }

@@ -7,7 +7,7 @@ export const NotFoundPage = () => {
             style={{ paddingTop: 100 }}
             title={'404'}
             status={'404'}
-            subTitle={'Sorry, page doesnt exist'}
+            subTitle={'404'}
             extra={<Link to={'/'}>Back to home page</Link>}
         ></Result>
     )

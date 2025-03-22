@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { TabFilters } from 'store/reducers/slices/taskSlice/taskSlice'
+import { TabFilters } from 'src/store/reducers/slices/taskListSlice/taskListSlice.ts'
 import { AllTodosResponse } from 'types/responseTypes'
 
 interface updateTodoProps {

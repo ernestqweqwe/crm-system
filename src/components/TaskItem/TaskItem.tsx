@@ -1,7 +1,7 @@
 import { Button, Checkbox, Form, Input, Space } from 'antd'
 import { useForm } from 'antd/es/form/Form'
 import './TaskItem.scss'
-import { todoApi } from 'store/services/todosService'
+import { todoApi } from 'src/store/services/taskListService.ts'
 import { Data } from 'types/responseTypes'
 import { FC, useState } from 'react'
 import {
@@ -21,7 +21,6 @@ interface TaskItemProps {
 }
 
 const TaskItem: FC<TaskItemProps> = ({ task }) => {
-    console.log('render item')
     const { title, id, isDone } = task
 
     const [deleteTodo] = todoApi.useDeleteTodoMutation()
@@ -72,7 +71,11 @@ const TaskItem: FC<TaskItemProps> = ({ task }) => {
                 rules={[{ min: 2 }, { max: 64 }, { required: true }]}
             >
                 <Input
-                    style={{ textOverflow: 'ellipsis' }}
+                    style={{
+                        height: 50,
+                        textOverflow: 'ellipsis',
+                        background: `${changeButtonPressed ? 'var(--background-primary)' : '#efeded'}`,
+                    }}
                     className={isDone ? 'task-input through' : 'task-input'}
                     disabled={!changeButtonPressed}
                 />

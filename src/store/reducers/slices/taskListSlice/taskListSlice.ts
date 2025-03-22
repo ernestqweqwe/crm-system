@@ -10,7 +10,7 @@ const initialState: taskInitialState = {
     tabFilter: 'all',
 }
 
-export const taskSlice = createSlice({
+export const taskListSlice = createSlice({
     name: 'task',
     initialState,
     reducers: {
@@ -20,6 +20,6 @@ export const taskSlice = createSlice({
     },
 })
 
-export const { setFilter } = taskSlice.actions
+export const { setFilter } = taskListSlice.actions
 
-export default taskSlice.reducer
+export default taskListSlice.reducer
