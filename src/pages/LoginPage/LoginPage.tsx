@@ -16,6 +16,12 @@ import { useNavigate } from 'react-router'
 import { useAppDispatch } from 'store/hooks/redux'
 import { login } from 'src/store/reducers/slices/sessionSlice/sessionAsyncThunks.ts'
 import { Link as RouterLink } from 'react-router'
+import {
+    MAX_LOGIN_LENGTH,
+    MAX_PASSWORD_LENGTH,
+    MIN_LOGIN_LENGTH,
+    MIN_PASSWORD_LENGTH,
+} from 'src/helpers/constants.ts'
 
 export const LoginPage = () => {
     const [form] = useForm()
@@ -82,8 +88,14 @@ export const LoginPage = () => {
                                         required: true,
                                         message: 'Login field is required',
                                     },
-                                    { min: 2, message: 'Min 2 symbols' },
-                                    { max: 64, message: 'Max 64 symbols' },
+                                    {
+                                        min: MIN_LOGIN_LENGTH,
+                                        message: 'Min 2 symbols',
+                                    },
+                                    {
+                                        max: MAX_LOGIN_LENGTH,
+                                        message: 'Max 64 symbols',
+                                    },
 
                                     {
                                         pattern: /[a-zA-Z]+$/,
@@ -105,11 +117,11 @@ export const LoginPage = () => {
                                         message: 'Password field is required',
                                     },
                                     {
-                                        min: 6,
+                                        min: MIN_PASSWORD_LENGTH,
                                         message: 'Min 6 symbols',
                                     },
                                     {
-                                        max: 60,
+                                        max: MAX_PASSWORD_LENGTH,
                                         message: 'Max 60 symbols',
                                     },
                                 ]}

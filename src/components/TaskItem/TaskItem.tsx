@@ -10,6 +10,7 @@ import {
     RollbackOutlined,
     SaveOutlined,
 } from '@ant-design/icons'
+import { MAX_TASK_LENGTH, MIN_TASK_LENGTH } from 'src/helpers/constants.ts'
 
 interface formValues {
     title: string
@@ -68,7 +69,11 @@ const TaskItem: FC<TaskItemProps> = ({ task }) => {
             <Item
                 style={{ flexGrow: 1 }}
                 name="title"
-                rules={[{ min: 2 }, { max: 64 }, { required: true }]}
+                rules={[
+                    { min: MIN_TASK_LENGTH },
+                    { max: MAX_TASK_LENGTH },
+                    { required: true },
+                ]}
             >
                 <Input
                     style={{

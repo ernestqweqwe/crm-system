@@ -4,6 +4,14 @@ import authService from 'api/services/AuthService'
 import { AxiosError } from 'axios'
 import { NoticeType } from 'antd/es/message/interface'
 import { Link as RouterLink } from 'react-router'
+import {
+    MAX_LOGIN_LENGTH,
+    MAX_PASSWORD_LENGTH,
+    MAX_USERNAME_LENGTH,
+    MIN_LOGIN_LENGTH,
+    MIN_PASSWORD_LENGTH,
+    MIN_USERNAME_LENGTH,
+} from 'src/helpers/constants.ts'
 
 export const RegistrationPage = () => {
     const [form] = Form.useForm()
@@ -68,8 +76,14 @@ export const RegistrationPage = () => {
                                         required: true,
                                         message: 'User name field is required',
                                     },
-                                    { min: 1, message: 'Min 2 symbols' },
-                                    { max: 64, message: 'Max 64 symbols' },
+                                    {
+                                        min: MIN_USERNAME_LENGTH,
+                                        message: 'Min 2 symbols',
+                                    },
+                                    {
+                                        max: MAX_USERNAME_LENGTH,
+                                        message: 'Max 64 symbols',
+                                    },
                                     {
                                         pattern: /[а-яА-Яa-zA-Z]/,
                                         message:
@@ -91,8 +105,14 @@ export const RegistrationPage = () => {
                                         required: true,
                                         message: 'Login field is required',
                                     },
-                                    { min: 2, message: 'Min 2 symbols' },
-                                    { max: 64, message: 'Max 64 symbols' },
+                                    {
+                                        min: MIN_LOGIN_LENGTH,
+                                        message: 'Min 2 symbols',
+                                    },
+                                    {
+                                        max: MAX_LOGIN_LENGTH,
+                                        message: 'Max 64 symbols',
+                                    },
 
                                     {
                                         pattern: /[a-zA-Z]+$/,
@@ -113,11 +133,11 @@ export const RegistrationPage = () => {
                                         message: 'Input field is required',
                                     },
                                     {
-                                        min: 6,
+                                        min: MIN_PASSWORD_LENGTH,
                                         message: 'Min 6 symbols',
                                     },
                                     {
-                                        max: 60,
+                                        max: MAX_PASSWORD_LENGTH,
                                         message: 'Max 60 symbols',
                                     },
                                 ]}
