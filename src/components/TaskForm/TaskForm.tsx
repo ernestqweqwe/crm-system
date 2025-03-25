@@ -1,7 +1,7 @@
 import { FC, useEffect, useRef } from 'react'
 import { Form, FormInstance, Input, InputRef } from 'antd'
 import '@ant-design/v5-patch-for-react-19'
-import { todoApi } from 'src/store/services/taskListService.ts'
+import { taskListService } from 'src/store/services/taskListService.ts'
 import './TaskForm.scss'
 import { MAX_TASK_LENGTH, MIN_TASK_LENGTH } from 'src/helpers/constants.ts'
 
@@ -11,7 +11,7 @@ interface TaskFormProps {
 }
 
 const TaskForm: FC<TaskFormProps> = ({ onClose, formRef }) => {
-    const [createTodo] = todoApi.useCreateTodoMutation()
+    const [createTodo] = taskListService.useCreateTodoMutation()
     const [form] = Form.useForm()
     const { Item } = Form
     const inputRef = useRef<InputRef | null>(null)

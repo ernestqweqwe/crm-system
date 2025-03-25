@@ -1,7 +1,7 @@
 import './TaskInfo.scss'
 import { Radio, RadioChangeEvent } from 'antd'
 import { useAppDispatch, useAppSelector } from 'src/store/hooks/redux.ts'
-import { todoApi } from 'src/store/services/taskListService.ts'
+import { taskListService } from 'src/store/services/taskListService.ts'
 import {
     setFilter,
     TabFilters,
@@ -19,7 +19,7 @@ const TaskInfo = () => {
     const dispatch = useAppDispatch()
     const { tabFilter } = useAppSelector((state) => state.taskList)
 
-    const { info } = todoApi.useGetAllTodosQuery(tabFilter, {
+    const { info } = taskListService.useGetAllTodosQuery(tabFilter, {
         selectFromResult: ({ data }) => ({ info: data?.info }),
     })
 

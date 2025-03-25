@@ -38,6 +38,11 @@ export const SideBar = () => {
                         icon: <UnorderedListOutlined />,
                         label: <NavLink to="/">Task List</NavLink>,
                     },
+                    {
+                        key: '3',
+                        icon: <UnorderedListOutlined />,
+                        label: <NavLink to="/users">Users</NavLink>,
+                    },
                 ]}
             />
 

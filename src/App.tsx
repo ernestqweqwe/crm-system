@@ -11,6 +11,7 @@ import { RegistrationPage } from 'src/pages/RegistrationPage/RegistrationPage.ts
 import { LoginPage } from 'src/pages/LoginPage/LoginPage.tsx'
 import PrivateRouter from 'src/components/routes/PrivateRouter.tsx'
 import { RootRouter } from 'src/components/routes/RootRouter.tsx'
+import { UsersPage } from 'src/pages/UsersPage'
 
 const router = createBrowserRouter([
     {
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
                     {
                         path: 'profile',
                         element: <ProfilePage />,
+                    },
+                    {
+                        path: 'users',
+                        element: <UsersPage />,
                     },
                 ],
             },
