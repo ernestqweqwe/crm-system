@@ -11,7 +11,10 @@ import { RegistrationPage } from 'src/pages/RegistrationPage/RegistrationPage.ts
 import { LoginPage } from 'src/pages/LoginPage/LoginPage.tsx'
 import PrivateRouter from 'src/components/routes/PrivateRouter.tsx'
 import { RootRouter } from 'src/components/routes/RootRouter.tsx'
+import { RoleRouter } from 'src/components/routes/RoleRouter.tsx'
+import { Roles } from 'src/types/usersTypes.ts'
 import { UsersPage } from 'src/pages/UsersPage'
+import { UserPage } from 'src/pages/UserPage/UserPage.tsx'
 
 const router = createBrowserRouter([
     {
@@ -30,8 +33,17 @@ const router = createBrowserRouter([
                         element: <ProfilePage />,
                     },
                     {
-                        path: 'users',
-                        element: <UsersPage />,
+                        element: <RoleRouter allowedRoles={[Roles.ADMIN]} />,
+                        children: [
+                            {
+                                path: 'users',
+                                element: <UsersPage />,
+                            },
+                            {
+                                path: 'users/:id',
+                                element: <UserPage />,
+                            },
+                        ],
                     },
                 ],
             },

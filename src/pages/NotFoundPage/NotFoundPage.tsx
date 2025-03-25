@@ -1,7 +1,9 @@
 import { Result } from 'antd'
-import { Link } from 'react-router'
+import { Link, useRouteError } from 'react-router'
 
 export const NotFoundPage = () => {
+    const error = useRouteError()
+    console.error('Route Error:', error)
     return (
         <Result
             style={{ paddingTop: 100 }}

@@ -2,6 +2,10 @@ import { BaseQueryFn } from '@reduxjs/toolkit/query'
 import { AxiosError } from 'axios'
 import { $api } from 'src/api/http'
 
+interface SerializedAxiosError {
+    message: string
+}
+
 export const customBaseQuery =
     (): BaseQueryFn<
         {
@@ -11,7 +15,7 @@ export const customBaseQuery =
             params?: unknown
         },
         unknown,
-        unknown
+        SerializedAxiosError
     > =>
     async ({ url, method = 'GET', data, params }) => {
         try {
@@ -23,7 +27,11 @@ export const customBaseQuery =
             })
             return { data: result.data }
         } catch (axiosError) {
+            console.log(axiosError)
             const err = axiosError as AxiosError
-            return { error: err.response?.data || err.message }
+            const serializedErr: SerializedAxiosError = {
+                message: err.response?.data?.toString() || err.message,
+            }
+            return { error: serializedErr }
         }
     }

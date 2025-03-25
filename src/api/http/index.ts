@@ -2,7 +2,7 @@ import axios, { InternalAxiosRequestConfig } from 'axios'
 import { store } from 'src/store/store'
 import { Token } from 'types/authTypes'
 import { accessToken } from 'src/api/services/TokenServise.ts'
-import { logout } from 'src/store/reducers/slices/sessionSlice/sessionAsyncThunks.ts'
+import { setAuth } from 'src/store/reducers/slices/sessionSlice/sessionSlice.ts'
 const BASE_URL = import.meta.env.VITE_BASE_URL
 
 export const $api = axios.create({
@@ -35,7 +35,9 @@ $api.interceptors.response.use(
                 return $api.request(originalRequest)
             } catch {
                 console.log('Не авторизован')
-                store.dispatch(logout())
+                store.dispatch(setAuth(false))
+                accessToken.resetToken()
+                localStorage.clear()
             }
         }
         throw error

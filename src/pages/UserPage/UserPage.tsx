@@ -1,24 +1,40 @@
-import { Link, useParams } from 'react-router'
+import { Link, useParams } from 'react-router-dom'
 import { usersApi } from 'src/store/services/usersService.ts'
-import { Button, Form, Input } from 'antd'
-import { useState } from 'react'
+import { Button, Form, Input, message } from 'antd'
+import { useEffect, useState } from 'react'
 import './UserPage.scss'
 import { useForm } from 'antd/es/form/Form'
+import { AxiosError } from 'axios'
+import { NoticeType } from 'antd/es/message/interface'
 
 export const UserPage = () => {
     const { id } = useParams<string>()
-
     const { data } = usersApi.useGetUserQuery(id ?? '')
-    const [updateUser] = usersApi.useUpdateUserMutation()
+    const [updateUser, { error, isSuccess }] = usersApi.useUpdateUserMutation()
 
     const [form] = useForm()
     const [isEdit, setEdit] = useState<boolean>(false)
 
+    const [messageApi, contextHolder] = message.useMessage()
+
     const onSave = () => {
         const values = form.getFieldsValue()
-        setEdit((prev) => !prev)
         updateUser({ ...values, id })
+        setEdit((prev) => !prev)
     }
+
+    const notificationMessage = (type: NoticeType, message: string) => {
+        messageApi.open({
+            type,
+            content: message,
+        })
+    }
+
+    useEffect(() => {
+        if (error)
+            notificationMessage('error', error.message ?? 'Unknown error')
+        if (isSuccess) notificationMessage('success', 'User updated')
+    }, [error, isSuccess])
 
     return (
         <>
@@ -58,14 +74,9 @@ export const UserPage = () => {
                         </Form.Item>
                     </Form>
                     <Link to="/users">Back</Link>
+                    {contextHolder}
                 </div>
             )}
         </>
     )
 }
-
-// Todo добавить поиск
-//Todo использовать уже созданный api для запросов юзер даты чтобы норм рефрешил токен
-//Todo
-//Todo
-//Todo
