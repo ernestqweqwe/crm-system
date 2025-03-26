@@ -9,9 +9,7 @@ const Header = () => {
                 borderLeft: 'none',
                 height: '64px',
             }}
-        >
-            test
-        </AntHeader>
+        ></AntHeader>
     )
 }
 

@@ -2,7 +2,6 @@ import {
     Button,
     GetProp,
     Popconfirm,
-    Space,
     Table,
     TablePaginationConfig,
     TableProps,
@@ -11,7 +10,7 @@ import {
 import { Roles, User } from 'src/types/usersTypes.ts'
 import Column from 'antd/es/table/Column'
 import './UsersPage.scss'
-import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
+import { DeleteOutlined, UserOutlined } from '@ant-design/icons'
 import { usersApi } from 'src/store/services/usersService.ts'
 import { Link } from 'react-router'
 import { SorterResult } from 'antd/es/table/interface'
@@ -61,10 +60,9 @@ export const UsersPage = () => {
     const { data, isFetching } = usersApi.useGetUsersQuery(tableParams)
 
     return (
-        <div>
+        <div className="users-page">
             <Search
-                style={{ marginTop: '30px' }}
-                loading={isFetching}
+                style={{ marginTop: '30px', width: '300px' }}
                 placeholder="input search text"
                 size="large"
                 value={tableParams.search}
@@ -109,10 +107,12 @@ export const UsersPage = () => {
                         render={(value) => {
                             return new Date(value).toLocaleDateString()
                         }}
+                        width={90}
                     />
                     <Column
                         title="Bloking status"
                         dataIndex="isBlocked"
+                        width={100}
                         render={(value) => {
                             return value ? (
                                 <Tag color="red">Blocked</Tag>
@@ -142,6 +142,8 @@ export const UsersPage = () => {
                         title="Roles"
                         dataIndex="roles"
                         key="roles"
+                        width={150}
+                        align="center"
                         render={(value) => {
                             return (
                                 <>
@@ -149,6 +151,7 @@ export const UsersPage = () => {
                                         (role: Roles, index: number) => {
                                             return (
                                                 <Tag
+                                                    style={{ margin: '5px' }}
                                                     color={RolesColors[role]}
                                                     key={index}
                                                 >
@@ -166,6 +169,7 @@ export const UsersPage = () => {
                         title="Phone"
                         dataIndex="phoneNumber"
                         key="phoneNumber"
+                        width={120}
                         render={(value) => {
                             return value ? value : 'Not specified'
                         }}
@@ -175,72 +179,73 @@ export const UsersPage = () => {
                         key="action"
                         render={(_, record: User) => {
                             return (
-                                <>
-                                    <Space>
-                                        <Link to={`/users/${record.id}`}>
-                                            <EditOutlined />
-                                        </Link>
-                                        <Popconfirm
-                                            title="Delete User"
-                                            description="Are you sure to delete this user?"
-                                            onConfirm={() =>
-                                                deleteUser(record.id)
-                                            }
-                                        >
-                                            <DeleteOutlined />
-                                        </Popconfirm>
+                                <div
+                                    style={{
+                                        width: '100%',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'space-around',
+                                    }}
+                                >
+                                    <Link
+                                        className="action-icon"
+                                        to={`/users/${record.id}`}
+                                    >
+                                        <UserOutlined />
+                                    </Link>
+                                    <Popconfirm
+                                        className="action-icon"
+                                        title="Delete User"
+                                        description="Are you sure to delete this user?"
+                                        onConfirm={() => deleteUser(record.id)}
+                                    >
+                                        <DeleteOutlined />
+                                    </Popconfirm>
 
-                                        <Popconfirm
-                                            title="Change user rights"
-                                            description="Are you sure to change user rights?"
-                                            onConfirm={() =>
-                                                record.roles?.includes(
-                                                    Roles.ADMIN
-                                                )
-                                                    ? updateRights({
-                                                          id: record.id,
-                                                          roles: record.roles.filter(
-                                                              (el) =>
-                                                                  el !==
-                                                                  Roles.ADMIN
-                                                          ),
-                                                      })
-                                                    : updateRights({
-                                                          id: record.id,
-                                                          roles: [
-                                                              ...(record.roles ??
-                                                                  []),
-                                                              Roles.ADMIN,
-                                                          ],
-                                                      })
-                                            }
-                                        >
-                                            <Button>
-                                                {record.roles?.includes(
-                                                    Roles.ADMIN
-                                                )
-                                                    ? 'remove Admin'
-                                                    : 'give Admin'}
-                                            </Button>
-                                        </Popconfirm>
-                                        <Popconfirm
-                                            title="Block User"
-                                            description="Are you sure to block user?"
-                                            onConfirm={
-                                                record.isBlocked
-                                                    ? () =>
-                                                          unblockUser(record.id)
-                                                    : () => blockUser(record.id)
-                                            }
-                                        >
-                                            <Button>
-                                                {record.isBlocked
-                                                    ? 'Unblock'
-                                                    : 'Block'}
-                                            </Button>
-                                        </Popconfirm>
-                                    </Space>
-                                </>
+                                    <Popconfirm
+                                        title="Change user rights"
+                                        description="Are you sure to change user rights?"
+                                        onConfirm={() =>
+                                            record.roles?.includes(Roles.ADMIN)
+                                                ? updateRights({
+                                                      id: record.id,
+                                                      roles: record.roles.filter(
+                                                          (el) =>
+                                                              el !== Roles.ADMIN
+                                                      ),
+                                                  })
+                                                : updateRights({
+                                                      id: record.id,
+                                                      roles: [
+                                                          ...(record.roles ??
+                                                              []),
+                                                          Roles.ADMIN,
+                                                      ],
+                                                  })
+                                        }
+                                    >
+                                        <Button>
+                                            {record.roles?.includes(Roles.ADMIN)
+                                                ? 'remove Admin'
+                                                : 'give Admin'}
+                                        </Button>
+                                    </Popconfirm>
+                                    <Popconfirm
+                                        title="Block User"
+                                        description="Are you sure to block user?"
+                                        onConfirm={
+                                            record.isBlocked
+                                                ? () => unblockUser(record.id)
+                                                : () => blockUser(record.id)
+                                        }
+                                    >
+                                        <Button>
+                                            {record.isBlocked
+                                                ? 'Unblock'
+                                                : 'Block'}
+                                        </Button>
+                                    </Popconfirm>
+                                </div>
                             )
                         }}
                     />

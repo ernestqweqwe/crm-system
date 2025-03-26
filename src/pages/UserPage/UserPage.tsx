@@ -4,7 +4,6 @@ import { Button, Form, Input, message } from 'antd'
 import { useEffect, useState } from 'react'
 import './UserPage.scss'
 import { useForm } from 'antd/es/form/Form'
-import { AxiosError } from 'axios'
 import { NoticeType } from 'antd/es/message/interface'
 
 export const UserPage = () => {
