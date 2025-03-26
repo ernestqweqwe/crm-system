@@ -1,132 +1,134 @@
-import { DeleteOutlined, EditOutlined, RollbackOutlined, SaveOutlined } from '@ant-design/icons'
-import { NoticeType } from 'antd/es/message/interface'
-import { deleteTask, updateTask } from 'api/taskService'
-import * as React from 'react'
-import { MAX_TASK_LENGTH, MIN_TASK_LENGTH } from 'src/constants'
-import { useState } from 'react'
-import { Button, Checkbox, Form, Input, message as AntMessage, Space } from 'antd'
+import { Button, Checkbox, Form, Input, Space } from 'antd'
 import { useForm } from 'antd/es/form/Form'
 import './TaskItem.scss'
-import { Todo } from 'types/Itodo'
+import { taskListService } from 'src/store/services/taskListService.ts'
+import { Data } from 'types/responseTypes'
+import { FC, useState } from 'react'
+import {
+    DeleteOutlined,
+    EditOutlined,
+    RollbackOutlined,
+    SaveOutlined,
+} from '@ant-design/icons'
+import { MAX_TASK_LENGTH, MIN_TASK_LENGTH } from 'src/helpers/constants.ts'
 
-interface ITaskItemProps {
-    taskObject: Todo
-    updateData: () => void
-}
-
-interface values {
+interface formValues {
     title: string
-    isDone: boolean
+    isChecked: boolean
 }
 
-const TaskItem = ({ taskObject, updateData }: ITaskItemProps) => {
-    const { isDone, title, id } = taskObject
-    const [isEdit, setIsEdit] = useState(false)
-    const [checkBoxPressed, setCheckboxPressed] = useState(isDone)
-    const [form] = useForm()
-    const [messageApi, contextHolder] = AntMessage.useMessage()
+interface TaskItemProps {
+    task: Data
+}
 
-    const message = (type: NoticeType, content: React.ReactNode) => {
-        messageApi.open({
-            type,
-            content,
-        })
-    }
+const TaskItem: FC<TaskItemProps> = ({ task }) => {
+    const { title, id, isDone } = task
+
+    const [deleteTodo] = taskListService.useDeleteTodoMutation()
+    const [updateTodo] = taskListService.useUpdateTodoMutation()
+
+    const [changeButtonPressed, setChangeButtonPressed] = useState(false)
+    const [form] = useForm()
+    const { Item } = Form
 
     const onToggle = async () => {
-        try {
-            setCheckboxPressed(!checkBoxPressed)
-            await updateTask(id, title, !checkBoxPressed)
-            updateData()
-        } catch {
-            message('error', 'error on checkbox')
-        }
+        await updateTodo({ id: id, title: title, isDone: !isDone })
     }
 
-    const onSubmit = async () => {
-        try {
-            message('loading', 'Loading')
-            setIsEdit(false)
-            const values: values = form.getFieldsValue()
-            if (values.title !== title) {
-                await updateTask(id, values.title, checkBoxPressed)
-                updateData()
-            }
-            messageApi.destroy()
-            message('success', 'task successfully saved ')
-        } catch {
-            messageApi.destroy()
-            message('error', 'task save error')
+    const onSave = async () => {
+        setChangeButtonPressed(false)
+        const values: formValues = form.getFieldsValue()
+        if (values.title !== title) {
+            updateTodo({ id: id, title: values.title, isDone: isDone })
         }
     }
 
     const onCancel = () => {
-        setIsEdit(false)
-        form.resetFields(['title'])
+        setChangeButtonPressed(false)
+        form.setFieldValue('title', title)
     }
 
-    const onDelete = async (taskId: number) => {
-        try {
-            message('loading', 'Loading')
-            await deleteTask(taskId)
-            updateData()
-            messageApi.destroy()
-            message('success', 'task successfully deleted ')
-        } catch {
-            messageApi.destroy()
-            message('error', 'task delete error')
-        }
+    const onDelete = async () => {
+        await deleteTodo(id)
     }
 
     const onChange = () => {
-        setIsEdit(true)
+        setChangeButtonPressed(true)
     }
 
     return (
-        <Form layout="inline" className="task-item" form={form} initialValues={{ title, isDone }}>
-            <Form.Item name="isDone" valuePropName="checked">
-                <Checkbox onClick={onToggle} />
-            </Form.Item>
-            <Form.Item
-                name="title"
-                rules={[{ min: MIN_TASK_LENGTH }, { max: MAX_TASK_LENGTH }, { required: true }]}
+        <Form
+            layout="horizontal"
+            className="task-item"
+            form={form}
+            initialValues={{ title, isChecked: isDone }}
+        >
+            <Item name="isChecked" valuePropName="checked">
+                <Checkbox onClick={() => onToggle()} />
+            </Item>
+            <Item
                 style={{ flexGrow: 1 }}
+                name="title"
+                rules={[
+                    { min: MIN_TASK_LENGTH },
+                    { max: MAX_TASK_LENGTH },
+                    { required: true },
+                ]}
             >
                 <Input
-                    disabled={!isEdit}
-                    className={checkBoxPressed ? 'task-input through' : 'task-input'}
+                    style={{
+                        height: 50,
+                        textOverflow: 'ellipsis',
+                        background: `${changeButtonPressed ? 'var(--background-primary)' : '#efeded'}`,
+                    }}
+                    className={isDone ? 'task-input through' : 'task-input'}
+                    disabled={!changeButtonPressed}
                 />
-            </Form.Item>
-            <Form.Item>
+            </Item>
+            <div className="task-item__btns">
                 <Space>
-                    {isEdit ? (
+                    {changeButtonPressed ? (
                         <>
-                            <Button size="middle" type="primary" onClick={onSubmit}>
+                            <Button
+                                size="middle"
+                                type="primary"
+                                onClick={onSave}
+                            >
                                 <SaveOutlined />
                             </Button>
 
-                            <Button size="middle" type="primary" onClick={onCancel}>
+                            <Button
+                                size="middle"
+                                type="primary"
+                                style={{ marginLeft: 10 }}
+                                onClick={onCancel}
+                            >
                                 <RollbackOutlined />
                             </Button>
                         </>
                     ) : (
                         <>
-                            <Button size="middle" type="primary" onClick={onChange}>
+                            <Button
+                                size="middle"
+                                type="primary"
+                                onClick={onChange}
+                            >
                                 <EditOutlined />
                             </Button>
+
                             <Button
                                 size="middle"
                                 type="primary"
                                 danger
-                                onClick={() => onDelete(id)}
+                                onClick={() => onDelete()}
+                                style={{ marginLeft: 10 }}
                             >
                                 <DeleteOutlined />
                             </Button>
                         </>
-                    )}{' '}
+                    )}
                 </Space>
-            </Form.Item>
-            {contextHolder}
+            </div>
         </Form>
     )
 }

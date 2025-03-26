@@ -1,50 +1,40 @@
-import { NoticeType } from 'antd/es/message/interface'
-import { createTask } from 'api/taskService'
-import * as React from 'react'
-import { MAX_TASK_LENGTH, MIN_TASK_LENGTH } from 'src/constants'
-import { FC } from 'react'
-import { Button, Form, Input, message as AntMessage } from 'antd'
+import { FC, useEffect, useRef } from 'react'
+import { Form, FormInstance, Input, InputRef } from 'antd'
 import '@ant-design/v5-patch-for-react-19'
+import { taskListService } from 'src/store/services/taskListService.ts'
 import './TaskForm.scss'
+import { MAX_TASK_LENGTH, MIN_TASK_LENGTH } from 'src/helpers/constants.ts'
 
 interface TaskFormProps {
-    updateData: () => void
+    formRef: React.RefObject<FormInstance | null>
+    onClose: () => void
 }
 
-const TaskForm: FC<TaskFormProps> = React.memo(({ updateData }) => {
+const TaskForm: FC<TaskFormProps> = ({ onClose, formRef }) => {
+    const [createTodo] = taskListService.useCreateTodoMutation()
     const [form] = Form.useForm()
     const { Item } = Form
-    const [messageApi, contextHolder] = AntMessage.useMessage()
+    const inputRef = useRef<InputRef | null>(null)
 
-    const message = (type: NoticeType, content: React.ReactNode) => {
-        messageApi.open({
-            type,
-            content,
-        })
+    if (formRef) formRef.current = form
+
+    const handleSubmit = async ({ task }: { task: string }) => {
+        await createTodo(task)
+        form.resetFields()
+        onClose()
     }
 
-    const handleSubmit = async (task: string) => {
-        try {
-            message('loading', 'Loading')
-            await createTask(task)
-            updateData()
-            form.resetFields()
-            messageApi.destroy()
-            message('success', 'task successfully created ')
-        } catch {
-            messageApi.destroy()
-            message('error', 'task create error')
-        }
-    }
+    useEffect(() => {
+        inputRef.current?.focus()
+    }, [formRef])
 
     return (
         <Form
             form={form}
-            className="task-form"
-            initialValues={{ remember: true }}
-            onFinish={(values) => handleSubmit(values.task)}
+            className="form"
+            onFinish={(values) => handleSubmit(values)}
             validateMessages={{
-                required: 'Task field is required',
+                required: 'Field is required',
                 string: {
                     min: 'The field must contain at least 2 characters',
                     max: 'Maximum length 64 characters',
@@ -52,20 +42,18 @@ const TaskForm: FC<TaskFormProps> = React.memo(({ updateData }) => {
             }}
         >
             <Item
-                rules={[{ min: MIN_TASK_LENGTH }, { max: MAX_TASK_LENGTH }, { required: true }]}
+                rules={[
+                    { min: MIN_TASK_LENGTH },
+                    { max: MAX_TASK_LENGTH },
+                    { required: true },
+                ]}
                 label="Task"
                 name="task"
-                style={{ flexGrow: 1 }}
             >
-                <Input autoFocus />
+                <Input ref={inputRef} />
             </Item>
-            <Item>
-                <Button size="middle" type="primary" htmlType="submit">
-                    ADD TASK
-                </Button>
-            </Item>
-            {contextHolder}
         </Form>
     )
-})
+}
+
 export default TaskForm
