@@ -7,9 +7,11 @@ import { Link as RouterLink } from 'react-router'
 import {
     MAX_LOGIN_LENGTH,
     MAX_PASSWORD_LENGTH,
+    MAX_PHONE_NUMBER_LENGTH,
     MAX_USERNAME_LENGTH,
     MIN_LOGIN_LENGTH,
     MIN_PASSWORD_LENGTH,
+    MIN_PHONE_NUMBER_LENGTH,
     MIN_USERNAME_LENGTH,
 } from 'src/helpers/constants.ts'
 
@@ -65,7 +67,7 @@ export const RegistrationPage = () => {
                         <Form
                             layout={'vertical'}
                             form={form}
-                            onFinish={() => handleSubmit()}
+                            onFinish={handleSubmit}
                             style={{ marginTop: 20 }}
                         >
                             <Item
@@ -78,11 +80,11 @@ export const RegistrationPage = () => {
                                     },
                                     {
                                         min: MIN_USERNAME_LENGTH,
-                                        message: 'Min 2 symbols',
+                                        message: `Min ${MIN_USERNAME_LENGTH} symbols`,
                                     },
                                     {
                                         max: MAX_USERNAME_LENGTH,
-                                        message: 'Max 64 symbols',
+                                        message: `Max ${MAX_USERNAME_LENGTH} symbols`,
                                     },
                                     {
                                         pattern: /[а-яА-Яa-zA-Z]/,
@@ -107,11 +109,11 @@ export const RegistrationPage = () => {
                                     },
                                     {
                                         min: MIN_LOGIN_LENGTH,
-                                        message: 'Min 2 symbols',
+                                        message: `Min ${MIN_LOGIN_LENGTH} symbols`,
                                     },
                                     {
                                         max: MAX_LOGIN_LENGTH,
-                                        message: 'Max 64 symbols',
+                                        message: `Max ${MAX_LOGIN_LENGTH} symbols`,
                                     },
 
                                     {
@@ -134,11 +136,11 @@ export const RegistrationPage = () => {
                                     },
                                     {
                                         min: MIN_PASSWORD_LENGTH,
-                                        message: 'Min 6 symbols',
+                                        message: `Min ${MIN_PASSWORD_LENGTH} symbols`,
                                     },
                                     {
                                         max: MAX_PASSWORD_LENGTH,
-                                        message: 'Max 60 symbols',
+                                        message: `Max ${MAX_PASSWORD_LENGTH} symbols`,
                                     },
                                 ]}
                                 hasFeedback
@@ -218,16 +220,17 @@ export const RegistrationPage = () => {
                                                 )
                                             }
                                             if (
-                                                value.length < 8 &&
+                                                value.length <
+                                                    MIN_PHONE_NUMBER_LENGTH &&
                                                 value.length >= 1
                                             ) {
                                                 return Promise.reject(
-                                                    'Min 8 symbols'
+                                                    `Min ${MIN_PHONE_NUMBER_LENGTH} symbols`
                                                 )
                                             }
                                             if (value.length > 15) {
                                                 return Promise.reject(
-                                                    'Max 15 symbols'
+                                                    `Max ${MAX_PHONE_NUMBER_LENGTH} symbols`
                                                 )
                                             }
                                             return Promise.resolve()

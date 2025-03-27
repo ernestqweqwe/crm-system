@@ -90,11 +90,11 @@ export const LoginPage = () => {
                                     },
                                     {
                                         min: MIN_LOGIN_LENGTH,
-                                        message: 'Min 2 symbols',
+                                        message: `Min ${MIN_LOGIN_LENGTH} symbols`,
                                     },
                                     {
                                         max: MAX_LOGIN_LENGTH,
-                                        message: 'Max 64 symbols',
+                                        message: `${MAX_LOGIN_LENGTH} 64 symbols`,
                                     },
 
                                     {
@@ -118,11 +118,11 @@ export const LoginPage = () => {
                                     },
                                     {
                                         min: MIN_PASSWORD_LENGTH,
-                                        message: 'Min 6 symbols',
+                                        message: `Min ${MIN_PASSWORD_LENGTH} symbols`,
                                     },
                                     {
                                         max: MAX_PASSWORD_LENGTH,
-                                        message: 'Max 60 symbols',
+                                        message: `Max ${MAX_PASSWORD_LENGTH} symbols`,
                                     },
                                 ]}
                                 hasFeedback

@@ -4,6 +4,7 @@ import '@ant-design/v5-patch-for-react-19'
 import { todoApi } from 'src/store/services/taskListService.ts'
 import './TaskForm.scss'
 import { MAX_TASK_LENGTH, MIN_TASK_LENGTH } from 'src/helpers/constants.ts'
+import * as React from 'react'
 
 interface TaskFormProps {
     formRef: React.RefObject<FormInstance | null>
@@ -36,8 +37,8 @@ const TaskForm: FC<TaskFormProps> = ({ onClose, formRef }) => {
             validateMessages={{
                 required: 'Field is required',
                 string: {
-                    min: 'The field must contain at least 2 characters',
-                    max: 'Maximum length 64 characters',
+                    min: `The field must contain at least ${MIN_TASK_LENGTH} characters`,
+                    max: `Maximum length ${MAX_TASK_LENGTH} characters`,
                 },
             }}
         >

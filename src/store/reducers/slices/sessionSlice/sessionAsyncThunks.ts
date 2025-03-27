@@ -28,7 +28,7 @@ export const logout = createAsyncThunk(
         try {
             await authService.logout()
             tokenService.clearToken()
-            localStorage.clear()
+            localStorage.removeItem('refreshToken')
         } catch (err) {
             if (err instanceof AxiosError) return rejectWithValue(err.status)
             console.log(err, 'Неизвестная ошибка')
