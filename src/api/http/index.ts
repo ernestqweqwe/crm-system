@@ -1,7 +1,7 @@
 import axios, { InternalAxiosRequestConfig } from 'axios'
 import { store } from 'src/store/store'
 import { Token } from 'types/authTypes'
-import { accessToken } from 'src/api/services/TokenServise.ts'
+import { tokenService } from 'src/api/services/TokenServise.ts'
 import { logout } from 'src/store/reducers/slices/sessionSlice/sessionAsyncThunks.ts'
 const BASE_URL = import.meta.env.VITE_BASE_URL
 
@@ -10,7 +10,7 @@ export const $api = axios.create({
 })
 
 $api.interceptors.request.use((config): InternalAxiosRequestConfig => {
-    config.headers.Authorization = `Bearer ${accessToken.getToken()}`
+    config.headers.Authorization = `Bearer ${tokenService.getToken()}`
     return config
 })
 
@@ -29,7 +29,7 @@ $api.interceptors.response.use(
                         refreshToken: localStorage.getItem('refreshToken'),
                     }
                 )
-                accessToken.setToken(response.data.accessToken)
+                tokenService.setToken(response.data.accessToken)
                 localStorage.setItem('refreshToken', response.data.refreshToken)
 
                 return $api.request(originalRequest)

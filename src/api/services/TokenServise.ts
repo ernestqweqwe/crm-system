@@ -1,6 +1,6 @@
 class TokenService {
-    static instance: TokenService
-    #accessToken: null | string = null
+    private static instance: TokenService
+    private accessToken: null | string = null
 
     private constructor() {}
 
@@ -12,16 +12,16 @@ class TokenService {
     }
 
     setToken(token: string) {
-        this.#accessToken = token
+        this.accessToken = token
     }
 
     getToken(): string | null {
-        return this.#accessToken
+        return this.accessToken
     }
 
-    resetToken() {
-        this.#accessToken = null
+    clearToken() {
+        this.accessToken = null
     }
 }
 
-export const accessToken = TokenService.getInstance()
+export const tokenService = TokenService.getInstance()
