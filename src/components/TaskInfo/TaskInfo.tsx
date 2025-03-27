@@ -1,14 +1,13 @@
-import { Filter } from 'api/taskService'
-import { FC } from 'react'
 import './TaskInfo.scss'
-import { Button } from 'antd'
-import { Info } from 'types/responseTypes'
+import { Radio, RadioChangeEvent } from 'antd'
+import { useAppDispatch, useAppSelector } from 'src/store/hooks/redux.ts'
+import { todoApi } from 'src/store/services/taskListService.ts'
+import {
+    setFilter,
+    TabFilters,
+} from 'src/store/reducers/slices/taskListSlice/taskListSlice.ts'
 
-interface TaskInfoProps {
-    info: Info | null
-    activeFilter: Filter
-    setActiveFilter: (filter: Filter) => void
-}
+export type Filter = 'all' | 'inWork' | 'completed'
 
 const labelStatuses: Record<Filter, string> = {
     all: 'Все',
@@ -16,7 +15,18 @@ const labelStatuses: Record<Filter, string> = {
     completed: 'Завершенные',
 }
 
-const TaskInfo: FC<TaskInfoProps> = ({ info, activeFilter, setActiveFilter }) => {
+const TaskInfo = () => {
+    const dispatch = useAppDispatch()
+    const { tabFilter } = useAppSelector((state) => state.taskList)
+
+    const { info } = todoApi.useGetAllTodosQuery(tabFilter, {
+        selectFromResult: ({ data }) => ({ info: data?.info }),
+    })
+
+    const handleFilterChange = (e: RadioChangeEvent) => {
+        dispatch(setFilter(e.target.value as TabFilters))
+    }
+
     const countOfTasks: Record<Filter, number> = {
         all: info?.all ?? 0,
         inWork: info?.inWork ?? 0,
@@ -25,20 +35,16 @@ const TaskInfo: FC<TaskInfoProps> = ({ info, activeFilter, setActiveFilter }) =>
 
     return (
         <div className="tasks-info">
-            {Object.entries(countOfTasks).map(([key]) => {
-                const filter = key as Filter
-                return (
-                    <Button
-                        disabled={filter === activeFilter}
-                        type="primary"
-                        size="middle"
-                        key={key}
-                        onClick={() => setActiveFilter(filter)}
-                    >
-                        {labelStatuses[filter]} ({countOfTasks[filter]})
-                    </Button>
-                )
-            })}
+            <Radio.Group defaultValue={'all'} onChange={handleFilterChange}>
+                {Object.entries(countOfTasks).map(([key]) => {
+                    const filter = key as Filter
+                    return (
+                        <Radio.Button type="primary" value={key} key={key}>
+                            {labelStatuses[filter]} ({countOfTasks[filter]})
+                        </Radio.Button>
+                    )
+                })}
+            </Radio.Group>
         </div>
     )
 }

@@ -1,15 +1,34 @@
 .task-item {
-    flex-wrap: nowrap;
-    .ant-form-item-control-input-content input {
-        background-color: white;
-    }
+    border: 1px solid var(--border-line-color);
+    border-radius: 15px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 
-    .ant-form-item-control-input-content input:disabled {
-        color: black;
-        background-color: #abbbe7;
+    .ant-form-item {
+        margin: 0;
     }
+}
 
+#title {
+    background-color: white;
+}
+
+#title:disabled {
+    border: none;
+
+    color: black;
+}
+
+.task-item {
     .through {
         text-decoration: line-through;
+    }
+}
+
+@media (width < 470px) {
+    .task-item {
+        flex-direction: column;
     }
 }

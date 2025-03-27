@@ -1,38 +1,51 @@
-import { NotFoundPage } from 'pages/NotFoundPage/index'
-import { Suspense } from 'react'
 import './App.scss'
-import { Route, Routes } from 'react-router'
-import { SideBar } from 'src/components/SideBar/SideBar.tsx'
-import { Layout } from 'antd'
-import { Content } from 'antd/es/layout/layout'
-import { TodoListPage } from 'src/pages/TodoListPage'
-import { ProfilePage } from 'src/pages/ProfilePage'
+import { RouterProvider } from 'react-router-dom'
+import { useAppDispatch } from 'src/store/hooks/redux.ts'
+import { useEffect } from 'react'
+import { checkAuthStatus } from 'src/store/reducers/slices/sessionSlice/sessionAsyncThunks.ts'
+import { createBrowserRouter } from 'react-router'
+import { NotFoundPage } from 'src/pages/NotFoundPage/NotFoundPage.tsx'
+import { TodoListPage } from 'src/pages/TodoListPage/TodoListPage.tsx'
+import { ProfilePage } from 'src/pages/ProfilePage/ProfilePage.tsx'
+import { RegistrationPage } from 'src/pages/RegistrationPage/RegistrationPage.tsx'
+import { LoginPage } from 'src/pages/LoginPage/LoginPage.tsx'
+import PrivateRouter from 'src/components/routes/PrivateRouter.tsx'
+import { RootRouter } from 'src/components/routes/RootRouter.tsx'
 
-function App() {
-    return (
-        <Suspense fallback="">
-            <Routes>
-                <Route
-                    path="/*"
-                    element={
-                        <Layout className="page">
-                            <SideBar />
-                            <Layout>
-                                <Content>
-                                    <Routes>
-                                        <Route path="/" element={<TodoListPage />} />
-                                        <Route path="/profile" element={<ProfilePage />} />
-                                    </Routes>
-                                </Content>
-                            </Layout>
-                        </Layout>
-                    }
-                />
+const router = createBrowserRouter([
+    {
+        element: <PrivateRouter />,
+        errorElement: <NotFoundPage />,
+        children: [
+            {
+                element: <RootRouter />,
+                children: [
+                    {
+                        path: '/',
+                        element: <TodoListPage />,
+                    },
+                    {
+                        path: 'profile',
+                        element: <ProfilePage />,
+                    },
+                ],
+            },
+        ],
+    },
+    {
+        path: '/registration',
+        element: <RegistrationPage />,
+    },
+    {
+        path: '/login',
+        element: <LoginPage />,
+    },
+])
 
-                <Route path="*" element={<NotFoundPage />} />
-            </Routes>
-        </Suspense>
-    )
+export const App = () => {
+    const dispatch = useAppDispatch()
+    useEffect(() => {
+        dispatch(checkAuthStatus())
+    }, [])
+    return <RouterProvider router={router} />
 }
-
-export default App

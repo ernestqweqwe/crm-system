@@ -1,5 +1,10 @@
 .tasks-info {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
+    margin-top: 20px;
+}
+
+@media (width < 470px) {
+    .ant-radio-group {
+        flex-direction: column;
+        display: flex;
+    }
 }

@@ -1,5 +1,5 @@
 import { Button, Layout, Menu } from 'antd'
-import { Link } from 'react-router'
+import { NavLink } from 'react-router'
 import './SideBar.scss'
 import { useState } from 'react'
 import {
@@ -16,7 +16,7 @@ export const SideBar = () => {
             breakpoint="md"
             trigger={null}
             theme="light"
-            width={248}
+            width={240}
             collapsible
             collapsed={collapsed}
             className="side-bar"
@@ -31,17 +31,20 @@ export const SideBar = () => {
                     {
                         key: '1',
                         icon: <UserOutlined />,
-                        label: <Link to="/profile">Profile</Link>,
+                        label: <NavLink to="/profile">Profile</NavLink>,
                     },
                     {
                         key: '2',
                         icon: <UnorderedListOutlined />,
-                        label: <Link to="/">Task List</Link>,
+                        label: <NavLink to="/">Task List</NavLink>,
                     },
                 ]}
             />
 
-            <Button className="trigger-btn" onClick={() => setCollapsed((prev) => !prev)}>
+            <Button
+                className="trigger-btn"
+                onClick={() => setCollapsed((prev) => !prev)}
+            >
                 {collapsed ? <ArrowRightOutlined /> : <ArrowLeftOutlined />}
             </Button>
         </Layout.Sider>
