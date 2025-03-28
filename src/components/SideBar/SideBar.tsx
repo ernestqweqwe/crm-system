@@ -8,9 +8,35 @@ import {
     UnorderedListOutlined,
     UserOutlined,
 } from '@ant-design/icons'
+import { useAppSelector } from 'src/store/hooks/redux.ts'
+import { Roles } from 'src/types/usersTypes.ts'
 
 export const SideBar = () => {
     const [collapsed, setCollapsed] = useState(false)
+    const isAdmin = useAppSelector((state) =>
+        state.user.profile?.roles.includes(Roles.ADMIN)
+    )
+
+    const items = [
+        {
+            key: '1',
+            icon: <UserOutlined />,
+            label: <NavLink to="/profile">Profile</NavLink>,
+        },
+        {
+            key: '2',
+            icon: <UnorderedListOutlined />,
+            label: <NavLink to="/">Task List</NavLink>,
+        },
+        {
+            key: '3',
+            icon: <UnorderedListOutlined />,
+            label: <NavLink to="/users">Users</NavLink>,
+        },
+    ]
+
+    if (!isAdmin) items.pop()
+
     return (
         <Layout.Sider
             breakpoint="md"
@@ -27,18 +53,7 @@ export const SideBar = () => {
                 theme="light"
                 mode="inline"
                 defaultSelectedKeys={['2']}
-                items={[
-                    {
-                        key: '1',
-                        icon: <UserOutlined />,
-                        label: <NavLink to="/profile">Profile</NavLink>,
-                    },
-                    {
-                        key: '2',
-                        icon: <UnorderedListOutlined />,
-                        label: <NavLink to="/">Task List</NavLink>,
-                    },
-                ]}
+                items={items}
             />
 
             <Button

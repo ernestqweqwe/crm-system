@@ -1,7 +1,7 @@
 import { Button, Checkbox, Form, Input, Space } from 'antd'
 import { useForm } from 'antd/es/form/Form'
 import './TaskItem.scss'
-import { todoApi } from 'src/store/services/taskListService.ts'
+import { taskListService } from 'src/store/services/taskListService.ts'
 import { Data } from 'types/responseTypes'
 import { FC, useState } from 'react'
 import {
@@ -24,8 +24,8 @@ interface TaskItemProps {
 const TaskItem: FC<TaskItemProps> = ({ task }) => {
     const { title, id, isDone } = task
 
-    const [deleteTodo] = todoApi.useDeleteTodoMutation()
-    const [updateTodo] = todoApi.useUpdateTodoMutation()
+    const [deleteTodo] = taskListService.useDeleteTodoMutation()
+    const [updateTodo] = taskListService.useUpdateTodoMutation()
 
     const [changeButtonPressed, setChangeButtonPressed] = useState(false)
     const [form] = useForm()

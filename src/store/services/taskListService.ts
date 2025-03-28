@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { TabFilters } from 'src/store/reducers/slices/taskListSlice/taskListSlice.ts'
 import { AllTodosResponse } from 'types/responseTypes'
+import { TabFilters } from 'src/store/reducers/slices/taskListSlice/taskListSlice.ts'
 
 interface updateTodoProps {
     id: number
@@ -8,8 +8,8 @@ interface updateTodoProps {
     title: string
 }
 
-export const todoApi = createApi({
-    reducerPath: 'todoApi',
+export const taskListService = createApi({
+    reducerPath: 'taskListService',
     baseQuery: fetchBaseQuery({ baseUrl: 'https://easydev.club/api/v1/' }),
     tagTypes: ['Todos'],
     endpoints: (build) => ({
