@@ -20,6 +20,7 @@ const router = createBrowserRouter([
     {
         element: <PrivateRouter />,
         errorElement: <NotFoundPage />,
+
         children: [
             {
                 element: <RootRouter />,

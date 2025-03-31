@@ -24,8 +24,14 @@ export const UserPage = () => {
 
     const onFinish = () => {
         const values = form.getFieldsValue()
-        console.log(values)
-        updateUser({ ...values, id })
+        if (
+            values.username !== data?.username ||
+            values.email !== data?.email
+        ) {
+            console.log(data)
+            console.log(values)
+            updateUser({ ...values, id })
+        }
         setEdit(false)
     }
 
