@@ -24,10 +24,10 @@ export enum Roles {
 }
 
 export interface UpdateUser {
-    email: 'string'
-    phoneNumber: 'string'
-    username: 'string'
-    id: number
+    email?: string
+    phoneNumber?: string
+    username?: string
+    id: string
 }
 
 export interface UpdateUserRights {

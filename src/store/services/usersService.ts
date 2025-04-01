@@ -1,10 +1,5 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
-import {
-    MetaResponse,
-    UpdateUser,
-    UpdateUserRights,
-    User,
-} from 'src/types/usersTypes.ts'
+import { MetaResponse, UpdateUserRights, User } from 'src/types/usersTypes.ts'
 import { customBaseQuery } from 'src/store/services/customBaseQuery.ts'
 import { TableParams } from 'src/pages/UsersPage/ui/UsersPage.tsx'
 
@@ -44,18 +39,18 @@ export const usersApi = createApi({
             }),
             providesTags: ['User'],
         }),
-        updateUser: build.mutation<User, UpdateUser>({
-            query: (userData) => ({
-                url: `/admin/users/${userData.id}`,
-                method: 'PUT',
-                data: {
-                    email: userData.email,
-                    username: userData.username,
-                    phoneNumber: userData.phoneNumber,
-                },
-            }),
-            invalidatesTags: ['User'],
-        }),
+        updateUser: build.mutation<User, { id: string; values: Partial<User> }>(
+            {
+                query: ({ values, id }) => ({
+                    url: `/admin/users/${id}`,
+                    method: 'PUT',
+                    data: {
+                        ...values,
+                    },
+                }),
+                invalidatesTags: ['User'],
+            }
+        ),
         blockUser: build.mutation<User, number>({
             query: (id) => ({
                 url: `/admin/users/${id}/block`,

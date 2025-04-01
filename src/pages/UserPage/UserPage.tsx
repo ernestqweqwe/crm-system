@@ -11,27 +11,56 @@ import {
     MIN_PHONE_NUMBER_LENGTH,
     MIN_USERNAME_LENGTH,
 } from 'src/helpers/constants.ts'
+import { User } from 'src/types/usersTypes.ts'
+type UserPartial = Pick<User, 'username' | 'email' | 'phoneNumber'>
+
+type ChangedFields = Partial<{
+    username: string
+    email: string
+    phoneNumber: string
+}>
 
 export const UserPage = () => {
     const { id } = useParams<string>()
-    const { data } = usersApi.useGetUserQuery(id ?? '')
+    const { data } = usersApi.useGetUserQuery(id ?? '', {
+        selectFromResult: ({ data }: { data?: UserPartial }) => ({
+            data: data
+                ? {
+                      username: data.username,
+                      email: data.email,
+                      phoneNumber: data.phoneNumber,
+                  }
+                : undefined,
+        }),
+    })
     const [updateUser, { error, isSuccess }] = usersApi.useUpdateUserMutation()
-
     const [form] = useForm()
     const [isEdit, setEdit] = useState<boolean>(false)
 
     const [messageApi, contextHolder] = message.useMessage()
 
     const onFinish = () => {
-        const values = form.getFieldsValue()
-        if (
-            values.username !== data?.username ||
-            values.email !== data?.email
-        ) {
-            console.log(data)
-            console.log(values)
-            updateUser({ ...values, id })
+        const currentValues = form.getFieldsValue()
+        const changedFields: ChangedFields = {}
+
+        if (currentValues.username !== data?.username) {
+            changedFields.username = currentValues.username
         }
+        if (currentValues.email !== data?.email) {
+            changedFields.email = currentValues.email
+        }
+        if (currentValues.phoneNumber !== data?.phoneNumber) {
+            changedFields.phoneNumber = currentValues.phoneNumber
+        }
+        if (Object.keys(changedFields).length > 0) {
+            updateUser({
+                id: id!,
+                values: changedFields,
+            })
+        } else {
+            notificationMessage('info', 'Нет изменений для сохранения')
+        }
+
         setEdit(false)
     }
 
