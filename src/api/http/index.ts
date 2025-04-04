@@ -1,8 +1,6 @@
 import axios, { InternalAxiosRequestConfig } from 'axios'
-import { store } from 'src/store/store'
 import { Token } from 'types/authTypes'
 import { tokenService } from 'src/api/services/TokenServise.ts'
-import { logout } from 'src/store/reducers/slices/sessionSlice/sessionAsyncThunks.ts'
 const BASE_URL = import.meta.env.VITE_BASE_URL
 
 export const $api = axios.create({
@@ -35,7 +33,8 @@ $api.interceptors.response.use(
                 return $api.request(originalRequest)
             } catch {
                 console.log('Не авторизован')
-                store.dispatch(logout())
+                tokenService.clearToken()
+                localStorage.clear()
             }
         }
         throw error

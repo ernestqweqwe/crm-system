@@ -8,9 +8,48 @@ import {
     UnorderedListOutlined,
     UserOutlined,
 } from '@ant-design/icons'
+import { useAppSelector } from 'src/store/hooks/redux.ts'
+import { Roles } from 'src/types/usersTypes.ts'
+import * as React from 'react'
+
+type MenuItem = {
+    key: string
+    icon: React.ReactNode
+    label: React.ReactNode
+    requiredRoles: Roles[]
+}
 
 export const SideBar = () => {
     const [collapsed, setCollapsed] = useState(false)
+    const roles = useAppSelector((state) => state.user.profile?.roles)
+
+    const items: MenuItem[] = [
+        {
+            key: '1',
+            icon: <UserOutlined />,
+            label: <NavLink to="/profile">Profile</NavLink>,
+            requiredRoles: [],
+        },
+        {
+            key: '2',
+            icon: <UnorderedListOutlined />,
+            label: <NavLink to="/">Task List</NavLink>,
+            requiredRoles: [],
+        },
+        {
+            key: '3',
+            icon: <UnorderedListOutlined />,
+            label: <NavLink to="/users">Users</NavLink>,
+            requiredRoles: [Roles.ADMIN],
+        },
+    ]
+
+    const filteredItems = items.filter(
+        (item) =>
+            item.requiredRoles.length === 0 ||
+            roles?.some((role) => item.requiredRoles.includes(role))
+    )
+
     return (
         <Layout.Sider
             breakpoint="md"
@@ -27,18 +66,7 @@ export const SideBar = () => {
                 theme="light"
                 mode="inline"
                 defaultSelectedKeys={['2']}
-                items={[
-                    {
-                        key: '1',
-                        icon: <UserOutlined />,
-                        label: <NavLink to="/profile">Profile</NavLink>,
-                    },
-                    {
-                        key: '2',
-                        icon: <UnorderedListOutlined />,
-                        label: <NavLink to="/">Task List</NavLink>,
-                    },
-                ]}
+                items={filteredItems}
             />
 
             <Button

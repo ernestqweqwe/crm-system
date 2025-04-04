@@ -22,6 +22,7 @@ import {
     MIN_LOGIN_LENGTH,
     MIN_PASSWORD_LENGTH,
 } from 'src/helpers/constants.ts'
+import { getProfile } from 'src/store/reducers/slices/userSlice/userAsyncThunks.ts'
 
 export const LoginPage = () => {
     const [form] = useForm()
@@ -45,6 +46,8 @@ export const LoginPage = () => {
             notification('loading', 'Loading')
             const value = form.getFieldsValue()
             await dispatch(login(value)).unwrap()
+            await dispatch(getProfile())
+
             navigate('/')
         } catch (err) {
             messageApi.destroy()
