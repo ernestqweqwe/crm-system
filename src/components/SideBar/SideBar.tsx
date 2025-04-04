@@ -10,12 +10,20 @@ import {
 } from '@ant-design/icons'
 import { useAppSelector } from 'src/store/hooks/redux.ts'
 import { Roles } from 'src/types/usersTypes.ts'
+import * as React from 'react'
+
+type MenuItem = {
+    key: string
+    icon: React.ReactNode
+    label: React.ReactNode
+    requiredRoles: Roles[]
+}
 
 export const SideBar = () => {
     const [collapsed, setCollapsed] = useState(false)
     const roles = useAppSelector((state) => state.user.profile?.roles)
 
-    const items = [
+    const items: MenuItem[] = [
         {
             key: '1',
             icon: <UserOutlined />,
@@ -32,7 +40,7 @@ export const SideBar = () => {
             key: '3',
             icon: <UnorderedListOutlined />,
             label: <NavLink to="/users">Users</NavLink>,
-            requiredRoles: Roles.ADMIN,
+            requiredRoles: [Roles.ADMIN],
         },
     ]
 

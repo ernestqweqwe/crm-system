@@ -43,12 +43,14 @@ export const UsersPage = () => {
     const [tableParams, setTableParams] = useState<TableParams<User>>({})
     const [inputValue, setInputValue] = useState('')
 
-    const timeoutRef = useRef<NodeJS.Timeout>()
+    const timeoutRef = useRef<NodeJS.Timeout | null>(null)
 
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value
         setInputValue(value)
-        clearTimeout(timeoutRef.current)
+        if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current)
+        }
         timeoutRef.current = setTimeout(() => {
             setTableParams((prev) => ({ ...prev, search: value }))
         }, 600)
