@@ -34,7 +34,11 @@ const router = createBrowserRouter([
                         element: <ProfilePage />,
                     },
                     {
-                        element: <RoleRouter allowedRoles={[Roles.ADMIN]} />,
+                        element: (
+                            <RoleRouter
+                                allowedRoles={[Roles.ADMIN, Roles.MODERATOR]}
+                            />
+                        ),
                         children: [
                             {
                                 path: 'users',

@@ -12,18 +12,28 @@ import {
     MIN_USERNAME_LENGTH,
 } from 'src/helpers/constants.ts'
 import { User } from 'src/types/usersTypes.ts'
-type UserPartial = Pick<User, 'username' | 'email' | 'phoneNumber'>
+import { objectDiff } from 'src/helpers/utils.ts'
 
-type ChangedFields = Partial<{
-    username: string
-    email: string
-    phoneNumber: string
-}>
+type UserProfileFields = Pick<User, 'username' | 'email' | 'phoneNumber'>
 
 export const UserPage = () => {
     const { id } = useParams<string>()
-    const { data } = usersApi.useGetUserQuery(id ?? '', {
-        selectFromResult: ({ data }: { data?: UserPartial }) => ({
+
+    const [updateUser, { error, isSuccess }] = usersApi.useUpdateUserMutation()
+    const [form] = useForm()
+    const [isEdit, setEdit] = useState<boolean>(false)
+    const [messageApi, contextHolder] = message.useMessage()
+
+    useEffect(() => {
+        if (error)
+            notificationMessage('error', error.message ?? 'Unknown error')
+        if (isSuccess) notificationMessage('success', 'User updated')
+    }, [error, isSuccess])
+
+    if (!id) return <div>User Not Found</div>
+
+    const { data } = usersApi.useGetUserQuery(id, {
+        selectFromResult: ({ data }: { data?: UserProfileFields }) => ({
             data: data
                 ? {
                       username: data.username,
@@ -33,29 +43,16 @@ export const UserPage = () => {
                 : undefined,
         }),
     })
-    const [updateUser, { error, isSuccess }] = usersApi.useUpdateUserMutation()
-    const [form] = useForm()
-    const [isEdit, setEdit] = useState<boolean>(false)
-
-    const [messageApi, contextHolder] = message.useMessage()
 
     const onFinish = () => {
         const currentValues = form.getFieldsValue()
-        const changedFields: ChangedFields = {}
+        if (!data) return
+        const userChangedFields = objectDiff(data, currentValues)
 
-        if (currentValues.username !== data?.username) {
-            changedFields.username = currentValues.username
-        }
-        if (currentValues.email !== data?.email) {
-            changedFields.email = currentValues.email
-        }
-        if (currentValues.phoneNumber !== data?.phoneNumber) {
-            changedFields.phoneNumber = currentValues.phoneNumber
-        }
-        if (Object.keys(changedFields).length > 0) {
+        if (Object.keys(userChangedFields).length > 0) {
             updateUser({
-                id: id!,
-                values: changedFields,
+                id: id,
+                values: userChangedFields,
             })
         } else {
             notificationMessage('info', 'Нет изменений для сохранения')
@@ -64,19 +61,21 @@ export const UserPage = () => {
         setEdit(false)
     }
 
+    const onCancel = () => {
+        setEdit(false)
+        form.resetFields()
+    }
+
+    const onEdit = () => {
+        setEdit(true)
+    }
+
     const notificationMessage = (type: NoticeType, message: string) => {
         messageApi.open({
             type,
             content: message,
         })
     }
-
-    useEffect(() => {
-        if (error) {
-            notificationMessage('error', error.message ?? 'Unknown error')
-        }
-        if (isSuccess) notificationMessage('success', 'User updated')
-    }, [error, isSuccess])
 
     return (
         <>
@@ -176,19 +175,13 @@ export const UserPage = () => {
                         </Form.Item>
                         <Form.Item>
                             {!isEdit ? (
-                                <Button
-                                    type="primary"
-                                    onClick={() => setEdit(true)}
-                                >
+                                <Button type="primary" onClick={onEdit}>
                                     Edit
                                 </Button>
                             ) : (
                                 <Space>
                                     <Button htmlType="submit">Save</Button>
-                                    <Button
-                                        danger
-                                        onClick={() => setEdit(false)}
-                                    >
+                                    <Button danger onClick={onCancel}>
                                         Cancel
                                     </Button>
                                 </Space>
