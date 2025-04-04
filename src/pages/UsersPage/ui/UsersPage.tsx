@@ -14,7 +14,7 @@ import { DeleteOutlined, UserOutlined } from '@ant-design/icons'
 import { usersApi } from 'src/store/services/usersService.ts'
 import { Link } from 'react-router'
 import { SorterResult } from 'antd/es/table/interface'
-import { Key, useState } from 'react'
+import { Key, useRef, useState } from 'react'
 import Search from 'antd/es/input/Search'
 
 export interface TableParams<T> {
@@ -41,6 +41,18 @@ export const UsersPage = () => {
     const [updateRights] = usersApi.useUpdateRightsMutation()
 
     const [tableParams, setTableParams] = useState<TableParams<User>>({})
+    const [inputValue, setInputValue] = useState('')
+
+    const timeoutRef = useRef<NodeJS.Timeout>()
+
+    const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value
+        setInputValue(value)
+        clearTimeout(timeoutRef.current)
+        timeoutRef.current = setTimeout(() => {
+            setTableParams((prev) => ({ ...prev, search: value }))
+        }, 600)
+    }
 
     const handleTableChange: TableProps<User>['onChange'] = (
         _,
@@ -65,14 +77,8 @@ export const UsersPage = () => {
                 style={{ marginTop: '30px', width: '300px' }}
                 placeholder="input search text"
                 size="large"
-                value={tableParams.search}
-                onChange={(e) => {
-                    const value = e.currentTarget.value
-                    setTableParams((prev) => ({
-                        ...prev,
-                        search: value,
-                    }))
-                }}
+                value={inputValue}
+                onChange={(e) => handleSearch(e)}
             />
             {data && (
                 <Table<User>

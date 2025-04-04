@@ -13,29 +13,34 @@ import { Roles } from 'src/types/usersTypes.ts'
 
 export const SideBar = () => {
     const [collapsed, setCollapsed] = useState(false)
-    const isAdmin = useAppSelector((state) =>
-        state.user.profile?.roles.includes(Roles.ADMIN)
-    )
+    const roles = useAppSelector((state) => state.user.profile?.roles)
 
     const items = [
         {
             key: '1',
             icon: <UserOutlined />,
             label: <NavLink to="/profile">Profile</NavLink>,
+            requiredRoles: [],
         },
         {
             key: '2',
             icon: <UnorderedListOutlined />,
             label: <NavLink to="/">Task List</NavLink>,
+            requiredRoles: [],
         },
         {
             key: '3',
             icon: <UnorderedListOutlined />,
             label: <NavLink to="/users">Users</NavLink>,
+            requiredRoles: Roles.ADMIN,
         },
     ]
 
-    if (!isAdmin) items.pop()
+    const filteredItems = items.filter(
+        (item) =>
+            item.requiredRoles.length === 0 ||
+            roles?.some((role) => item.requiredRoles.includes(role))
+    )
 
     return (
         <Layout.Sider
@@ -53,7 +58,7 @@ export const SideBar = () => {
                 theme="light"
                 mode="inline"
                 defaultSelectedKeys={['2']}
-                items={items}
+                items={filteredItems}
             />
 
             <Button

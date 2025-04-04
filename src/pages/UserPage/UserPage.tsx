@@ -11,8 +11,9 @@ import {
     MIN_PHONE_NUMBER_LENGTH,
     MIN_USERNAME_LENGTH,
 } from 'src/helpers/constants.ts'
-import { User } from 'src/types/usersTypes.ts'
+import { Roles, User } from 'src/types/usersTypes.ts'
 import { objectDiff } from 'src/helpers/utils.ts'
+import { useAppSelector } from 'src/store/hooks/redux.ts'
 
 type UserProfileFields = Pick<User, 'username' | 'email' | 'phoneNumber'>
 
@@ -20,6 +21,9 @@ export const UserPage = () => {
     const { id } = useParams<string>()
 
     const [updateUser, { error, isSuccess }] = usersApi.useUpdateUserMutation()
+    const isAdmin = useAppSelector((state) =>
+        state.user.profile?.roles.includes(Roles.ADMIN)
+    )
     const [form] = useForm()
     const [isEdit, setEdit] = useState<boolean>(false)
     const [messageApi, contextHolder] = message.useMessage()
@@ -173,20 +177,22 @@ export const UserPage = () => {
                         >
                             <Input disabled={!isEdit} />
                         </Form.Item>
-                        <Form.Item>
-                            {!isEdit ? (
-                                <Button type="primary" onClick={onEdit}>
-                                    Edit
-                                </Button>
-                            ) : (
-                                <Space>
-                                    <Button htmlType="submit">Save</Button>
-                                    <Button danger onClick={onCancel}>
-                                        Cancel
+                        {isAdmin && (
+                            <Form.Item>
+                                {!isEdit ? (
+                                    <Button type="primary" onClick={onEdit}>
+                                        Edit
                                     </Button>
-                                </Space>
-                            )}
-                        </Form.Item>
+                                ) : (
+                                    <Space>
+                                        <Button htmlType="submit">Save</Button>
+                                        <Button danger onClick={onCancel}>
+                                            Cancel
+                                        </Button>
+                                    </Space>
+                                )}
+                            </Form.Item>
+                        )}
                     </Form>
                     <Link to="/users">Back</Link>
                     {contextHolder}
